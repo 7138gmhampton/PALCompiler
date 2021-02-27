@@ -54,14 +54,12 @@ namespace PALCompiler
             /// <returns>
             /// Tuple containing the token (if created) and the next state
             /// </returns>
-            public static (IToken,int) traverseState(
-                int current_state, 
-                char current_char, 
-                Position position, 
-                ref Candidate candidate)
-            {
-                return states[current_state].Invoke(current_char, position, ref candidate);
-            }
+            public static (IToken, int) traverseState(
+                int current_state,
+                char current_char,
+                Position position,
+                ref Candidate candidate) 
+                => states[current_state].Invoke(current_char, position, ref candidate);
 
             private static (IToken,int) initialState(
                 char current_char, 
@@ -136,26 +134,25 @@ namespace PALCompiler
             private static (IToken, int) shortToken(
                 char current_char,
                 Position position,
-                ref Candidate candidate)
-            {
-                return (new Token(candidate.ToString(), candidate.Line, candidate.Column), 4);
-            }
+                ref Candidate candidate) 
+                => (new Token(candidate.ToString(), candidate.Line, candidate.Column), 4);
 
             private static (IToken, int) endOfFile(
                 char current_char,
                 Position position,
-                ref Candidate candidate)
-            {
-                return (new Token(Token.EndOfFile, candidate.Line, candidate.Column), 4);
-            }
+                ref Candidate candidate) 
+                => (new Token(Token.EndOfFile, candidate.Line, candidate.Column), 80);
 
             private static (IToken, int) invalidChar(
                 char current_char,
                 Position position,
-                ref Candidate candidate)
-            {
-                return (new Token(Token.InvalidChar, candidate.ToString(), candidate.Line, candidate.Column), 4);
-            }
+                ref Candidate candidate) 
+                => (new Token(
+                    Token.InvalidChar, 
+                    candidate.ToString(), 
+                    candidate.Line, 
+                    candidate.Column), 
+                80);
         }
     }
 }
