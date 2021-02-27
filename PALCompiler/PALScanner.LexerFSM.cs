@@ -30,7 +30,10 @@ namespace PALCompiler
         /// </summary>
         private static class LexerFSM
         {
-            private delegate (IToken, int) Traversal(char current_char, Position position, ref Candidate candidate);
+            private delegate (IToken, int) Traversal(
+                char current_char, 
+                Position position, 
+                ref Candidate candidate);
 
             private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
             {
@@ -112,7 +115,11 @@ namespace PALCompiler
 
                 if (char.IsDigit(current_char)) state = 2;
                 else if (current_char == '.') state = 3;
-                else token = new Token(Token.IntegerToken, candidate.ToString(), candidate.Line, candidate.Column);
+                else token = new Token(
+                    Token.IntegerToken, 
+                    candidate.ToString(), 
+                    candidate.Line, 
+                    candidate.Column);
 
                 return (token, state);
             }
@@ -126,7 +133,11 @@ namespace PALCompiler
                 IToken token = null;
 
                 if (char.IsDigit(current_char)) state = 3;
-                else token = new Token(Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                else token = new Token(
+                    Token.RealToken, 
+                    candidate.ToString(), 
+                    candidate.Start.line, 
+                    candidate.Start.column);
 
                 return (token, state);
             }
