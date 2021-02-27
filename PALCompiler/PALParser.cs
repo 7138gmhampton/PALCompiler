@@ -42,7 +42,17 @@ namespace PALCompiler
             recogniseExpression();
         }
 
-        private void recogniseExpression() => throw new NotImplementedException();
+        private void recogniseExpression()
+        {
+            recogniseTerm();
+            while (have("+") || have("-")) {
+                if (have("+")) mustBe("+");
+                else mustBe("-");
+                recogniseTerm();
+            }
+        }
+
+        private void recogniseTerm() => throw new NotImplementedException();
 
         private void recogniseVarDecls()
         {
