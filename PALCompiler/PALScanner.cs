@@ -106,5 +106,16 @@ namespace PALCompiler
 
             return token;
         }
+
+        struct Position
+        {
+            public int line;
+            public int column;
+        }
+
+        class LexerFSM
+        {
+            //Position position = new Position{ line = 0, column = 0 };
+        }
     }
 }
