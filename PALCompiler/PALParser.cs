@@ -75,7 +75,12 @@ namespace PALCompiler
             else recogniseValue();
         }
 
-        private void recogniseValue() => throw new NotImplementedException();
+        private void recogniseValue()
+        {
+            if (have(Token.IdentifierToken)) mustBe(Token.IdentifierToken);
+            else if (have(Token.IntegerToken)) mustBe(Token.IntegerToken);
+            else mustBe(Token.RealToken);
+        }
 
         private void recogniseVarDecls()
         {
