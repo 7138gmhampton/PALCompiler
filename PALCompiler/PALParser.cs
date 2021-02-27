@@ -38,7 +38,22 @@ namespace PALCompiler
             else recogniseIO();
         }
 
-        private void recogniseIO() => throw new NotImplementedException();
+        private void recogniseIO()
+        {
+            if (have("INPUT")) {
+                mustBe("INPUT");
+                recogniseIdentList();
+            }
+            else {
+                mustBe("OUTPUT");
+                recogniseExpression();
+                while (have(",")) {
+                    mustBe(",");
+                    recogniseExpression();
+                }
+            }
+        }
+
         private void recogniseConditional()
         {
             mustBe("IF");
