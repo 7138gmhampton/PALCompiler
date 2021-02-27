@@ -37,6 +37,13 @@ namespace PALCompiler
         }
 
         private void recogniseType() => throw new NotImplementedException();
-        private void recogniseIdentList() => throw new NotImplementedException();
+        private void recogniseIdentList()
+        {
+            mustBe(Token.IdentifierToken);
+            while (have(",")) {
+                mustBe(",");
+                mustBe(Token.IdentifierToken);
+            }
+        }
     }
 }
