@@ -56,7 +56,9 @@ namespace PALCompiler
         {
             StringBuilder strbuf = null;
             int state = 0;
-            int startLine = 0, startCol = 0;
+            //int startLine = 0, startCol = 0;
+            //var start = new Position { line = 0, column = 0 };
+            var start = new Position(0, 0);
 
             Token token = null;
             while (token == null) {
@@ -64,7 +66,9 @@ namespace PALCompiler
                     case 0:
                         if (Char.IsWhiteSpace(currentChar)) state = 0;
                         else {
-                            startLine = line; startCol = column;
+                            //startLine = line; startCol = column;
+                            //start = new Position { line = line, column = }
+                            start = new Position(line, column);
                             strbuf = new StringBuilder();
 
                             if (Char.IsLetter(currentChar)) state = 1;
@@ -79,25 +83,25 @@ namespace PALCompiler
                         if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
                         else {
                             String s = strbuf.ToString();
-                            if (keywords.Contains (s)) token = new Token (s, startLine, startCol);
-                            else token = new Token (Token.IdentifierToken, s, startLine, startCol);
+                            if (keywords.Contains (s)) token = new Token (s, start.line, start.column);
+                            else token = new Token (Token.IdentifierToken, s, start.line, start.column);
                         }
                         break;
                     case 2:
                         if (Char.IsDigit (currentChar))   state = 2;
                         else if (currentChar == '.')      state = 3;
                         else
-                            token = new Token (Token.IntegerToken, strbuf.ToString(), startLine, startCol);
+                            token = new Token (Token.IntegerToken, strbuf.ToString(), start.line, start.column);
                         break;
                     case 3:
                         if (Char.IsDigit (currentChar))
                             state = 3;
-                        else token = new Token (Token.RealToken, strbuf.ToString(), startLine, startCol);
+                        else token = new Token (Token.RealToken, strbuf.ToString(), start.line, start.column);
                         break;
-                    case 4: token = new Token (strbuf.ToString(), startLine, startCol); break;
-                    case 98: token = new Token (Token.EndOfFile, startLine, startCol); break;
+                    case 4: token = new Token (strbuf.ToString(), start.line, start.column); break;
+                    case 98: token = new Token (Token.EndOfFile, start.line, start.column); break;
                     case 99:
-                        token = new Token (Token.InvalidChar, strbuf.ToString(), startLine, startCol);
+                        token = new Token (Token.InvalidChar, strbuf.ToString(), start.line, start.column);
                         break;
                 }
 
@@ -133,6 +137,12 @@ namespace PALCompiler
         {
             public int line;
             public int column;
+
+            internal Position(int line, int column)
+            {
+                this.line = line;
+                this.column = column;
+            }
         }
 
         private static class LexerFSM
