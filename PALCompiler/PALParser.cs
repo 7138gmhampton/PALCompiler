@@ -205,11 +205,12 @@ namespace PALCompiler
                 consume(ref parent, recogniseIdentList, "<IdentList>");
                 //mustBe("AS");
                 consume(ref parent, "AS");
-                recogniseType();
+                //recogniseType();
+                consume(ref parent, recogniseType, "<Type>");
             }
         }
 
-        private void recogniseType()
+        private void recogniseType(ref SyntaxNode parent)
         {
             if (have("REAL")) mustBe("REAL");
             else mustBe("INTEGER");
