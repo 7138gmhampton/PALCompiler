@@ -37,13 +37,13 @@ namespace PALCompiler
 
             private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
             {
-                { 0, initialState },
-                { 1, wordState },
-                { 2, numeralState },
-                { 3, radixState },
-                { 4, shortToken },
-                { 98, endOfFile },
-                { 99, invalidChar }
+                { (int)State.INITIAL, initialState },
+                { (int)State.WORD, wordState },
+                { (int)State.NUMERAL, numeralState },
+                { (int)State.RADIX, radixState },
+                { (int)State.SHORT_TOKEN, shortToken },
+                { (int)State.EOF, endOfFile },
+                { (int)State.INVALID_CHAR, invalidChar }
             };
 
             /// <summary>
