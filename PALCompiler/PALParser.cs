@@ -11,6 +11,20 @@ namespace PALCompiler
     {
         internal PALParser(IScanner scanner) : base(scanner) { }
 
-        protected override void recStarter() => throw new NotImplementedException();
+        protected override void recStarter()
+        {
+            mustBe("PROGRAM");
+            mustBe(Token.IdentifierToken);
+            mustBe("WITH");
+            recogniseVarDecls();
+            mustBe("IN");
+            recogniseStatement();
+            //if (!have("END")) 
+            while (!have("END")) recogniseStatement();
+            mustBe("END");
+        }
+
+        private void recogniseStatement() => throw new NotImplementedException();
+        private void recogniseVarDecls() => throw new NotImplementedException();
     }
 }
