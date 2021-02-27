@@ -129,17 +129,18 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                int state = 3;
+                //int state = 3;
                 IToken token = null;
 
-                if (char.IsDigit(current_char)) state = 3;
-                else token = new Token(
-                    Token.RealToken, 
-                    candidate.ToString(), 
-                    candidate.Start.line, 
-                    candidate.Start.column);
+                if (!char.IsDigit(current_char)) 
+                    token = new Token(
+                                    Token.RealToken,
+                                    candidate.ToString(),
+                                    candidate.Start.line,
+                                    candidate.Start.column);
+                //else state = 3;
 
-                return (token, state);
+                return (token, 3);
             }
 
             private static (IToken, int) shortToken(
