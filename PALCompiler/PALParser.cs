@@ -62,7 +62,20 @@ namespace PALCompiler
             }
         }
 
-        private void recogniseFactor() => throw new NotImplementedException();
+        private void recogniseFactor()
+        {
+            if (have("+")) mustBe("+");
+            else if (have("-")) mustBe("-");
+
+            if (have("(")) {
+                mustBe("(");
+                recogniseExpression();
+                mustBe(")");
+            }
+            else recogniseValue();
+        }
+
+        private void recogniseValue() => throw new NotImplementedException();
 
         private void recogniseVarDecls()
         {
