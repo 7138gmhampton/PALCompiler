@@ -26,6 +26,7 @@ namespace PALCompiler
                 foreach (var error in errors)
                     Console.WriteLine(error.ToString());
             else {
+                if (File.Exists("output.txt")) archiveOldOutput();
                 using (var output_file = new StreamWriter("output.txt", false)) {
                     foreach (var token in tokens) output_file.WriteLine(token.ToString());
                 }
@@ -41,6 +42,12 @@ namespace PALCompiler
                 if (File.Exists(source_file)) return source_file;
                 else Console.WriteLine("Invalid file - try again");
             }
+        }
+
+        private static void archiveOldOutput()
+        {
+            File.Delete("archive.txt");
+            File.Move("output.txt", "archive.txt");
         }
     }
 }
