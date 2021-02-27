@@ -35,7 +35,7 @@ namespace PALCompiler
                 Position position, 
                 ref Candidate candidate);
 
-            private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
+            private static readonly Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
             {
                 { (int)State.INITIAL, initialState },
                 { (int)State.WORD, wordState },
@@ -91,7 +91,6 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                //int state = 1;
                 IToken token = null;
 
                 if (!char.IsLetter(current_char) && !char.IsDigit(current_char)) {
@@ -100,7 +99,6 @@ namespace PALCompiler
                         ? new Token(word, candidate.Line, candidate.Column)
                         : new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
                 }
-                //else state = 1;
 
                 return (token, (int)State.WORD);
             }
@@ -129,7 +127,6 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                //int state = 3;
                 IToken token = null;
 
                 if (!char.IsDigit(current_char)) 
@@ -138,7 +135,6 @@ namespace PALCompiler
                                     candidate.ToString(),
                                     candidate.Start.line,
                                     candidate.Start.column);
-                //else state = 3;
 
                 return (token, (int)State.RADIX);
             }
