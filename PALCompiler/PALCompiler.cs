@@ -43,19 +43,20 @@ namespace PALCompiler
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
 
-            var dummy_tree = new SyntaxNode("alpha");
-            dummy_tree.addChild(new SyntaxNode("bravo"));
-            dummy_tree.addChild(new SyntaxNode("charlie"));
-            dummy_tree.addChild(new SyntaxNode("delta"));
-            dummy_tree.Children[0].addChild(new SyntaxNode("echo"));
-            dummy_tree.Children[0].addChild(new SyntaxNode("foxtrot"));
-            dummy_tree.Children[1].addChild(new SyntaxNode("golf"));
-            dummy_tree.Children[2].addChild(new SyntaxNode("hotel"));
-            dummy_tree.Children[2].addChild(new SyntaxNode("india"));
-            dummy_tree.Children[2].addChild(new SyntaxNode("juliet"));
-            dummy_tree.addChild(new SyntaxNode("kilo"));
+            //var dummy_tree = new SyntaxNode("alpha");
+            //dummy_tree.addChild(new SyntaxNode("bravo"));
+            //dummy_tree.addChild(new SyntaxNode("charlie"));
+            //dummy_tree.addChild(new SyntaxNode("delta"));
+            //dummy_tree.Children[0].addChild(new SyntaxNode("echo"));
+            //dummy_tree.Children[0].addChild(new SyntaxNode("foxtrot"));
+            //dummy_tree.Children[1].addChild(new SyntaxNode("golf"));
+            //dummy_tree.Children[2].addChild(new SyntaxNode("hotel"));
+            //dummy_tree.Children[2].addChild(new SyntaxNode("india"));
+            //dummy_tree.Children[2].addChild(new SyntaxNode("juliet"));
+            //dummy_tree.addChild(new SyntaxNode("kilo"));
 
-            dummy_tree.printGraphic("", true);
+            //dummy_tree.printGraphic("", true);
+            parser.SyntaxTree.printGraphic("", true);
         }
 
         private static string inputSourceFile()
