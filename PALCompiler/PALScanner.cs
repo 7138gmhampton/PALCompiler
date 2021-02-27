@@ -29,6 +29,8 @@ namespace PALCompiler
     /// The PAL scanner implementation.
     public class PALScanner : Scanner
     {
+        //private delegate 
+        
         /// list of keywords used in the language - remember they are case-sensitive.
         private static List<String> keywords = new List<String>( new String[] {
            "PROGRAM",
@@ -62,15 +64,16 @@ namespace PALCompiler
                     case 0:
                         if (Char.IsWhiteSpace(currentChar)) state = 0;
                         else {
-                            startLine = line;   startCol = column;
+                            startLine = line; startCol = column;
                             strbuf = new StringBuilder();
 
-                            if (Char.IsLetter (currentChar)) state = 1;
-                            else if (Char.IsDigit (currentChar)) state = 2;
+                            if (Char.IsLetter(currentChar)) state = 1;
+                            else if (Char.IsDigit(currentChar)) state = 2;
                             else if ("+-*/(),=<>".IndexOf(currentChar) != -1) state = 4;
                             else if (currentChar == eofChar) state = 98;
                             else state = 99;
                         }
+                        //LexerFSM.traverseState(state, currentChar, );
                         break;
                     case 1:
                         if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
@@ -107,15 +110,84 @@ namespace PALCompiler
             return token;
         }
 
-        struct Position
+        //private struct Candidate
+        //{
+        //    StringBuilder
+        //}
+
+        private class Candidate
+        {
+            private StringBuilder value_buffer;
+            private Position start;
+
+            public Candidate(Position start)
+            {
+                value_buffer = new StringBuilder();
+                this.start = start;
+            }
+
+            public string toString() => value_buffer.ToString();
+        }
+
+        private struct Position
         {
             public int line;
             public int column;
         }
 
-        class LexerFSM
+        private static class LexerFSM
         {
-            //Position position = new Position{ line = 0, column = 0 };
+            //Position position = new Position { line = 0, column = 0 };
+            //public (IToken token, int state) getTransition()
+            private delegate (IToken, int) Traversal(char current_char, Position position, ref Candidate candidate);
+
+            //private static Dictionary<int, Func<char, Position, Candidate, (IToken, int)>> states = 
+            //    new Dictionary<int, Func<char, Position, Candidate, (IToken, int)>>
+            //{
+            //        { 0, initialState }
+            //};
+            private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
+            {
+                { 0, initialState }
+            };
+
+            //public static Func<char, Position, Candidate,(IToken,int)> traverseState()
+            //{
+            //    throw new NotImplementedException();
+            //}
+
+            public static (IToken,int) traverseState(
+                int current_state, 
+                char current_char, 
+                Position position, 
+                ref Candidate candidate)
+            {
+                //Traversal currentTraversal = states[current_state];
+                return states[current_state].Invoke(current_char, position, ref candidate);
+            }
+
+            private static (IToken,int) initialState(
+                char current_char, 
+                Position position, 
+                ref Candidate candidate)
+            {
+                int state = 0;
+                IToken token = null;
+
+                if (char.IsWhiteSpace(current_char)) state = 0;
+                else {
+                    //startLine = line; startCol = column;
+                    //strbuf = new StringBuilder();
+
+                    if (char.IsLetter(current_char)) state = 1;
+                    else if (char.IsDigit(current_char)) state = 2;
+                    else if ("+-*/(),=<>".IndexOf(current_char) != -1) state = 4;
+                    else if (current_char == eofChar) state = 98;
+                    else state = 99;
+                }
+
+                return (token, state);
+            }
         }
     }
 }
