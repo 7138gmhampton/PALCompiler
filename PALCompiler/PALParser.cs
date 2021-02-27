@@ -36,7 +36,12 @@ namespace PALCompiler
             }
         }
 
-        private void recogniseType() => throw new NotImplementedException();
+        private void recogniseType()
+        {
+            if (have("REAL")) mustBe("REAL");
+            else mustBe("INTEGER");
+        }
+
         private void recogniseIdentList()
         {
             mustBe(Token.IdentifierToken);
