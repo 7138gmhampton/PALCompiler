@@ -57,7 +57,7 @@ namespace PALCompiler
         protected override IToken getNextToken()
         {
             //StringBuilder strbuf = null;
-            int state = 0;
+            int state = (int)State.INITIAL;
             //int startLine = 0, startCol = 0;
             //var start = new Position { line = 0, column = 0 };
             //var start = new Position(0, 0);
@@ -174,6 +174,18 @@ namespace PALCompiler
                 this.column = column;
                 //Console.WriteLine("Create Position [" + line+"," + column+"] -> [" + this.line + "," + this.column + "]");
             }
+        }
+
+        private enum State
+        {
+            INITIAL = 0,
+            WORD = 1,
+            NUMERAL = 2,
+            RADIX = 3,
+            SHORT_TOKEN = 4,
+            DUMMY = 80,
+            EOF = 98,
+            INVALID_CHAR = 99
         }
     }
 }

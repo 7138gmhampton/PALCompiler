@@ -72,15 +72,15 @@ namespace PALCompiler
                 int state = 0;
                 IToken token = null;
 
-                if (char.IsWhiteSpace(current_char)) state = 0;
+                if (char.IsWhiteSpace(current_char)) state = (int)State.INITIAL;
                 else {
                     candidate = new Candidate(position);
 
-                    if (char.IsLetter(current_char)) state = 1;
-                    else if (char.IsDigit(current_char)) state = 2;
-                    else if ("+-*/(),=<>".IndexOf(current_char) != -1) state = 4;
-                    else if (current_char == eofChar) state = 98;
-                    else state = 99;
+                    if (char.IsLetter(current_char)) state = (int)State.WORD;
+                    else if (char.IsDigit(current_char)) state = (int)State.NUMERAL;
+                    else if ("+-*/(),=<>".IndexOf(current_char) != -1) state = (int)State.SHORT_TOKEN;
+                    else if (current_char == eofChar) state = (int)State.EOF;
+                    else state = (int)State.INVALID_CHAR;
                 }
 
                 return (token, state);
@@ -110,11 +110,11 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                int state = 2;
+                int state = (int)State.NUMERAL;
                 IToken token = null;
 
-                if (char.IsDigit(current_char)) state = 2;
-                else if (current_char == '.') state = 3;
+                if (char.IsDigit(current_char)) state = (int)State.NUMERAL;
+                else if (current_char == '.') state = (int)State.RADIX;
                 else token = new Token(
                     Token.IntegerToken, 
                     candidate.ToString(), 
@@ -140,20 +140,20 @@ namespace PALCompiler
                                     candidate.Start.column);
                 //else state = 3;
 
-                return (token, 3);
+                return (token, (int)State.RADIX);
             }
 
             private static (IToken, int) shortToken(
                 char current_char,
                 Position position,
                 ref Candidate candidate) 
-                => (new Token(candidate.ToString(), candidate.Line, candidate.Column), 4);
+                => (new Token(candidate.ToString(), candidate.Line, candidate.Column), (int)State.DUMMY);
 
             private static (IToken, int) endOfFile(
                 char current_char,
                 Position position,
                 ref Candidate candidate) 
-                => (new Token(Token.EndOfFile, candidate.Line, candidate.Column), 80);
+                => (new Token(Token.EndOfFile, candidate.Line, candidate.Column), (int)State.DUMMY);
 
             private static (IToken, int) invalidChar(
                 char current_char,
@@ -163,8 +163,8 @@ namespace PALCompiler
                     Token.InvalidChar, 
                     candidate.ToString(), 
                     candidate.Line, 
-                    candidate.Column), 
-                80);
+                    candidate.Column),
+                (int)State.DUMMY);
         }
     }
 }
