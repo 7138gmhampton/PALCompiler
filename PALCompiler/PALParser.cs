@@ -39,12 +39,12 @@ namespace PALCompiler
             updateTree(ref syntax_tree, "IN");
             mustBe("IN");
             var statement_node = new SyntaxNode("<Statement>");
-            recogniseStatement();
+            recogniseStatement(ref syntax_tree);
             syntax_tree.addChild(statement_node);
             //if (!have("END")) 
             while (!have("END")) {
                 var continuing_statement_node = new SyntaxNode("<Statement>");
-                recogniseStatement();
+                recogniseStatement(ref syntax_tree);
                 syntax_tree.addChild(continuing_statement_node);
             }
             //syntax_tree.addChild(new SyntaxNode("END"));
@@ -90,20 +90,20 @@ namespace PALCompiler
             parent.addChild(node);
         }
 
-        private void recogniseStatement()
+        private void recogniseStatement(ref SyntaxNode parent)
         {
             //syntax_tree.addChild(new SyntaxNode("<Statement>"));
             if (have(Token.IdentifierToken)) recogniseAssignment();
-            else if (have("UNTIL")) recogniseLoop();
-            else if (have("IF")) recogniseConditional();
-            else recogniseIO();
+            else if (have("UNTIL")) recogniseLoop(ref parent);
+            else if (have("IF")) recogniseConditional(ref parent);
+            else recogniseIO(ref parent);
         }
 
-        private void recogniseIO()
+        private void recogniseIO(ref SyntaxNode parent)
         {
             if (have("INPUT")) {
                 mustBe("INPUT");
-                recogniseIdentList();
+                recogniseIdentList(ref parent);
             }
             else {
                 mustBe("OUTPUT");
@@ -115,27 +115,27 @@ namespace PALCompiler
             }
         }
 
-        private void recogniseConditional()
+        private void recogniseConditional(ref SyntaxNode parent)
         {
             mustBe("IF");
             recogniseBooleanExpr();
             mustBe("THEN");
-            while (haveStatement()) recogniseStatement();
+            while (haveStatement()) recogniseStatement(ref parent);
             if (have("ELSE")) {
                 mustBe("ELSE");
-                while (haveStatement()) recogniseStatement();
+                while (haveStatement()) recogniseStatement(ref parent);
             }
             mustBe("ENDIF");
         }
 
-        private void recogniseLoop()
+        private void recogniseLoop(ref SyntaxNode parent)
         {
             mustBe("UNTIL");
             recogniseBooleanExpr();
             mustBe("REPEAT");
             while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || 
                 have("OUTPUT")) {
-                recogniseStatement();
+                recogniseStatement(ref parent);
             }
             mustBe("ENDLOOP");
         }
@@ -196,13 +196,15 @@ namespace PALCompiler
             else mustBe(Token.RealToken);
         }
 
-        private void recogniseVarDecls(ref SyntaxNode node)
+        private void recogniseVarDecls(ref SyntaxNode parent)
         {
             //syntax_tree.addChild(new SyntaxNode("<VarDecls>"));
             //if (have(Token.IdentifierToken)) recogniseIdentList();
             while (have(Token.IdentifierToken)) {
-                recogniseIdentList();
-                mustBe("AS");
+                //recogniseIdentList();
+                consume(ref parent, recogniseIdentList, "<IdentList>");
+                //mustBe("AS");
+                consume(ref parent, "AS");
                 recogniseType();
             }
         }
@@ -213,7 +215,7 @@ namespace PALCompiler
             else mustBe("INTEGER");
         }
 
-        private void recogniseIdentList()
+        private void recogniseIdentList(ref SyntaxNode parent)
         {
             mustBe(Token.IdentifierToken);
             while (have(",")) {
