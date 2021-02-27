@@ -24,7 +24,18 @@ namespace PALCompiler
             mustBe("END");
         }
 
-        private void recogniseStatement() => throw new NotImplementedException();
+        private void recogniseStatement()
+        {
+            if (have(Token.IdentifierToken)) recogniseAssignment();
+            else if (have("UNTIL")) recogniseLoop();
+            else if (have("IF")) recogniseConditional();
+            else recogniseIO();
+        }
+
+        private void recogniseIO() => throw new NotImplementedException();
+        private void recogniseConditional() => throw new NotImplementedException();
+        private void recogniseLoop() => throw new NotImplementedException();
+        private void recogniseAssignment() => throw new NotImplementedException();
 
         private void recogniseVarDecls()
         {
