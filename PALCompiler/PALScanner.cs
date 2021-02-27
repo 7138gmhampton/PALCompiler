@@ -54,59 +54,64 @@ namespace PALCompiler
         /// find and return the next token using a state transition FSM.
         protected override IToken getNextToken()
         {
-            StringBuilder strbuf = null;
+            //StringBuilder strbuf = null;
             int state = 0;
             //int startLine = 0, startCol = 0;
             //var start = new Position { line = 0, column = 0 };
-            var start = new Position(0, 0);
+            //var start = new Position(0, 0);
+            Candidate candidate = null;
 
-            Token token = null;
+            IToken token = null;
             while (token == null) {
                 switch (state) {
                     case 0:
-                        if (Char.IsWhiteSpace(currentChar)) state = 0;
-                        else {
-                            //startLine = line; startCol = column;
-                            //start = new Position { line = line, column = }
-                            start = new Position(line, column);
-                            strbuf = new StringBuilder();
+                        //if (Char.IsWhiteSpace(currentChar)) state = 0;
+                        //else {
+                        //    //startLine = line; startCol = column;
+                        //    //start = new Position { line = line, column = }
+                        //    //start = new Position(line, column);
+                        //    //strbuf = new StringBuilder();
+                        //    candidate = new Candidate(new Position(line, column));
 
-                            if (Char.IsLetter(currentChar)) state = 1;
-                            else if (Char.IsDigit(currentChar)) state = 2;
-                            else if ("+-*/(),=<>".IndexOf(currentChar) != -1) state = 4;
-                            else if (currentChar == eofChar) state = 98;
-                            else state = 99;
-                        }
+                        //    if (Char.IsLetter(currentChar)) state = 1;
+                        //    else if (Char.IsDigit(currentChar)) state = 2;
+                        //    else if ("+-*/(),=<>".IndexOf(currentChar) != -1) state = 4;
+                        //    else if (currentChar == eofChar) state = 98;
+                        //    else state = 99;
+                        //}
                         //LexerFSM.traverseState(state, currentChar, );
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
                     case 1:
                         if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
                         else {
-                            String s = strbuf.ToString();
-                            if (keywords.Contains (s)) token = new Token (s, start.line, start.column);
-                            else token = new Token (Token.IdentifierToken, s, start.line, start.column);
+                            //String s = strbuf.ToString();
+                            if (keywords.Contains(candidate.ToString())) token = new Token(candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                            else token = new Token(Token.IdentifierToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
                         }
                         break;
                     case 2:
                         if (Char.IsDigit (currentChar))   state = 2;
                         else if (currentChar == '.')      state = 3;
                         else
-                            token = new Token (Token.IntegerToken, strbuf.ToString(), start.line, start.column);
+                            token = new Token (Token.IntegerToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
                         break;
                     case 3:
                         if (Char.IsDigit (currentChar))
                             state = 3;
-                        else token = new Token (Token.RealToken, strbuf.ToString(), start.line, start.column);
+                        else token = new Token (Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
                         break;
-                    case 4: token = new Token (strbuf.ToString(), start.line, start.column); break;
-                    case 98: token = new Token (Token.EndOfFile, start.line, start.column); break;
+                    case 4: token = new Token(candidate.ToString(), candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
+                    case 98: token = new Token(Token.EndOfFile, candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
                     case 99:
-                        token = new Token (Token.InvalidChar, strbuf.ToString(), start.line, start.column);
+                        //Console.WriteLine("Sample Candidate: " + candidate.ToString() + " @ " + "[" + candidate.Start.line + "," + candidate.Start.column + "]");
+                        token = new Token(Token.InvalidChar, candidate.ToString(), candidate.Start.line, candidate.Start.column);
                         break;
                 }
 
                 if (token == null) {
-                    if (state != 0) strbuf.Append (currentChar);
+                    if (state != 0) candidate.Append(currentChar);
+                    //if (state != 0) strbuf.Append (currentChar);
                     getNextChar();
                 }
             }
@@ -128,9 +133,13 @@ namespace PALCompiler
             {
                 value_buffer = new StringBuilder();
                 this.start = start;
+                //Console.WriteLine("Create Candidate @ [" + this.start)
             }
 
-            public string toString() => value_buffer.ToString();
+            public Position Start { get { return start; } }
+
+            public override string ToString() => value_buffer.ToString();
+            public void Append(char addition) => value_buffer.Append(addition);
         }
 
         private struct Position
@@ -142,6 +151,7 @@ namespace PALCompiler
             {
                 this.line = line;
                 this.column = column;
+                //Console.WriteLine("Create Position [" + line+"," + column+"] -> [" + this.line + "," + this.column + "]");
             }
         }
 
@@ -188,6 +198,7 @@ namespace PALCompiler
                 else {
                     //startLine = line; startCol = column;
                     //strbuf = new StringBuilder();
+                    candidate = new Candidate(position);
 
                     if (char.IsLetter(current_char)) state = 1;
                     else if (char.IsDigit(current_char)) state = 2;
