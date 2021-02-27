@@ -30,15 +30,8 @@ namespace PALCompiler
         /// </summary>
         private static class LexerFSM
         {
-            //Position position = new Position { line = 0, column = 0 };
-            //public (IToken token, int state) getTransition()
             private delegate (IToken, int) Traversal(char current_char, Position position, ref Candidate candidate);
 
-            //private static Dictionary<int, Func<char, Position, Candidate, (IToken, int)>> states = 
-            //    new Dictionary<int, Func<char, Position, Candidate, (IToken, int)>>
-            //{
-            //        { 0, initialState }
-            //};
             private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
             {
                 { 0, initialState },
@@ -49,11 +42,6 @@ namespace PALCompiler
                 { 98, endOfFile },
                 { 99, invalidChar }
             };
-
-            //public static Func<char, Position, Candidate,(IToken,int)> traverseState()
-            //{
-            //    throw new NotImplementedException();
-            //}
 
             /// <summary>
             /// Selects the appropriate behaviour for the current state - 
@@ -72,7 +60,6 @@ namespace PALCompiler
                 Position position, 
                 ref Candidate candidate)
             {
-                //Traversal currentTraversal = states[current_state];
                 return states[current_state].Invoke(current_char, position, ref candidate);
             }
 
@@ -86,8 +73,6 @@ namespace PALCompiler
 
                 if (char.IsWhiteSpace(current_char)) state = 0;
                 else {
-                    //startLine = line; startCol = column;
-                    //strbuf = new StringBuilder();
                     candidate = new Candidate(position);
 
                     if (char.IsLetter(current_char)) state = 1;
@@ -111,8 +96,6 @@ namespace PALCompiler
                 if (char.IsLetter(current_char) || char.IsDigit(current_char)) state = 1;
                 else {
                     string word = candidate.ToString();
-                    //if (keywords.Contains(word)) token = new Token(word, candidate.Line, candidate.Column);
-                    //else token = new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
                     token = keywords.Contains(word) 
                         ? new Token(word, candidate.Line, candidate.Column)
                         : new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
@@ -141,8 +124,6 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                //throw new NotImplementedException();
-
                 int state = 3;
                 IToken token = null;
 
