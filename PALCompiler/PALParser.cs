@@ -13,31 +13,40 @@ namespace PALCompiler
 
         internal PALParser(IScanner scanner) : base(scanner)
         {
-            syntax_tree = new SyntaxNode("root");
+            syntax_tree = new SyntaxNode("<Program>");
         }
 
         protected override void recStarter()
         {
-            syntax_tree.addChild(new SyntaxNode("<Program>"));
+            //syntax_tree.addChild(new SyntaxNode("<Program>"));
             //updateTree("<Program>");
             //syntax_tree.addChild(new SyntaxNode("PROGRAM"));
-            updateTree("PROGRAM");
+            updateTree(ref syntax_tree, "PROGRAM");
             mustBe("PROGRAM");
             //syntax_tree.addChild(new SyntaxNode("Identifier(" + scanner.CurrentToken.TokenValue + ")"));
-            updateTree(Token.IdentifierToken, scanner.CurrentToken.TokenValue);
+            updateTree(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
             mustBe(Token.IdentifierToken);
             //syntax_tree.addChild(new SyntaxNode("WITH"));
-            updateTree("WITH");
+            updateTree(ref syntax_tree, "WITH");
             mustBe("WITH");
-            recogniseVarDecls();
+            //syntax_tree.addChild()
+            SyntaxNode var_declaration_node = new SyntaxNode("<VarDecls>");
+            recogniseVarDecls(ref var_declaration_node);
+            syntax_tree.addChild(var_declaration_node);
             //syntax_tree.addChild(new SyntaxNode("IN"));
-            updateTree("IN");
+            updateTree(ref syntax_tree, "IN");
             mustBe("IN");
+            var statement_node = new SyntaxNode("<Statement>");
             recogniseStatement();
+            syntax_tree.addChild(statement_node);
             //if (!have("END")) 
-            while (!have("END")) recogniseStatement();
+            while (!have("END")) {
+                var continuing_statement_node = new SyntaxNode("<Statement>");
+                recogniseStatement();
+                syntax_tree.addChild(continuing_statement_node);
+            }
             //syntax_tree.addChild(new SyntaxNode("END"));
-            updateTree("END");
+            updateTree(ref syntax_tree, "END");
             mustBe("END");
             //syntax_tree.addChild(new SyntaxNode("Program"))
         }
@@ -50,31 +59,31 @@ namespace PALCompiler
                 have("OUTPUT");
         }
 
-        private void updateTree(string symbol)
+        private void updateTree(ref SyntaxNode node, string symbol)
         {
-            if (have(symbol)) syntax_tree.addChild(new SyntaxNode(symbol));
+            if (have(symbol)) node.addChild(new SyntaxNode(symbol));
         }
 
-        private void updateTree(string symbol, string value)
+        private void updateTree(ref SyntaxNode node, string symbol, string value)
         {
-            if (have(symbol)) syntax_tree.addChild(new SyntaxNode(symbol + "(" + value + ")"));
+            if (have(symbol)) node.addChild(new SyntaxNode(symbol + "(" + value + ")"));
         }
 
-        private void consume(string symbol)
+        private void consume(ref SyntaxNode node, string symbol)
         {
-            updateTree(symbol);
+            updateTree(ref node, symbol);
             mustBe(symbol);
         }
 
-        private void consume(string symbol, string value)
+        private void consume(ref SyntaxNode node, string symbol, string value)
         {
-            updateTree(symbol, value);
+            updateTree(ref node, symbol, value);
             mustBe(symbol);
         }
 
         private void recogniseStatement()
         {
-            syntax_tree.addChild(new SyntaxNode("<Statement>"));
+            //syntax_tree.addChild(new SyntaxNode("<Statement>"));
             if (have(Token.IdentifierToken)) recogniseAssignment();
             else if (have("UNTIL")) recogniseLoop();
             else if (have("IF")) recogniseConditional();
@@ -178,9 +187,9 @@ namespace PALCompiler
             else mustBe(Token.RealToken);
         }
 
-        private void recogniseVarDecls()
+        private void recogniseVarDecls(ref SyntaxNode node)
         {
-            syntax_tree.addChild(new SyntaxNode("<VarDecls>"));
+            //syntax_tree.addChild(new SyntaxNode("<VarDecls>"));
             //if (have(Token.IdentifierToken)) recogniseIdentList();
             while (have(Token.IdentifierToken)) {
                 recogniseIdentList();
