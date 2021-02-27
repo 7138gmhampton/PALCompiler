@@ -25,6 +25,18 @@ namespace PALCompiler
         }
 
         private void recogniseStatement() => throw new NotImplementedException();
-        private void recogniseVarDecls() => throw new NotImplementedException();
+
+        private void recogniseVarDecls()
+        {
+            //if (have(Token.IdentifierToken)) recogniseIdentList();
+            while (have(Token.IdentifierToken)) {
+                recogniseIdentList();
+                mustBe("AS");
+                recogniseType();
+            }
+        }
+
+        private void recogniseType() => throw new NotImplementedException();
+        private void recogniseIdentList() => throw new NotImplementedException();
     }
 }
