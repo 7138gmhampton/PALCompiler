@@ -31,8 +31,6 @@ namespace PALCompiler
     /// </summary>
     public partial class PALScanner : Scanner
     {
-        //private delegate 
-        
         /// list of keywords used in the language - remember they are case-sensitive.
         private static List<String> keywords = new List<String>( new String[] {
            "PROGRAM",
@@ -56,88 +54,22 @@ namespace PALCompiler
         /// find and return the next token using a state transition FSM.
         protected override IToken getNextToken()
         {
-            //StringBuilder strbuf = null;
             int state = (int)State.INITIAL;
-            //int startLine = 0, startCol = 0;
-            //var start = new Position { line = 0, column = 0 };
-            //var start = new Position(0, 0);
             Candidate candidate = null;
 
             IToken token = null;
             while (token == null) {
-                //switch (state) {
-                //    case 0:
-                //        //if (Char.IsWhiteSpace(currentChar)) state = 0;
-                //        //else {
-                //        //    //startLine = line; startCol = column;
-                //        //    //start = new Position { line = line, column = }
-                //        //    //start = new Position(line, column);
-                //        //    //strbuf = new StringBuilder();
-                //        //    candidate = new Candidate(new Position(line, column));
-
-                //        //    if (Char.IsLetter(currentChar)) state = 1;
-                //        //    else if (Char.IsDigit(currentChar)) state = 2;
-                //        //    else if ("+-*/(),=<>".IndexOf(currentChar) != -1) state = 4;
-                //        //    else if (currentChar == eofChar) state = 98;
-                //        //    else state = 99;
-                //        //}
-                //        //LexerFSM.traverseState(state, currentChar, );
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    case 1:
-                //        //if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
-                //        //else {
-                //        //    //String s = strbuf.ToString();
-                //        //    if (keywords.Contains(candidate.ToString())) token = new Token(candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                //        //    else token = new Token(Token.IdentifierToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                //        //}
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    case 2:
-                //        //if (Char.IsDigit (currentChar))   state = 2;
-                //        //else if (currentChar == '.')      state = 3;
-                //        //else
-                //        //    token = new Token (Token.IntegerToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    case 3:
-                //        //if (Char.IsDigit (currentChar))
-                //        //    state = 3;
-                //        //else token = new Token (Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    //case 4: token = new Token(candidate.ToString(), candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
-                //    case 4:
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    //case 98: token = new Token(Token.EndOfFile, candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
-                //    case 98:
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //    case 99:
-                //        //Console.WriteLine("Sample Candidate: " + candidate.ToString() + " @ " + "[" + candidate.Start.line + "," + candidate.Start.column + "]");
-                //        //token = new Token(Token.InvalidChar, candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                //        //break;
-                //        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
-                //        break;
-                //}
-
-                (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
+                (token, state) = LexerFSM.traverseState(state, currentChar, 
+                    new Position(line, column), ref candidate);
 
                 if (token == null) {
                     if (state != 0) candidate.Append(currentChar);
-                    //if (state != 0) strbuf.Append (currentChar);
                     getNextChar();
                 }
             }
 
             return token;
         }
-
-        //private struct Candidate
-        //{
-        //    StringBuilder
-        //}
 
         /// <summary>
         /// Represents the accumulated characters that potentially could form
@@ -172,7 +104,6 @@ namespace PALCompiler
             {
                 this.line = line;
                 this.column = column;
-                //Console.WriteLine("Create Position [" + line+"," + column+"] -> [" + this.line + "," + this.column + "]");
             }
         }
 
