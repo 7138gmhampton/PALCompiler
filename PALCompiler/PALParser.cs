@@ -35,7 +35,14 @@ namespace PALCompiler
         private void recogniseIO() => throw new NotImplementedException();
         private void recogniseConditional() => throw new NotImplementedException();
         private void recogniseLoop() => throw new NotImplementedException();
-        private void recogniseAssignment() => throw new NotImplementedException();
+        private void recogniseAssignment()
+        {
+            mustBe(Token.IdentifierToken);
+            mustBe("=");
+            recogniseExpression();
+        }
+
+        private void recogniseExpression() => throw new NotImplementedException();
 
         private void recogniseVarDecls()
         {
