@@ -14,23 +14,29 @@ namespace PALCompiler
         {
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
 
-            var tokens = new List<IToken>();
-            var errors = new List<ICompilerError>();
+            //var tokens = new List<IToken>();
+            //var errors = new List<ICompilerError>();
 
             var scanner = new PALScanner();
-            scanner.Init(new StreamReader(source_file), errors);
+            //scanner.Init(new StreamReader(source_file), errors);
 
-            while (!scanner.EndOfFile) tokens.Add(scanner.NextToken());
+            //while (!scanner.EndOfFile) tokens.Add(scanner.NextToken());
 
-            if (errors.Count != 0)
-                foreach (var error in errors)
-                    Console.WriteLine(error.ToString());
-            else {
-                if (File.Exists("output.txt")) archiveOldOutput();
-                using (var output_file = new StreamWriter("output.txt", false)) {
-                    foreach (var token in tokens) output_file.WriteLine(token.ToString());
-                }
-            }
+            //if (errors.Count != 0)
+            //    foreach (var error in errors)
+            //        Console.WriteLine(error.ToString());
+            //else {
+            //    if (File.Exists("output.txt")) archiveOldOutput();
+            //    using (var output_file = new StreamWriter("output.txt", false)) {
+            //        foreach (var token in tokens) output_file.WriteLine(token.ToString());
+            //    }
+            //}
+            var parser = new PALParser(scanner);
+            try { parser.Parse(new StreamReader(source_file)); }
+            catch (Exception err) { Console.WriteLine(err.Message);  }
+
+            if (parser.Errors.Count > 0)
+                foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
         }
 
         private static string inputSourceFile()

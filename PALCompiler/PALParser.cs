@@ -7,9 +7,9 @@ using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
-    class PALParser : RdParser
+    internal class PALParser : RdParser
     {
-        PALParser(IScanner scanner) : base(scanner) { }
+        internal PALParser(IScanner scanner) : base(scanner) { }
 
         protected override void recStarter() => throw new NotImplementedException();
     }
