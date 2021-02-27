@@ -25,6 +25,9 @@ namespace PALCompiler
 {
     public partial class PALScanner
     {
+        /// <summary>
+        /// Represents the finite state machine for the tokeniser
+        /// </summary>
         private static class LexerFSM
         {
             //Position position = new Position { line = 0, column = 0 };
@@ -52,6 +55,17 @@ namespace PALCompiler
             //    throw new NotImplementedException();
             //}
 
+            /// <summary>
+            /// Selects the appropriate behaviour for the current state - 
+            /// i.e. transition or terminate
+            /// </summary>
+            /// <param name="current_state"></param>
+            /// <param name="current_char"></param>
+            /// <param name="position"></param>
+            /// <param name="candidate"></param>
+            /// <returns>
+            /// Tuple containing the token (if created) and the next state
+            /// </returns>
             public static (IToken,int) traverseState(
                 int current_state, 
                 char current_char, 

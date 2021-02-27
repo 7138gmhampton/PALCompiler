@@ -26,7 +26,9 @@ using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
-    /// The PAL scanner implementation.
+    /// <summary>
+    /// Implements the PAL scanner/lexer
+    /// </summary>
     public partial class PALScanner : Scanner
     {
         //private delegate 
@@ -49,7 +51,7 @@ namespace PALCompiler
            "ENDIF",
            "INPUT",
            "OUTPUT"
-       });
+        });
 
         /// find and return the next token using a state transition FSM.
         protected override IToken getNextToken()
@@ -137,6 +139,10 @@ namespace PALCompiler
         //    StringBuilder
         //}
 
+        /// <summary>
+        /// Represents the accumulated characters that potentially could form
+        /// a token
+        /// </summary>
         private class Candidate
         {
             private StringBuilder value_buffer;
