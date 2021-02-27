@@ -24,6 +24,12 @@ namespace PALCompiler
             mustBe("END");
         }
 
+        private bool haveStatement()
+        {
+            return have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") ||
+                have("OUTPUT");
+        }
+
         private void recogniseStatement()
         {
             if (have(Token.IdentifierToken)) recogniseAssignment();
@@ -33,7 +39,19 @@ namespace PALCompiler
         }
 
         private void recogniseIO() => throw new NotImplementedException();
-        private void recogniseConditional() => throw new NotImplementedException();
+        private void recogniseConditional()
+        {
+            mustBe("IF");
+            recogniseBooleanExpr();
+            mustBe("THEN");
+            while (haveStatement()) recogniseStatement();
+            if (have("ELSE")) {
+                mustBe("ELSE");
+                while (haveStatement()) recogniseStatement();
+            }
+            mustBe("ENDIF");
+        }
+
         private void recogniseLoop()
         {
             mustBe("UNTIL");
