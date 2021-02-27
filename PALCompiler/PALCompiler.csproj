@@ -45,6 +45,7 @@
     <Compile Include="PALParser.cs" />
     <Compile Include="PALScanner.cs" />
     <Compile Include="PALScanner.LexerFSM.cs" />
+    <Compile Include="SyntaxNode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
