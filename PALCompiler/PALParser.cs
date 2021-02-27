@@ -20,37 +20,27 @@ namespace PALCompiler
 
         protected override void recStarter()
         {
-            //syntax_tree.addChild(new SyntaxNode("<Program>"));
-            //updateTree("<Program>");
-            //syntax_tree.addChild(new SyntaxNode("PROGRAM"));
             updateTree(ref syntax_tree, "PROGRAM");
             mustBe("PROGRAM");
-            //syntax_tree.addChild(new SyntaxNode("Identifier(" + scanner.CurrentToken.TokenValue + ")"));
             updateTree(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
             mustBe(Token.IdentifierToken);
-            //syntax_tree.addChild(new SyntaxNode("WITH"));
             updateTree(ref syntax_tree, "WITH");
             mustBe("WITH");
-            //syntax_tree.addChild()
             SyntaxNode var_declaration_node = new SyntaxNode("<VarDecls>");
             recogniseVarDecls(ref var_declaration_node);
             syntax_tree.addChild(var_declaration_node);
-            //syntax_tree.addChild(new SyntaxNode("IN"));
             updateTree(ref syntax_tree, "IN");
             mustBe("IN");
             var statement_node = new SyntaxNode("<Statement>");
             recogniseStatement(ref syntax_tree);
             syntax_tree.addChild(statement_node);
-            //if (!have("END")) 
             while (!have("END")) {
                 var continuing_statement_node = new SyntaxNode("<Statement>");
                 recogniseStatement(ref syntax_tree);
                 syntax_tree.addChild(continuing_statement_node);
             }
-            //syntax_tree.addChild(new SyntaxNode("END"));
             updateTree(ref syntax_tree, "END");
             mustBe("END");
-            //syntax_tree.addChild(new SyntaxNode("Program"))
         }
 
         internal SyntaxNode SyntaxTree { get { return syntax_tree; } }
@@ -92,7 +82,6 @@ namespace PALCompiler
 
         private void recogniseStatement(ref SyntaxNode parent)
         {
-            //syntax_tree.addChild(new SyntaxNode("<Statement>"));
             if (have(Token.IdentifierToken)) recogniseAssignment();
             else if (have("UNTIL")) recogniseLoop(ref parent);
             else if (have("IF")) recogniseConditional(ref parent);
@@ -198,14 +187,9 @@ namespace PALCompiler
 
         private void recogniseVarDecls(ref SyntaxNode parent)
         {
-            //syntax_tree.addChild(new SyntaxNode("<VarDecls>"));
-            //if (have(Token.IdentifierToken)) recogniseIdentList();
             while (have(Token.IdentifierToken)) {
-                //recogniseIdentList();
                 consume(ref parent, recogniseIdentList, "<IdentList>");
-                //mustBe("AS");
                 consume(ref parent, "AS");
-                //recogniseType();
                 consume(ref parent, recogniseType, "<Type>");
             }
         }
