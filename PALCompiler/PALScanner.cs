@@ -83,29 +83,40 @@ namespace PALCompiler
                         (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
                     case 1:
-                        if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
-                        else {
-                            //String s = strbuf.ToString();
-                            if (keywords.Contains(candidate.ToString())) token = new Token(candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                            else token = new Token(Token.IdentifierToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
-                        }
+                        //if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
+                        //else {
+                        //    //String s = strbuf.ToString();
+                        //    if (keywords.Contains(candidate.ToString())) token = new Token(candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //    else token = new Token(Token.IdentifierToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //}
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
                     case 2:
-                        if (Char.IsDigit (currentChar))   state = 2;
-                        else if (currentChar == '.')      state = 3;
-                        else
-                            token = new Token (Token.IntegerToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //if (Char.IsDigit (currentChar))   state = 2;
+                        //else if (currentChar == '.')      state = 3;
+                        //else
+                        //    token = new Token (Token.IntegerToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
                     case 3:
-                        if (Char.IsDigit (currentChar))
-                            state = 3;
-                        else token = new Token (Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //if (Char.IsDigit (currentChar))
+                        //    state = 3;
+                        //else token = new Token (Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
-                    case 4: token = new Token(candidate.ToString(), candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
-                    case 98: token = new Token(Token.EndOfFile, candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
+                    //case 4: token = new Token(candidate.ToString(), candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
+                    case 4:
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
+                        break;
+                    //case 98: token = new Token(Token.EndOfFile, candidate.ToString(), candidate.Start.line, candidate.Start.column); break;
+                    case 98:
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
+                        break;
                     case 99:
                         //Console.WriteLine("Sample Candidate: " + candidate.ToString() + " @ " + "[" + candidate.Start.line + "," + candidate.Start.column + "]");
-                        token = new Token(Token.InvalidChar, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //token = new Token(Token.InvalidChar, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+                        //break;
+                        (token, state) = LexerFSM.traverseState(state, currentChar, new Position(line, column), ref candidate);
                         break;
                 }
 
@@ -137,6 +148,8 @@ namespace PALCompiler
             }
 
             public Position Start { get { return start; } }
+            public int Line { get { return start.line; } }
+            public int Column { get { return start.column; } }
 
             public override string ToString() => value_buffer.ToString();
             public void Append(char addition) => value_buffer.Append(addition);
@@ -168,7 +181,13 @@ namespace PALCompiler
             //};
             private static Dictionary<int, Traversal> states = new Dictionary<int, Traversal>
             {
-                { 0, initialState }
+                { 0, initialState },
+                { 1, wordState },
+                { 2, numeralState },
+                { 3, radixState },
+                { 4, shortToken },
+                { 98, endOfFile },
+                { 99, invalidChar }
             };
 
             //public static Func<char, Position, Candidate,(IToken,int)> traverseState()
@@ -208,6 +227,82 @@ namespace PALCompiler
                 }
 
                 return (token, state);
+            }
+
+            private static (IToken, int) wordState(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                int state = 1;
+                IToken token = null;
+
+                if (char.IsLetter(current_char) || char.IsDigit(current_char)) state = 1;
+                else {
+                    string word = candidate.ToString();
+                    //if (keywords.Contains(word)) token = new Token(word, candidate.Line, candidate.Column);
+                    //else token = new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
+                    token = keywords.Contains(word) 
+                        ? new Token(word, candidate.Line, candidate.Column)
+                        : new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
+                }
+
+                return (token, state);
+            }
+
+            private static (IToken, int) numeralState(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                int state = 2;
+                IToken token = null;
+
+                if (char.IsDigit(current_char)) state = 2;
+                else if (current_char == '.') state = 3;
+                else token = new Token(Token.IntegerToken, candidate.ToString(), candidate.Line, candidate.Column);
+
+                return (token, state);
+            }
+
+            private static (IToken, int) radixState(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                //throw new NotImplementedException();
+
+                int state = 3;
+                IToken token = null;
+
+                if (char.IsDigit(current_char)) state = 3;
+                else token = new Token(Token.RealToken, candidate.ToString(), candidate.Start.line, candidate.Start.column);
+
+                return (token, state);
+            }
+
+            private static (IToken, int) shortToken(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                return (new Token(candidate.ToString(), candidate.Line, candidate.Column), 4);
+            }
+
+            private static (IToken, int) endOfFile(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                return (new Token(Token.EndOfFile, candidate.Line, candidate.Column), 4);
+            }
+
+            private static (IToken, int) invalidChar(
+                char current_char,
+                Position position,
+                ref Candidate candidate)
+            {
+                return (new Token(Token.InvalidChar, candidate.ToString(), candidate.Line, candidate.Column), 4);
             }
         }
     }
