@@ -69,7 +69,7 @@ namespace PALCompiler
                 Position position, 
                 ref Candidate candidate)
             {
-                int state = 0;
+                int state = (int)State.INITIAL;
                 IToken token = null;
 
                 if (char.IsWhiteSpace(current_char)) state = (int)State.INITIAL;
@@ -91,18 +91,18 @@ namespace PALCompiler
                 Position position,
                 ref Candidate candidate)
             {
-                int state = 1;
+                //int state = 1;
                 IToken token = null;
 
-                if (char.IsLetter(current_char) || char.IsDigit(current_char)) state = 1;
-                else {
+                if (!char.IsLetter(current_char) && !char.IsDigit(current_char)) {
                     string word = candidate.ToString();
-                    token = keywords.Contains(word) 
+                    token = keywords.Contains(word)
                         ? new Token(word, candidate.Line, candidate.Column)
                         : new Token(Token.IdentifierToken, word, candidate.Line, candidate.Column);
                 }
+                //else state = 1;
 
-                return (token, state);
+                return (token, (int)State.WORD);
             }
 
             private static (IToken, int) numeralState(
