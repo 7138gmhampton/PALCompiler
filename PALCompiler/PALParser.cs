@@ -39,8 +39,6 @@ namespace PALCompiler
             //syntax_tree.addChild(new SyntaxNode("END"));
             updateTree("END");
             mustBe("END");
-            
-
             //syntax_tree.addChild(new SyntaxNode("Program"))
         }
 
@@ -60,6 +58,18 @@ namespace PALCompiler
         private void updateTree(string symbol, string value)
         {
             if (have(symbol)) syntax_tree.addChild(new SyntaxNode(symbol + "(" + value + ")"));
+        }
+
+        private void consume(string symbol)
+        {
+            updateTree(symbol);
+            mustBe(symbol);
+        }
+
+        private void consume(string symbol, string value)
+        {
+            updateTree(symbol, value);
+            mustBe(symbol);
         }
 
         private void recogniseStatement()
