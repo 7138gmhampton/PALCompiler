@@ -20,27 +20,35 @@ namespace PALCompiler
 
         protected override void recStarter()
         {
-            updateTree(ref syntax_tree, "PROGRAM");
-            mustBe("PROGRAM");
-            updateTree(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
-            mustBe(Token.IdentifierToken);
-            updateTree(ref syntax_tree, "WITH");
-            mustBe("WITH");
-            SyntaxNode var_declaration_node = new SyntaxNode("<VarDecls>");
-            recogniseVarDecls(ref var_declaration_node);
-            syntax_tree.addChild(var_declaration_node);
-            updateTree(ref syntax_tree, "IN");
-            mustBe("IN");
-            var statement_node = new SyntaxNode("<Statement>");
-            recogniseStatement(ref syntax_tree);
-            syntax_tree.addChild(statement_node);
-            while (!have("END")) {
-                var continuing_statement_node = new SyntaxNode("<Statement>");
-                recogniseStatement(ref syntax_tree);
-                syntax_tree.addChild(continuing_statement_node);
-            }
-            updateTree(ref syntax_tree, "END");
-            mustBe("END");
+            //updateTree(ref syntax_tree, "PROGRAM");
+            //mustBe("PROGRAM");
+            consume(ref syntax_tree, "PROGRAM");
+            //updateTree(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
+            //mustBe(Token.IdentifierToken);
+            consume(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
+            //updateTree(ref syntax_tree, "WITH");
+            //mustBe("WITH");
+            consume(ref syntax_tree, "WITH");
+            //SyntaxNode var_declaration_node = new SyntaxNode("<VarDecls>");
+            //recogniseVarDecls(ref var_declaration_node);
+            //syntax_tree.addChild(var_declaration_node);
+            consume(ref syntax_tree, recogniseVarDecls, "<VarDecls>");
+            //updateTree(ref syntax_tree, "IN");
+            //mustBe("IN");
+            consume(ref syntax_tree, "IN");
+            //var statement_node = new SyntaxNode("<Statement>");
+            //recogniseStatement(ref syntax_tree);
+            //syntax_tree.addChild(statement_node);
+            consume(ref syntax_tree, recogniseStatement, "<Statement>");
+            //while (!have("END")) {
+            //    var continuing_statement_node = new SyntaxNode("<Statement>");
+            //    recogniseStatement(ref syntax_tree);
+            //    syntax_tree.addChild(continuing_statement_node);
+            //}
+            while (!have("END")) consume(ref syntax_tree, recogniseStatement, "<Statement>");
+            //updateTree(ref syntax_tree, "END");
+            //mustBe("END");
+            consume(ref syntax_tree, "END");
         }
 
         internal SyntaxNode SyntaxTree { get { return syntax_tree; } }
@@ -76,7 +84,7 @@ namespace PALCompiler
         private void consume(ref SyntaxNode parent, Recogniser recogniser, string symbol)
         {
             var node = new SyntaxNode(symbol);
-            recogniser(ref parent);
+            recogniser(ref node);
             parent.addChild(node);
         }
 
