@@ -49,7 +49,7 @@ namespace PALCompiler
            "OUTPUT"
        });
 
-        ///--- find and return the next token using a state transition FSM.
+        /// find and return the next token using a state transition FSM.
         protected override IToken getNextToken()
         {
             StringBuilder strbuf = null;
@@ -60,16 +60,16 @@ namespace PALCompiler
             while (token == null) {
                 switch (state) {
                     case 0:
-                        if (Char.IsWhiteSpace(currentChar))  state = 0;
+                        if (Char.IsWhiteSpace(currentChar)) state = 0;
                         else {
                             startLine = line;   startCol = column;
                             strbuf = new StringBuilder();
 
-                            if (Char.IsLetter (currentChar))                    state = 1;
-                            else if (Char.IsDigit (currentChar))                state = 2;
-                            else if ("+-*/(),=<>".IndexOf(currentChar) != -1)   state = 4;
-                            else if (currentChar == eofChar)                    state = 98;
-                            else                                                state = 99;
+                            if (Char.IsLetter (currentChar)) state = 1;
+                            else if (Char.IsDigit (currentChar)) state = 2;
+                            else if ("+-*/(),=<>".IndexOf(currentChar) != -1) state = 4;
+                            else if (currentChar == eofChar) state = 98;
+                            else state = 99;
                         }
                         break;
                     case 1:
