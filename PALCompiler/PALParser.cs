@@ -52,7 +52,17 @@ namespace PALCompiler
             }
         }
 
-        private void recogniseTerm() => throw new NotImplementedException();
+        private void recogniseTerm()
+        {
+            recogniseFactor();
+            while (have("*") || have("/")) {
+                if (have("*")) mustBe("*");
+                else mustBe("/");
+                recogniseFactor();
+            }
+        }
+
+        private void recogniseFactor() => throw new NotImplementedException();
 
         private void recogniseVarDecls()
         {
