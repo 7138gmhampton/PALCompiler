@@ -32,7 +32,12 @@ namespace PALCompiler
             //    }
             //}
             var parser = new PALParser(scanner);
-            try { parser.Parse(new StreamReader(source_file)); }
+            try {
+                //parser.Parse(new StreamReader(source_file));
+                if (parser.Parse(new StreamReader(source_file)))
+                    Console.WriteLine("Parsing: SUCCESS");
+                else Console.WriteLine("Parsing: FAIL");
+            }
             catch (Exception err) { Console.WriteLine(err.Message);  }
 
             if (parser.Errors.Count > 0)
