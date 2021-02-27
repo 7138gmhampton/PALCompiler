@@ -9,6 +9,8 @@ namespace PALCompiler
 {
     internal class PALParser : RdParser
     {
+        private delegate void Recogniser(ref SyntaxNode parent);
+
         private SyntaxNode syntax_tree;
 
         internal PALParser(IScanner scanner) : base(scanner)
@@ -79,6 +81,13 @@ namespace PALCompiler
         {
             updateTree(ref node, symbol, value);
             mustBe(symbol);
+        }
+
+        private void consume(ref SyntaxNode parent, Recogniser recogniser, string symbol)
+        {
+            var node = new SyntaxNode(symbol);
+            recogniser(ref parent);
+            parent.addChild(node);
         }
 
         private void recogniseStatement()
