@@ -24,90 +24,87 @@ using System.Collections.Generic;
 
 using AllanMilne.Ardkit;
 
-namespace PALCompiler {
+namespace PALCompiler
+{
+    /// The PAL scanner implementation.
+    public class PALScanner : Scanner
+    {
+        /// list of keywords used in the language - remember they are case-sensitive.
+        private static List<String> keywords = new List<String>( new String[] {
+           "PROGRAM",
+           "WITH",
+           "IN",
+           "END",
+	       "AS",
+           "INTEGER",
+           "REAL",
+           "UNTIL",
+           "REPEAT",
+           "ENDLOOP",
+	       "IF",
+           "THEN",
+           "ELSE",
+           "ENDIF",
+           "INPUT",
+           "OUTPUT"
+       });
 
-//=== The PAL scanner implementation.
-public class PALScanner : Scanner {
+        ///--- find and return the next token using a state transition FSM.
+        protected override IToken getNextToken()
+        {
+            StringBuilder strbuf = null;
+            int state = 0;
+            int startLine = 0, startCol = 0;
 
-   // list of keywords used in the language - remember they are case-sensitive.
-   private static List<String> keywords = new List<String> ( new String[] {
-	"PROGRAM", "WITH", "IN", "END",
-	"AS", "INTEGER", "REAL", "UNTIL", "REPEAT", "ENDLOOP",
-	"IF", "THEN", "ELSE", "ENDIF", "INPUT", "OUTPUT"
-   });
+            Token token = null;
+            while (token == null) {
+                switch (state) {
+                    case 0:
+                        if (Char.IsWhiteSpace(currentChar))  state = 0;
+                        else {
+                            startLine = line;   startCol = column;
+                            strbuf = new StringBuilder();
 
-   //--- find and return the next token using a state transition FSM.
-   protected override IToken getNextToken ()  {
-      StringBuilder strbuf = null;             // for building actual token.
-      int          state = 0;                 // always start at FSM state S0.
-      int          startLine=0, startCol=0;   // start position of token.
+                            if (Char.IsLetter (currentChar))                    state = 1;
+                            else if (Char.IsDigit (currentChar))                state = 2;
+                            else if ("+-*/(),=<>".IndexOf(currentChar) != -1)   state = 4;
+                            else if (currentChar == eofChar)                    state = 98;
+                            else                                                state = 99;
+                        }
+                        break;
+                    case 1:
+                        if (Char.IsLetter(currentChar) || Char.IsDigit(currentChar) ) state = 1;
+                        else {
+                            String s = strbuf.ToString();
+                            if (keywords.Contains (s)) token = new Token (s, startLine, startCol);
+                            else token = new Token (Token.IdentifierToken, s, startLine, startCol);
+                        }
+                        break;
+                    case 2:
+                        if (Char.IsDigit (currentChar))   state = 2;
+                        else if (currentChar == '.')      state = 3;
+                        else
+                            token = new Token (Token.IntegerToken, strbuf.ToString(), startLine, startCol);
+                        break;
+                    case 3:
+                        if (Char.IsDigit (currentChar))
+                            state = 3;
+                        else token = new Token (Token.RealToken, strbuf.ToString(), startLine, startCol);
+                        break;
+                    case 4: token = new Token (strbuf.ToString(), startLine, startCol); break;
+                    case 98: token = new Token (Token.EndOfFile, startLine, startCol); break;
+                    case 99:
+                        token = new Token (Token.InvalidChar, strbuf.ToString(), startLine, startCol);
+                        break;
+                }
 
-Token token = null;
-      while (token == null) {   // repeat until a token is found.
-         switch (state) {
-         case 0:   // start state.
-            if (Char.IsWhiteSpace(currentChar))  state = 0;
-            else {
-            startLine = line;   startCol = column;    // start of actual token.
-            strbuf =new StringBuilder();              // for actual token.
-
-            if (Char.IsLetter (currentChar))                    state = 1;
-            else if (Char.IsDigit (currentChar))                state = 2;
-            else if ("+-*/(),=<>".IndexOf(currentChar) != -1)   state = 4;
-            else if (currentChar == eofChar)                    state = 98;
-            else                                                state = 99;
+                if (token == null) {
+                    if (state != 0) strbuf.Append (currentChar);
+                    getNextChar();
+                }
             }
-            break;
 
-         case 1:   // Identifier or keyword state.
-            if (Char.IsLetter(currentChar) ||
-                Char.IsDigit(currentChar) )
-                 state = 1;
-            else {                                  // identifier might be a keyword.
-                 String s = strbuf.ToString();      // case-sensitive, so don't change case.
-                 if (keywords.Contains (s))         // if is a keyword.
-                      token = new Token (s, startLine, startCol);
-                 else token = new Token (Token.IdentifierToken, s, startLine, startCol);
-            }
-            break;
-
-         case 2:   // start of integer or real.
-            if (Char.IsDigit (currentChar))   state = 2;
-            else if (currentChar == '.')      state = 3;
-            else
-               token = new Token (Token.IntegerToken, strbuf.ToString(), startLine, startCol);
-            break;
-
-         case 3:   // remainder of a real number.
-            if (Char.IsDigit (currentChar))
-                 state = 3;
-            else token = new Token (Token.RealToken, strbuf.ToString(), startLine, startCol);
-            break;
-
-         case 4:   // single character punctuation.
-            token = new Token (strbuf.ToString(), startLine, startCol);
-            break;
-
-         case 98:   // end-of-file
-            token = new Token (Token.EndOfFile, startLine, startCol);
-            break;
-         case 99:   // invalid-char
-            token = new Token (Token.InvalidChar, strbuf.ToString(), startLine, startCol);
-            break;
-         }
-
-         if (token == null) {                 // have not yet found the token.
-            if (state != 0) {                 // not in state 0, so not whitespace.
-               strbuf.Append (currentChar);   // build up token string.
-            }
-            getNextChar();                    // char has been used so get next one.
-         }
-      } // end while not found token.
-
-      return token;
-
-   } // end getNextToken method.
-
-} // end PALScanner class.
-
-} // end namespace.
+            return token;
+        }
+    }
+}
