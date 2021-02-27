@@ -46,7 +46,14 @@ namespace PALCompiler
             mustBe("ENDLOOP");
         }
 
-        private void recogniseBooleanExpr() => throw new NotImplementedException();
+        private void recogniseBooleanExpr()
+        {
+            recogniseExpression();
+            if (have("<")) mustBe("<");
+            else if (have("=")) mustBe("=");
+            else mustBe(">");
+            recogniseExpression();
+        }
 
         private void recogniseAssignment()
         {
