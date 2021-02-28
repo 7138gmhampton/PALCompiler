@@ -10,11 +10,14 @@ namespace PALCompiler
     internal class PALParser : RdParser
     {
         private delegate void Recogniser(ref SyntaxNode parent);
+        private delegate void OtherRecogniser(PALParser parser, ref SyntaxNode parent);
 
+        //private Recognisers recognisers;
         private SyntaxNode syntax_tree;
 
         internal PALParser(IScanner scanner) : base(scanner)
         {
+            //recognisers = new Recognisers();
             syntax_tree = new SyntaxNode("<Program>");
         }
 
@@ -67,6 +70,13 @@ namespace PALCompiler
             parent.addChild(node);
         }
 
+        private void consume(ref SyntaxNode parent, OtherRecogniser recogniser, string symbol)
+        {
+            var node = new SyntaxNode(symbol);
+            recogniser(this, ref node);
+            parent.addChild(node);
+        }
+
         private void recogniseStatement(ref SyntaxNode parent)
         {
             if (have(Token.IdentifierToken)) recogniseAssignment();
@@ -79,7 +89,7 @@ namespace PALCompiler
         {
             if (have("INPUT")) {
                 mustBe("INPUT");
-                recogniseIdentList(ref parent);
+                Recognisers.recogniseIdentList(this, ref parent);
             }
             else {
                 mustBe("OUTPUT");
@@ -175,7 +185,7 @@ namespace PALCompiler
         private void recogniseVarDecls(ref SyntaxNode parent)
         {
             while (have(Token.IdentifierToken)) {
-                consume(ref parent, recogniseIdentList, "<IdentList>");
+                consume(ref parent, Recognisers.recogniseIdentList, "<IdentList>");
                 consume(ref parent, "AS");
                 consume(ref parent, recogniseType, "<Type>");
             }
@@ -187,13 +197,37 @@ namespace PALCompiler
             else mustBe("INTEGER");
         }
 
-        private void recogniseIdentList(ref SyntaxNode parent)
+        //private void recogniseIdentList(ref SyntaxNode parent)
+        //{
+        //    mustBe(Token.IdentifierToken);
+        //    while (have(",")) {
+        //        mustBe(",");
+        //        mustBe(Token.IdentifierToken);
+        //    }
+        //}
+
+        private static class Recognisers
         {
-            mustBe(Token.IdentifierToken);
-            while (have(",")) {
-                mustBe(",");
-                mustBe(Token.IdentifierToken);
+            internal static void recogniseIdentList(PALParser parser, ref SyntaxNode parent)
+            {
+                parser.mustBe(Token.IdentifierToken);
+                while (parser.have(",")) {
+                    parser.mustBe(",");
+                    parser.mustBe(Token.IdentifierToken);
+                }
             }
         }
+
+        //private class Recognisers
+        //{
+        //    private void recogniseIdentList(ref SyntaxNode parent)
+        //    {
+        //        mustBe(Token.IdentifierToken);
+        //        while (have(",")) {
+        //            mustBe(",");
+        //            mustBe(Token.IdentifierToken);
+        //        }
+        //    }
+        //}
     }
 }
