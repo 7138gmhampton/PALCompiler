@@ -20,34 +20,13 @@ namespace PALCompiler
 
         protected override void recStarter()
         {
-            //updateTree(ref syntax_tree, "PROGRAM");
-            //mustBe("PROGRAM");
             consume(ref syntax_tree, "PROGRAM");
-            //updateTree(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
-            //mustBe(Token.IdentifierToken);
             consume(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
-            //updateTree(ref syntax_tree, "WITH");
-            //mustBe("WITH");
             consume(ref syntax_tree, "WITH");
-            //SyntaxNode var_declaration_node = new SyntaxNode("<VarDecls>");
-            //recogniseVarDecls(ref var_declaration_node);
-            //syntax_tree.addChild(var_declaration_node);
             consume(ref syntax_tree, recogniseVarDecls, "<VarDecls>");
-            //updateTree(ref syntax_tree, "IN");
-            //mustBe("IN");
             consume(ref syntax_tree, "IN");
-            //var statement_node = new SyntaxNode("<Statement>");
-            //recogniseStatement(ref syntax_tree);
-            //syntax_tree.addChild(statement_node);
             consume(ref syntax_tree, recogniseStatement, "<Statement>");
-            //while (!have("END")) {
-            //    var continuing_statement_node = new SyntaxNode("<Statement>");
-            //    recogniseStatement(ref syntax_tree);
-            //    syntax_tree.addChild(continuing_statement_node);
-            //}
             while (!have("END")) consume(ref syntax_tree, recogniseStatement, "<Statement>");
-            //updateTree(ref syntax_tree, "END");
-            //mustBe("END");
             consume(ref syntax_tree, "END");
         }
 
