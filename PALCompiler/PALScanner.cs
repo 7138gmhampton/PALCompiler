@@ -18,7 +18,6 @@
 */
 
 using System;
-using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
@@ -84,7 +83,6 @@ namespace PALCompiler
             {
                 value_buffer = new StringBuilder();
                 this.start = start;
-                //Console.WriteLine("Create Candidate @ [" + this.start)
             }
 
             public Position Start { get { return start; } }
