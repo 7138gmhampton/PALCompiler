@@ -8,7 +8,6 @@ namespace PALCompiler
 {
     class SyntaxNode
     {
-        //private SyntaxNode[] children;
         private List<SyntaxNode> children;
         private string symbol;
 
@@ -22,8 +21,6 @@ namespace PALCompiler
 
         internal void addChild(SyntaxNode child)
         {
-            //children.Append(child);
-            //children.
             children.Add(child);
         }
 
