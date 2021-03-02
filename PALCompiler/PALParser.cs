@@ -154,27 +154,27 @@ namespace PALCompiler
 
         private void recogniseTerm(ref SyntaxNode parent)
         {
-            recogniseFactor(ref parent);
+            Recognisers.recogniseFactor(this, ref parent);
             while (have("*") || have("/")) {
                 if (have("*")) mustBe("*");
                 else mustBe("/");
-                recogniseFactor(ref parent);
+                Recognisers.recogniseFactor(this, ref parent);
             }
         }
 
-        private void recogniseFactor(ref SyntaxNode parent)
-        {
-            if (have("+")) mustBe("+");
-            else if (have("-")) mustBe("-");
+        //private void recogniseFactor(ref SyntaxNode parent)
+        //{
+        //    if (have("+")) mustBe("+");
+        //    else if (have("-")) mustBe("-");
 
-            if (have("(")) {
-                mustBe("(");
-                recogniseExpression(ref parent);
-                mustBe(")");
-            }
-            //else recogniseValue();
-            else Recognisers.recogniseValue(this, ref parent);
-        }
+        //    if (have("(")) {
+        //        mustBe("(");
+        //        recogniseExpression(ref parent);
+        //        mustBe(")");
+        //    }
+        //    //else recogniseValue();
+        //    else Recognisers.recogniseValue(this, ref parent);
+        //}
 
         //private void recogniseValue()
         //{
@@ -251,6 +251,28 @@ namespace PALCompiler
                     parser.consume(ref parent, Token.IntegerToken, parser.scanner.CurrentToken.TokenValue);
                 else
                     parser.consume(ref parent, Token.RealToken, parser.scanner.CurrentToken.TokenValue);
+            }
+
+            internal static void recogniseFactor(PALParser parser, ref SyntaxNode parent)
+            {
+                //if (have("+")) mustBe("+");
+                //else if (have("-")) mustBe("-");
+                if (parser.have("+")) parser.consume(ref parent, "+");
+                else if (parser.have("-")) parser.consume(ref parent, "-");
+
+                //if (have("(")) {
+                //    mustBe("(");
+                //    recogniseExpression(ref parent);
+                //    mustBe(")");
+                //}
+                if (parser.have("(")) {
+                    parser.consume(ref parent, "(");
+                    parser.consume(ref parent, parser.recogniseExpression, "<Expression>");
+                    parser.consume(ref parent, ")");
+                }
+                //else recogniseValue();
+                //else Recognisers.recogniseValue(this, ref parent);
+                else recogniseValue(parser, ref parent);
             }
         }
 
