@@ -79,7 +79,7 @@ namespace PALCompiler
 
         private void recogniseStatement(ref SyntaxNode parent)
         {
-            if (have(Token.IdentifierToken)) recogniseAssignment();
+            if (have(Token.IdentifierToken)) recogniseAssignment(ref parent);
             else if (have("UNTIL")) recogniseLoop(ref parent);
             else if (have("IF")) recogniseConditional(ref parent);
             else recogniseIO(ref parent);
@@ -93,10 +93,10 @@ namespace PALCompiler
             }
             else {
                 mustBe("OUTPUT");
-                recogniseExpression();
+                recogniseExpression(ref parent);
                 while (have(",")) {
                     mustBe(",");
-                    recogniseExpression();
+                    recogniseExpression(ref parent);
                 }
             }
         }
@@ -104,7 +104,7 @@ namespace PALCompiler
         private void recogniseConditional(ref SyntaxNode parent)
         {
             mustBe("IF");
-            recogniseBooleanExpr();
+            recogniseBooleanExpr(ref parent);
             mustBe("THEN");
             while (haveStatement()) recogniseStatement(ref parent);
             if (have("ELSE")) {
@@ -117,7 +117,7 @@ namespace PALCompiler
         private void recogniseLoop(ref SyntaxNode parent)
         {
             mustBe("UNTIL");
-            recogniseBooleanExpr();
+            recogniseBooleanExpr(ref parent);
             mustBe("REPEAT");
             while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || 
                 have("OUTPUT")) {
@@ -126,61 +126,62 @@ namespace PALCompiler
             mustBe("ENDLOOP");
         }
 
-        private void recogniseBooleanExpr()
+        private void recogniseBooleanExpr(ref SyntaxNode parent)
         {
-            recogniseExpression();
+            recogniseExpression(ref parent);
             if (have("<")) mustBe("<");
             else if (have("=")) mustBe("=");
             else mustBe(">");
-            recogniseExpression();
+            recogniseExpression(ref parent);
         }
 
-        private void recogniseAssignment()
+        private void recogniseAssignment(ref SyntaxNode parent)
         {
             mustBe(Token.IdentifierToken);
             mustBe("=");
-            recogniseExpression();
+            recogniseExpression(ref parent);
         }
 
-        private void recogniseExpression()
+        private void recogniseExpression(ref SyntaxNode parent)
         {
-            recogniseTerm();
+            recogniseTerm(ref parent);
             while (have("+") || have("-")) {
                 if (have("+")) mustBe("+");
                 else mustBe("-");
-                recogniseTerm();
+                recogniseTerm(ref parent);
             }
         }
 
-        private void recogniseTerm()
+        private void recogniseTerm(ref SyntaxNode parent)
         {
-            recogniseFactor();
+            recogniseFactor(ref parent);
             while (have("*") || have("/")) {
                 if (have("*")) mustBe("*");
                 else mustBe("/");
-                recogniseFactor();
+                recogniseFactor(ref parent);
             }
         }
 
-        private void recogniseFactor()
+        private void recogniseFactor(ref SyntaxNode parent)
         {
             if (have("+")) mustBe("+");
             else if (have("-")) mustBe("-");
 
             if (have("(")) {
                 mustBe("(");
-                recogniseExpression();
+                recogniseExpression(ref parent);
                 mustBe(")");
             }
-            else recogniseValue();
+            //else recogniseValue();
+            else Recognisers.recogniseValue(this, ref parent);
         }
 
-        private void recogniseValue()
-        {
-            if (have(Token.IdentifierToken)) mustBe(Token.IdentifierToken);
-            else if (have(Token.IntegerToken)) mustBe(Token.IntegerToken);
-            else mustBe(Token.RealToken);
-        }
+        //private void recogniseValue()
+        //{
+        //    if (have(Token.IdentifierToken)) mustBe(Token.IdentifierToken);
+        //    else if (have(Token.IntegerToken)) mustBe(Token.IntegerToken);
+        //    else mustBe(Token.RealToken);
+        //}
 
         //private void recogniseVarDecls(ref SyntaxNode parent)
         //{
@@ -237,6 +238,19 @@ namespace PALCompiler
                     parser.consume(ref parent, "AS");
                     parser.consume(ref parent, Recognisers.recogniseType, "<Type>");
                 }
+            }
+
+            internal static void recogniseValue(PALParser parser, ref SyntaxNode parent)
+            {
+                //if (have(Token.IdentifierToken)) mustBe(Token.IdentifierToken);
+                //else if (have(Token.IntegerToken)) mustBe(Token.IntegerToken);
+                //else mustBe(Token.RealToken);
+                if (parser.have(Token.IdentifierToken))
+                    parser.consume(ref parent, Token.IdentifierToken, parser.scanner.CurrentToken.TokenValue);
+                else if (parser.have(Token.IntegerToken))
+                    parser.consume(ref parent, Token.IntegerToken, parser.scanner.CurrentToken.TokenValue);
+                else
+                    parser.consume(ref parent, Token.RealToken, parser.scanner.CurrentToken.TokenValue);
             }
         }
 
