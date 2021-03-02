@@ -51,15 +51,17 @@ namespace PALCompiler
             if (have(symbol)) node.addChild(new SyntaxNode(symbol + "(" + value + ")"));
         }
 
-        private void consume(ref SyntaxNode node, string symbol)
+        private void consume(ref SyntaxNode parent, string symbol)
         {
-            updateTree(ref node, symbol);
+            //updateTree(ref node, symbol);
+            //mustBe(symbol);
+            if (have(symbol)) parent.addChild(new SyntaxNode(symbol));
             mustBe(symbol);
         }
 
-        private void consume(ref SyntaxNode node, string symbol, string value)
+        private void consume(ref SyntaxNode parent, string symbol, string value)
         {
-            updateTree(ref node, symbol, value);
+            updateTree(ref parent, symbol, value);
             mustBe(symbol);
         }
 
@@ -306,6 +308,10 @@ namespace PALCompiler
                 //else if (have("UNTIL")) recogniseLoop(ref parent);
                 //else if (have("IF")) recogniseConditional(ref parent);
                 //else recogniseIO(ref parent);
+                //if (parser.have(Token.IdentifierToken)) recogniseAssignment(parser, ref parent);
+                //else if (parser.have("UNTIL")) parser.recogniseLoop(ref parent);
+                //else if (parser.have("IF")) parser.recogniseConditional(ref parent);
+                //else parser.recogniseIO(ref parent);
                 if (parser.have(Token.IdentifierToken)) recogniseAssignment(parser, ref parent);
                 else if (parser.have("UNTIL")) parser.recogniseLoop(ref parent);
                 else if (parser.have("IF")) parser.recogniseConditional(ref parent);
