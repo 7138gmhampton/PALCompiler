@@ -187,15 +187,15 @@ namespace PALCompiler
             while (have(Token.IdentifierToken)) {
                 consume(ref parent, Recognisers.recogniseIdentList, "<IdentList>");
                 consume(ref parent, "AS");
-                consume(ref parent, recogniseType, "<Type>");
+                consume(ref parent, Recognisers.recogniseType, "<Type>");
             }
         }
 
-        private void recogniseType(ref SyntaxNode parent)
-        {
-            if (have("REAL")) mustBe("REAL");
-            else mustBe("INTEGER");
-        }
+        //private void recogniseType(ref SyntaxNode parent)
+        //{
+        //    if (have("REAL")) mustBe("REAL");
+        //    else mustBe("INTEGER");
+        //}
 
         //private void recogniseIdentList(ref SyntaxNode parent)
         //{
@@ -220,6 +220,14 @@ namespace PALCompiler
                     parser.consume(ref parent, Token.IdentifierToken,
                         parser.scanner.CurrentToken.TokenValue);
                 }
+            }
+
+            internal static void recogniseType(PALParser parser, ref SyntaxNode parent)
+            {
+                //if (have("REAL")) mustBe("REAL");
+                if (parser.have("REAL")) parser.consume(ref parent, "REAL");
+                //else mustBe("INTEGER");
+                else parser.consume(ref parent, "INTEGER");
             }
         }
 
