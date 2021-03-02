@@ -87,55 +87,55 @@ namespace PALCompiler
         //    else recogniseIO(ref parent);
         //}
 
-        private void recogniseIO(ref SyntaxNode parent)
-        {
-            if (have("INPUT")) {
-                mustBe("INPUT");
-                Recognisers.recogniseIdentList(this, ref parent);
-            }
-            else {
-                mustBe("OUTPUT");
-                recogniseExpression(ref parent);
-                while (have(",")) {
-                    mustBe(",");
-                    recogniseExpression(ref parent);
-                }
-            }
-        }
+        //private void recogniseIO(ref SyntaxNode parent)
+        //{
+        //    if (have("INPUT")) {
+        //        mustBe("INPUT");
+        //        Recognisers.recogniseIdentList(this, ref parent);
+        //    }
+        //    else {
+        //        mustBe("OUTPUT");
+        //        recogniseExpression(ref parent);
+        //        while (have(",")) {
+        //            mustBe(",");
+        //            recogniseExpression(ref parent);
+        //        }
+        //    }
+        //}
 
-        private void recogniseConditional(ref SyntaxNode parent)
-        {
-            mustBe("IF");
-            recogniseBooleanExpr(ref parent);
-            mustBe("THEN");
-            while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
-            if (have("ELSE")) {
-                mustBe("ELSE");
-                while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
-            }
-            mustBe("ENDIF");
-        }
+        //private void recogniseConditional(ref SyntaxNode parent)
+        //{
+        //    mustBe("IF");
+        //    recogniseBooleanExpr(ref parent);
+        //    mustBe("THEN");
+        //    while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
+        //    if (have("ELSE")) {
+        //        mustBe("ELSE");
+        //        while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
+        //    }
+        //    mustBe("ENDIF");
+        //}
 
-        private void recogniseLoop(ref SyntaxNode parent)
-        {
-            mustBe("UNTIL");
-            recogniseBooleanExpr(ref parent);
-            mustBe("REPEAT");
-            while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || 
-                have("OUTPUT")) {
-                Recognisers.recogniseStatement(this, ref parent);
-            }
-            mustBe("ENDLOOP");
-        }
+        //private void recogniseLoop(ref SyntaxNode parent)
+        //{
+        //    mustBe("UNTIL");
+        //    recogniseBooleanExpr(ref parent);
+        //    mustBe("REPEAT");
+        //    while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || 
+        //        have("OUTPUT")) {
+        //        Recognisers.recogniseStatement(this, ref parent);
+        //    }
+        //    mustBe("ENDLOOP");
+        //}
 
-        private void recogniseBooleanExpr(ref SyntaxNode parent)
-        {
-            recogniseExpression(ref parent);
-            if (have("<")) mustBe("<");
-            else if (have("=")) mustBe("=");
-            else mustBe(">");
-            recogniseExpression(ref parent);
-        }
+        //private void recogniseBooleanExpr(ref SyntaxNode parent)
+        //{
+        //    recogniseExpression(ref parent);
+        //    if (have("<")) mustBe("<");
+        //    else if (have("=")) mustBe("=");
+        //    else mustBe(">");
+        //    recogniseExpression(ref parent);
+        //}
 
         //private void recogniseAssignment(ref SyntaxNode parent)
         //{
@@ -144,15 +144,15 @@ namespace PALCompiler
         //    recogniseExpression(ref parent);
         //}
 
-        private void recogniseExpression(ref SyntaxNode parent)
-        {
-            Recognisers.recogniseTerm(this,ref parent);
-            while (have("+") || have("-")) {
-                if (have("+")) mustBe("+");
-                else mustBe("-");
-                Recognisers.recogniseTerm(this, ref parent);
-            }
-        }
+        //private void recogniseExpression(ref SyntaxNode parent)
+        //{
+        //    Recognisers.recogniseTerm(this,ref parent);
+        //    while (have("+") || have("-")) {
+        //        if (have("+")) mustBe("+");
+        //        else mustBe("-");
+        //        Recognisers.recogniseTerm(this, ref parent);
+        //    }
+        //}
 
         //private void recogniseTerm(ref SyntaxNode parent)
         //{
@@ -269,7 +269,7 @@ namespace PALCompiler
                 //}
                 if (parser.have("(")) {
                     parser.consume(ref parent, "(");
-                    parser.consume(ref parent, parser.recogniseExpression, "<Expression>");
+                    parser.consume(ref parent, recogniseExpression, "<Expression>");
                     parser.consume(ref parent, ")");
                 }
                 //else recogniseValue();
@@ -302,7 +302,7 @@ namespace PALCompiler
                 parser.consume(ref parent, Token.IdentifierToken, parser.scanner.CurrentToken.TokenValue);
                 parser.consume(ref parent, "=");
                 //parser.recogniseExpression(ref parent);
-                parser.consume(ref parent, parser.recogniseExpression, "<Expression>");
+                parser.consume(ref parent, recogniseExpression, "<Expression>");
             }
 
             internal static void recogniseStatement(PALParser parser, ref SyntaxNode parent)
@@ -316,9 +316,106 @@ namespace PALCompiler
                 //else if (parser.have("IF")) parser.recogniseConditional(ref parent);
                 //else parser.recogniseIO(ref parent);
                 if (parser.have(Token.IdentifierToken)) parser.consume(ref parent, recogniseAssignment, "<Assignment>");
-                else if (parser.have("UNTIL")) parser.consume(ref parent, parser.recogniseLoop, "<Loop>");
-                else if (parser.have("IF")) parser.consume(ref parent, parser.recogniseConditional, "<Conditional>");
-                else parser.consume(ref parent, parser.recogniseIO, "<I-o>");
+                else if (parser.have("UNTIL")) parser.consume(ref parent, recogniseLoop, "<Loop>");
+                else if (parser.have("IF")) parser.consume(ref parent, recogniseConditional, "<Conditional>");
+                else parser.consume(ref parent, recogniseIO, "<I-o>");
+            }
+
+            internal static void recogniseExpression(PALParser parser, ref SyntaxNode parent)
+            {
+                //Recognisers.recogniseTerm(this, ref parent);
+                //while (have("+") || have("-")) {
+                //    if (have("+")) mustBe("+");
+                //    else mustBe("-");
+                //    Recognisers.recogniseTerm(this, ref parent);
+                //}
+                parser.consume(ref parent, recogniseTerm, "<Term>");
+                while (parser.have("+") || parser.have("-")) {
+                    if (parser.have("+")) parser.consume(ref parent, "+");
+                    else parser.consume(ref parent, "-");
+                    parser.consume(ref parent, recogniseTerm, "<Term>");
+                }
+            }
+
+            internal static void recogniseIO(PALParser parser, ref SyntaxNode parent)
+            {
+                //if (have("INPUT")) {
+                //    mustBe("INPUT");
+                //    Recognisers.recogniseIdentList(this, ref parent);
+                //}
+                if (parser.have("INPUT")) {
+                    parser.consume(ref parent, "INPUT");
+                    parser.consume(ref parent, recogniseIdentList, "<IdentList>");
+                }
+                //else {
+                //    mustBe("OUTPUT");
+                //    recogniseExpression(ref parent);
+                //    while (have(",")) {
+                //        mustBe(",");
+                //        recogniseExpression(ref parent);
+                //    }
+                //}
+                else {
+                    parser.consume(ref parent, "OUTPUT");
+                    parser.consume(ref parent, recogniseExpression, "<Expression>");
+                    while (parser.have(",")) {
+                        parser.consume(ref parent, ",");
+                        parser.consume(ref parent, recogniseExpression, "<Expression>");
+                    }
+                }
+            }
+
+            internal static void recogniseConditional(PALParser parser, ref SyntaxNode parent)
+            {
+                //mustBe("IF");
+                //recogniseBooleanExpr(ref parent);
+                //mustBe("THEN");
+                parser.consume(ref parent, "IF");
+                parser.consume(ref parent, recogniseBooleanExpr, "<BooleanExpr>");
+                parser.consume(ref parent, "THEN");
+                //while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
+                //if (have("ELSE")) {
+                //    mustBe("ELSE");
+                //    while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
+                //}
+                //mustBe("ENDIF");
+                while (parser.haveStatement()) parser.consume(ref parent, recogniseStatement, "<Statement>");
+                if (parser.have("ELSE")) {
+                    parser.consume(ref parent, "ELSE");
+                    while (parser.haveStatement()) parser.consume(ref parent, recogniseStatement, "<Statement>");
+                }
+                parser.consume(ref parent, "ENDIF");
+            }
+
+            internal static void recogniseLoop(PALParser parser, ref SyntaxNode parent)
+            {
+                //mustBe("UNTIL");
+                //recogniseBooleanExpr(ref parent);
+                //mustBe("REPEAT");
+                //while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") ||
+                //    have("OUTPUT")) {
+                //    Recognisers.recogniseStatement(this, ref parent);
+                //}
+                //mustBe("ENDLOOP");
+                parser.consume(ref parent, "UNTIL");
+                parser.consume(ref parent, recogniseBooleanExpr, "<BooleanExpr>");
+                parser.consume(ref parent, "REPEAT");
+                while (parser.haveStatement()) parser.consume(ref parent, recogniseStatement, "<Statement>");
+                parser.consume(ref parent, "ENDLOOP");
+            }
+
+            internal static void recogniseBooleanExpr(PALParser parser, ref SyntaxNode parent)
+            {
+                //recogniseExpression(ref parent);
+                parser.consume(ref parent, recogniseExpression, "<Expression>");
+                //if (have("<")) mustBe("<");
+                //else if (have("=")) mustBe("=");
+                //else mustBe(">");
+                if (parser.have("<")) parser.consume(ref parent, "<");
+                else if (parser.have("=")) parser.consume(ref parent, "=");
+                else parser.consume(ref parent, ">");
+                //recogniseExpression(ref parent);
+                parser.consume(ref parent, recogniseExpression, "<Expression>");
             }
         }
 
