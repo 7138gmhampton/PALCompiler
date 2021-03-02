@@ -210,10 +210,15 @@ namespace PALCompiler
         {
             internal static void recogniseIdentList(PALParser parser, ref SyntaxNode parent)
             {
-                parser.mustBe(Token.IdentifierToken);
+                //parser.mustBe(Token.IdentifierToken);
+                parser.consume(ref parent, Token.IdentifierToken, 
+                    parser.scanner.CurrentToken.TokenValue);
                 while (parser.have(",")) {
-                    parser.mustBe(",");
-                    parser.mustBe(Token.IdentifierToken);
+                    //parser.mustBe(",");
+                    parser.consume(ref parent, ",");
+                    //parser.mustBe(Token.IdentifierToken);
+                    parser.consume(ref parent, Token.IdentifierToken,
+                        parser.scanner.CurrentToken.TokenValue);
                 }
             }
         }
