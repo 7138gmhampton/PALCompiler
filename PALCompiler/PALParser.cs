@@ -41,10 +41,10 @@ namespace PALCompiler
             consume(ref syntax_tree, "PROGRAM");
             consume(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
             consume(ref syntax_tree, "WITH");
-            consume(ref syntax_tree, Recognisers.recogniseVarDecls, "<VarDecls>");
+            consume(ref syntax_tree, Recognisers.recogniseVarDecls);
             consume(ref syntax_tree, "IN");
-            consume(ref syntax_tree, Recognisers.recogniseStatement, "<Statement>");
-            while (!have("END")) consume(ref syntax_tree, Recognisers.recogniseStatement, "<Statement>");
+            consume(ref syntax_tree, Recognisers.recogniseStatement);
+            while (!have("END")) consume(ref syntax_tree, Recognisers.recogniseStatement);
             consume(ref syntax_tree, "END");
         }
 
@@ -68,7 +68,7 @@ namespace PALCompiler
             mustBe(symbol);
         }
 
-        private void consume(ref SyntaxNode parent, OtherRecogniser recogniser, string symbol)
+        private void consume(ref SyntaxNode parent, OtherRecogniser recogniser)
         {
             var node = new SyntaxNode(nonterminals[recogniser]);
             recogniser(this, ref node);
