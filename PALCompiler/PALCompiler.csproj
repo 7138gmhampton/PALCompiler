@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="PALCompiler.cs" />
     <Compile Include="PALParser.cs" />
+    <Compile Include="PALParser.Recognisers.cs" />
     <Compile Include="PALScanner.cs" />
     <Compile Include="PALScanner.LexerFSM.cs" />
     <Compile Include="SyntaxNode.cs" />
