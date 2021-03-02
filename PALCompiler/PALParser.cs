@@ -61,7 +61,8 @@ namespace PALCompiler
 
         private void consume(ref SyntaxNode parent, string symbol, string value)
         {
-            updateTree(ref parent, symbol, value);
+            //updateTree(ref parent, symbol, value);
+            if (have(symbol)) parent.addChild(new SyntaxNode(symbol + "(" + value + ")"));
             mustBe(symbol);
         }
 
