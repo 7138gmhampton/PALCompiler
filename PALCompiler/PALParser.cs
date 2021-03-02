@@ -41,15 +41,15 @@ namespace PALCompiler
                 have("OUTPUT");
         }
 
-        private void updateTree(ref SyntaxNode node, string symbol)
-        {
-            if (have(symbol)) node.addChild(new SyntaxNode(symbol));
-        }
+        //private void updateTree(ref SyntaxNode node, string symbol)
+        //{
+        //    if (have(symbol)) node.addChild(new SyntaxNode(symbol));
+        //}
 
-        private void updateTree(ref SyntaxNode node, string symbol, string value)
-        {
-            if (have(symbol)) node.addChild(new SyntaxNode(symbol + "(" + value + ")"));
-        }
+        //private void updateTree(ref SyntaxNode node, string symbol, string value)
+        //{
+        //    if (have(symbol)) node.addChild(new SyntaxNode(symbol + "(" + value + ")"));
+        //}
 
         private void consume(ref SyntaxNode parent, string symbol)
         {
