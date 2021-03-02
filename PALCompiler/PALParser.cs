@@ -274,7 +274,8 @@ namespace PALCompiler
                 }
                 //else recogniseValue();
                 //else Recognisers.recogniseValue(this, ref parent);
-                else recogniseValue(parser, ref parent);
+                //else recogniseValue(parser, ref parent);
+                else parser.consume(ref parent, recogniseValue, "<Value>");
             }
 
             internal static void recogniseTerm(PALParser parser, ref SyntaxNode parent)
@@ -288,7 +289,8 @@ namespace PALCompiler
                 while (parser.have("*") || parser.have("/")) {
                     if (parser.have("*")) parser.consume(ref parent, "*");
                     else parser.consume(ref parent, "/");
-                    recogniseFactor(parser, ref parent);
+                    //recogniseFactor(parser, ref parent);
+                    parser.consume(ref parent, recogniseFactor, "<Factor>");
                 }
             }
 
@@ -299,7 +301,8 @@ namespace PALCompiler
                 //recogniseExpression(ref parent);
                 parser.consume(ref parent, Token.IdentifierToken, parser.scanner.CurrentToken.TokenValue);
                 parser.consume(ref parent, "=");
-                parser.recogniseExpression(ref parent);
+                //parser.recogniseExpression(ref parent);
+                parser.consume(ref parent, parser.recogniseExpression, "<Expression>");
             }
 
             internal static void recogniseStatement(PALParser parser, ref SyntaxNode parent)
@@ -312,10 +315,10 @@ namespace PALCompiler
                 //else if (parser.have("UNTIL")) parser.recogniseLoop(ref parent);
                 //else if (parser.have("IF")) parser.recogniseConditional(ref parent);
                 //else parser.recogniseIO(ref parent);
-                if (parser.have(Token.IdentifierToken)) recogniseAssignment(parser, ref parent);
-                else if (parser.have("UNTIL")) parser.recogniseLoop(ref parent);
-                else if (parser.have("IF")) parser.recogniseConditional(ref parent);
-                else parser.recogniseIO(ref parent);
+                if (parser.have(Token.IdentifierToken)) parser.consume(ref parent, recogniseAssignment, "<Assignment>");
+                else if (parser.have("UNTIL")) parser.consume(ref parent, parser.recogniseLoop, "<Loop>");
+                else if (parser.have("IF")) parser.consume(ref parent, parser.recogniseConditional, "<Conditional>");
+                else parser.consume(ref parent, parser.recogniseIO, "<I-o>");
             }
         }
 
