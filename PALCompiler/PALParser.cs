@@ -28,8 +28,8 @@ namespace PALCompiler
             consume(ref syntax_tree, "WITH");
             consume(ref syntax_tree, Recognisers.recogniseVarDecls, "<VarDecls>");
             consume(ref syntax_tree, "IN");
-            consume(ref syntax_tree, recogniseStatement, "<Statement>");
-            while (!have("END")) consume(ref syntax_tree, recogniseStatement, "<Statement>");
+            consume(ref syntax_tree, Recognisers.recogniseStatement, "<Statement>");
+            while (!have("END")) consume(ref syntax_tree, Recognisers.recogniseStatement, "<Statement>");
             consume(ref syntax_tree, "END");
         }
 
@@ -77,13 +77,13 @@ namespace PALCompiler
             parent.addChild(node);
         }
 
-        private void recogniseStatement(ref SyntaxNode parent)
-        {
-            if (have(Token.IdentifierToken)) recogniseAssignment(ref parent);
-            else if (have("UNTIL")) recogniseLoop(ref parent);
-            else if (have("IF")) recogniseConditional(ref parent);
-            else recogniseIO(ref parent);
-        }
+        //private void recogniseStatement(ref SyntaxNode parent)
+        //{
+        //    if (have(Token.IdentifierToken)) Recognisers.recogniseAssignment(this, ref parent);
+        //    else if (have("UNTIL")) recogniseLoop(ref parent);
+        //    else if (have("IF")) recogniseConditional(ref parent);
+        //    else recogniseIO(ref parent);
+        //}
 
         private void recogniseIO(ref SyntaxNode parent)
         {
@@ -106,10 +106,10 @@ namespace PALCompiler
             mustBe("IF");
             recogniseBooleanExpr(ref parent);
             mustBe("THEN");
-            while (haveStatement()) recogniseStatement(ref parent);
+            while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
             if (have("ELSE")) {
                 mustBe("ELSE");
-                while (haveStatement()) recogniseStatement(ref parent);
+                while (haveStatement()) Recognisers.recogniseStatement(this, ref parent);
             }
             mustBe("ENDIF");
         }
@@ -121,7 +121,7 @@ namespace PALCompiler
             mustBe("REPEAT");
             while (have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || 
                 have("OUTPUT")) {
-                recogniseStatement(ref parent);
+                Recognisers.recogniseStatement(this, ref parent);
             }
             mustBe("ENDLOOP");
         }
@@ -135,32 +135,32 @@ namespace PALCompiler
             recogniseExpression(ref parent);
         }
 
-        private void recogniseAssignment(ref SyntaxNode parent)
-        {
-            mustBe(Token.IdentifierToken);
-            mustBe("=");
-            recogniseExpression(ref parent);
-        }
+        //private void recogniseAssignment(ref SyntaxNode parent)
+        //{
+        //    mustBe(Token.IdentifierToken);
+        //    mustBe("=");
+        //    recogniseExpression(ref parent);
+        //}
 
         private void recogniseExpression(ref SyntaxNode parent)
         {
-            recogniseTerm(ref parent);
+            Recognisers.recogniseTerm(this,ref parent);
             while (have("+") || have("-")) {
                 if (have("+")) mustBe("+");
                 else mustBe("-");
-                recogniseTerm(ref parent);
+                Recognisers.recogniseTerm(this, ref parent);
             }
         }
 
-        private void recogniseTerm(ref SyntaxNode parent)
-        {
-            Recognisers.recogniseFactor(this, ref parent);
-            while (have("*") || have("/")) {
-                if (have("*")) mustBe("*");
-                else mustBe("/");
-                Recognisers.recogniseFactor(this, ref parent);
-            }
-        }
+        //private void recogniseTerm(ref SyntaxNode parent)
+        //{
+        //    Recognisers.recogniseFactor(this, ref parent);
+        //    while (have("*") || have("/")) {
+        //        if (have("*")) mustBe("*");
+        //        else mustBe("/");
+        //        Recognisers.recogniseFactor(this, ref parent);
+        //    }
+        //}
 
         //private void recogniseFactor(ref SyntaxNode parent)
         //{
@@ -273,6 +273,43 @@ namespace PALCompiler
                 //else recogniseValue();
                 //else Recognisers.recogniseValue(this, ref parent);
                 else recogniseValue(parser, ref parent);
+            }
+
+            internal static void recogniseTerm(PALParser parser, ref SyntaxNode parent)
+            {
+                Recognisers.recogniseFactor(parser, ref parent);
+                //while (have("*") || have("/")) {
+                //    if (have("*")) mustBe("*");
+                //    else mustBe("/");
+                //    Recognisers.recogniseFactor(this, ref parent);
+                //}
+                while (parser.have("*") || parser.have("/")) {
+                    if (parser.have("*")) parser.consume(ref parent, "*");
+                    else parser.consume(ref parent, "/");
+                    recogniseFactor(parser, ref parent);
+                }
+            }
+
+            internal static void recogniseAssignment(PALParser parser, ref SyntaxNode parent)
+            {
+                //mustBe(Token.IdentifierToken);
+                //mustBe("=");
+                //recogniseExpression(ref parent);
+                parser.consume(ref parent, Token.IdentifierToken, parser.scanner.CurrentToken.TokenValue);
+                parser.consume(ref parent, "=");
+                parser.recogniseExpression(ref parent);
+            }
+
+            internal static void recogniseStatement(PALParser parser, ref SyntaxNode parent)
+            {
+                //if (have(Token.IdentifierToken)) Recognisers.recogniseAssignment(this, ref parent);
+                //else if (have("UNTIL")) recogniseLoop(ref parent);
+                //else if (have("IF")) recogniseConditional(ref parent);
+                //else recogniseIO(ref parent);
+                if (parser.have(Token.IdentifierToken)) recogniseAssignment(parser, ref parent);
+                else if (parser.have("UNTIL")) parser.recogniseLoop(ref parent);
+                else if (parser.have("IF")) parser.recogniseConditional(ref parent);
+                else parser.recogniseIO(ref parent);
             }
         }
 
