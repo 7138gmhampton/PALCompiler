@@ -9,7 +9,7 @@ namespace PALCompiler
 {
     internal class PALParser : RdParser
     {
-        private delegate void Recogniser(ref SyntaxNode parent);
+        //private delegate void Recogniser(ref SyntaxNode parent);
         private delegate void OtherRecogniser(PALParser parser, ref SyntaxNode parent);
 
         //private Recognisers recognisers;
@@ -66,12 +66,12 @@ namespace PALCompiler
             mustBe(symbol);
         }
 
-        private void consume(ref SyntaxNode parent, Recogniser recogniser, string symbol)
-        {
-            var node = new SyntaxNode(symbol);
-            recogniser(ref node);
-            parent.addChild(node);
-        }
+        //private void consume(ref SyntaxNode parent, Recogniser recogniser, string symbol)
+        //{
+        //    var node = new SyntaxNode(symbol);
+        //    recogniser(ref node);
+        //    parent.addChild(node);
+        //}
 
         private void consume(ref SyntaxNode parent, OtherRecogniser recogniser, string symbol)
         {
