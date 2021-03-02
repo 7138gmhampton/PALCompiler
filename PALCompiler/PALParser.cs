@@ -9,12 +9,12 @@ namespace PALCompiler
 {
     internal partial class PALParser : RdParser
     {
-        private delegate void OtherRecogniser(PALParser parser, ref SyntaxNode parent);
+        private delegate void Recogniser(PALParser parser, ref SyntaxNode parent);
 
         private SyntaxNode syntax_tree;
 
-        private static Dictionary<OtherRecogniser, string> nonterminals =
-            new Dictionary<OtherRecogniser, string>
+        private static Dictionary<Recogniser, string> nonterminals =
+            new Dictionary<Recogniser, string>
             {
                 { Recognisers.recogniseAssignment, "<IdentList>" },
                 { Recognisers.recogniseBooleanExpr, "<BooleanExpr>" },
@@ -68,7 +68,7 @@ namespace PALCompiler
             mustBe(symbol);
         }
 
-        private void consume(ref SyntaxNode parent, OtherRecogniser recogniser)
+        private void consume(ref SyntaxNode parent, Recogniser recogniser)
         {
             var node = new SyntaxNode(nonterminals[recogniser]);
             recogniser(this, ref node);
