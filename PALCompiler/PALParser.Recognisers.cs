@@ -4,6 +4,12 @@ namespace PALCompiler
 {
     internal partial class PALParser
     {
+        /// <summary>
+        /// Subclass contains full set of recogniser for Pretty Auful Language,
+        /// minus the starter symbol.
+        /// Please note, these methods also attach nodes to the syntax tree in
+        /// parser as they are evaluated.
+        /// </summary>
         private static class Recognisers
         {
             internal static void recogniseIdentList(PALParser parser, ref SyntaxNode parent)
