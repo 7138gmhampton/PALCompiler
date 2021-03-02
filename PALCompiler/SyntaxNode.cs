@@ -16,10 +16,7 @@ namespace PALCompiler
 
         internal List<SyntaxNode> Children { get { return children; } }
 
-        internal void addChild(SyntaxNode child)
-        {
-            children.Add(child);
-        }
+        internal void addChild(SyntaxNode child) => children.Add(child);
 
         internal void printGraphic(string indent, bool last)
         {
