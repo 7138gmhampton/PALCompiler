@@ -13,6 +13,24 @@ namespace PALCompiler
 
         private SyntaxNode syntax_tree;
 
+        private static Dictionary<OtherRecogniser, string> nonterminals =
+            new Dictionary<OtherRecogniser, string>
+            {
+                { Recognisers.recogniseAssignment, "<IdentList>" },
+                { Recognisers.recogniseBooleanExpr, "<BooleanExpr>" },
+                { Recognisers.recogniseConditional, "<Conditional>" },
+                { Recognisers.recogniseExpression, "<Expression>" },
+                { Recognisers.recogniseFactor, "<Factor>" },
+                { Recognisers.recogniseIdentList, "<IdentList>" },
+                { Recognisers.recogniseIO, "<I-o>" },
+                { Recognisers.recogniseLoop, "<Loop>" },
+                { Recognisers.recogniseStatement, "<Statement>" },
+                { Recognisers.recogniseTerm, "<Term>" },
+                { Recognisers.recogniseType, "<Type>" },
+                { Recognisers.recogniseValue, "<Value>" },
+                { Recognisers.recogniseVarDecls, "<VarDecls>" }
+            };
+
         internal PALParser(IScanner scanner) : base(scanner)
         {
             syntax_tree = new SyntaxNode("<Program>");
@@ -52,7 +70,7 @@ namespace PALCompiler
 
         private void consume(ref SyntaxNode parent, OtherRecogniser recogniser, string symbol)
         {
-            var node = new SyntaxNode(symbol);
+            var node = new SyntaxNode(nonterminals[recogniser]);
             recogniser(this, ref node);
             parent.addChild(node);
         }
