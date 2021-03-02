@@ -26,7 +26,7 @@ namespace PALCompiler
             consume(ref syntax_tree, "PROGRAM");
             consume(ref syntax_tree, Token.IdentifierToken, scanner.CurrentToken.TokenValue);
             consume(ref syntax_tree, "WITH");
-            consume(ref syntax_tree, recogniseVarDecls, "<VarDecls>");
+            consume(ref syntax_tree, Recognisers.recogniseVarDecls, "<VarDecls>");
             consume(ref syntax_tree, "IN");
             consume(ref syntax_tree, recogniseStatement, "<Statement>");
             while (!have("END")) consume(ref syntax_tree, recogniseStatement, "<Statement>");
@@ -182,14 +182,14 @@ namespace PALCompiler
             else mustBe(Token.RealToken);
         }
 
-        private void recogniseVarDecls(ref SyntaxNode parent)
-        {
-            while (have(Token.IdentifierToken)) {
-                consume(ref parent, Recognisers.recogniseIdentList, "<IdentList>");
-                consume(ref parent, "AS");
-                consume(ref parent, Recognisers.recogniseType, "<Type>");
-            }
-        }
+        //private void recogniseVarDecls(ref SyntaxNode parent)
+        //{
+        //    while (have(Token.IdentifierToken)) {
+        //        consume(ref parent, Recognisers.recogniseIdentList, "<IdentList>");
+        //        consume(ref parent, "AS");
+        //        consume(ref parent, Recognisers.recogniseType, "<Type>");
+        //    }
+        //}
 
         //private void recogniseType(ref SyntaxNode parent)
         //{
@@ -228,6 +228,15 @@ namespace PALCompiler
                 if (parser.have("REAL")) parser.consume(ref parent, "REAL");
                 //else mustBe("INTEGER");
                 else parser.consume(ref parent, "INTEGER");
+            }
+
+            internal static void recogniseVarDecls(PALParser parser, ref SyntaxNode parent)
+            {
+                while (parser.have(Token.IdentifierToken)) {
+                    parser.consume(ref parent, Recognisers.recogniseIdentList, "<IdentList>");
+                    parser.consume(ref parent, "AS");
+                    parser.consume(ref parent, Recognisers.recogniseType, "<Type>");
+                }
             }
         }
 
