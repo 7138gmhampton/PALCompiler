@@ -32,9 +32,9 @@ namespace PALCompiler
             internal static void recogniseVarDecls(PALParser parser, ref SyntaxNode parent)
             {
                 while (parser.have(Token.IdentifierToken)) {
-                    parser.consume(ref parent, Recognisers.recogniseIdentList);
+                    parser.consume(ref parent, recogniseIdentList);
                     parser.consume(ref parent, "AS");
-                    parser.consume(ref parent, Recognisers.recogniseType);
+                    parser.consume(ref parent, recogniseType);
                 }
             }
 
@@ -63,7 +63,7 @@ namespace PALCompiler
 
             internal static void recogniseTerm(PALParser parser, ref SyntaxNode parent)
             {
-                Recognisers.recogniseFactor(parser, ref parent);
+                recogniseFactor(parser, ref parent);
                 while (parser.have("*") || parser.have("/")) {
                     if (parser.have("*")) parser.consume(ref parent, "*");
                     else parser.consume(ref parent, "/");
