@@ -4,16 +4,20 @@ using System.CodeDom.Compiler;
 //using Microsoft.CodeDom.Providers;
 //using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
 using Microsoft.CSharp;
+using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
     class PALCompiler
     {
+        static int dummy = 0;
+
         static void Main(string[] args)
         {
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
 
             var scanner = new PALScanner();
+            var symbol_table = new SymbolTable();
             var parser = new PALParser(scanner);
             try {
                 if (parser.Parse(new StreamReader(source_file)))
@@ -25,7 +29,8 @@ namespace PALCompiler
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
-                generateCSArtifact(args[0], parser);
+                parser.SyntaxTree.printGraphic("", true);
+                //generateCSArtifact(args[0], parser);
             }
 
             //CSharpCodeProvider code_provider = new CSharpCodeProvider();
@@ -34,12 +39,14 @@ namespace PALCompiler
             //compiler_params.OutputAssembly = args[0].Replace("txt", "exe");
             //CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
             //foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
+
+            dummy = 3;
         }
 
         private static void generateCSArtifact(string executable, PALParser parser)
         {
-            PALCSGenerator generator = new PALCSGenerator();
-            string cs_code = generator.generate(parser.SyntaxTree);
+            PALCSGenerator generator = new PALCSGenerator(parser.SyntaxTree);
+            string cs_code = generator.generate();
             File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
             CSharpCodeProvider code_provider = new CSharpCodeProvider();
