@@ -1,5 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.CodeDom.Compiler;
+//using Microsoft.CodeDom.Providers;
+//using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
+using Microsoft.CSharp;
 
 namespace PALCompiler
 {
@@ -28,6 +32,13 @@ namespace PALCompiler
             }
 
             // TODO - CSharp Compiler
+            CSharpCodeProvider code_provider = new CSharpCodeProvider();
+            CompilerParameters compiler_params = new CompilerParameters();
+            compiler_params.GenerateExecutable = true;
+            compiler_params.OutputAssembly = args[0].Replace("txt", "exe");
+            //ICodeCompiler cs_compiler = code_provider.CreateCompiler();
+            CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
+            foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
         }
 
         private static string inputSourceFile()
