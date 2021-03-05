@@ -72,7 +72,7 @@ namespace PALCompiler
             private static string generateStatement(SyntaxNode node)
             {
                 switch (node.Children[0].Symbol) {
-                    case "<Assignment>": return generateAssignment(node);
+                    case "<Assignment>": return generateAssignment(node.Children[0]);
                     case "<Loop>": return generateLoop(node);
                     case "<Conditional>": return generateConditional(node);
                     case "<I-o>": return generateIO(node);
@@ -83,7 +83,27 @@ namespace PALCompiler
             private static string generateIO(SyntaxNode node) => throw new NotImplementedException();
             private static string generateConditional(SyntaxNode node) => throw new NotImplementedException();
             private static string generateLoop(SyntaxNode node) => throw new NotImplementedException();
-            private static string generateAssignment(SyntaxNode node) => throw new NotImplementedException();
+            private static string generateAssignment(SyntaxNode node)
+            {
+                string left_hand = node.Children[0].Value;
+                string right_hand = generateExpression(node.Children[2]);
+
+                return $"{left_hand} = {right_hand};";
+            }
+
+            private static string generateExpression(SyntaxNode node)
+            {
+                StringBuilder code = new StringBuilder();
+
+                foreach (var element in node.Children) {
+                    if (element.Symbol == "<Term>") code.Append(generateTerm(element));
+                    else code.Append(element.Symbol);
+                }
+
+                return code.ToString();
+            }
+
+            private static char generateTerm(SyntaxNode element) => throw new NotImplementedException();
 
             private static string generateVariableDeclarations(SyntaxNode node)
             {
