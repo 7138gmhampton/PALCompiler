@@ -103,7 +103,19 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static char generateTerm(SyntaxNode element) => throw new NotImplementedException();
+            private static string generateTerm(SyntaxNode node)
+            {
+                StringBuilder code = new StringBuilder();
+
+                foreach (var element in node.Children) {
+                    if (element.Symbol == "<Factor>") code.Append(generateFactor(element));
+                    else code.Append(element.Symbol);
+                }
+
+                return code.ToString();
+            }
+
+            private static string generateFactor(SyntaxNode element) => throw new NotImplementedException();
 
             private static string generateVariableDeclarations(SyntaxNode node)
             {
