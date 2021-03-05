@@ -41,7 +41,6 @@ namespace PALCompiler
                 Console.Write("\u251C\u2500");
                 indent += "\u2502 ";
             }
-            //Console.WriteLine(symbol);
             Console.WriteLine((symbol == value) ? symbol : $"{symbol}({value})");
 
             for (int iii = 0; iii < children.Count; ++iii)

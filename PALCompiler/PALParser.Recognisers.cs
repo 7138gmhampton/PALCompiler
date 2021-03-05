@@ -63,7 +63,6 @@ namespace PALCompiler
 
             internal static void recogniseTerm(PALParser parser, ref SyntaxNode parent)
             {
-                //recogniseFactor(parser, ref parent);
                 parser.consume(ref parent, recogniseFactor);
                 while (parser.have("*") || parser.have("/")) {
                     if (parser.have("*")) parser.consume(ref parent, "*");

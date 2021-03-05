@@ -24,19 +24,16 @@ namespace PALCompiler
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
-            //else parser.SyntaxTree.printGraphic("", true);
             else {
                 PALCSGenerator generator = new PALCSGenerator();
                 string cs_code = generator.generate(parser.SyntaxTree);
                 File.WriteAllText("output.cs", cs_code);
             }
 
-            // TODO - CSharp Compiler
             CSharpCodeProvider code_provider = new CSharpCodeProvider();
             CompilerParameters compiler_params = new CompilerParameters();
             compiler_params.GenerateExecutable = true;
             compiler_params.OutputAssembly = args[0].Replace("txt", "exe");
-            //ICodeCompiler cs_compiler = code_provider.CreateCompiler();
             CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
             foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
         }
