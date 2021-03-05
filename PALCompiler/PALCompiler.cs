@@ -20,7 +20,12 @@ namespace PALCompiler
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
-            else parser.SyntaxTree.printGraphic("", true);
+            //else parser.SyntaxTree.printGraphic("", true);
+            else {
+                PALCSGenerator generator = new PALCSGenerator();
+                string cs_code = generator.generate(parser.SyntaxTree);
+                File.WriteAllText("output.cs", cs_code);
+            }
         }
 
         private static string inputSourceFile()
