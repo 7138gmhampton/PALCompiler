@@ -46,9 +46,9 @@ namespace PALCompiler
             {
                 StringBuilder code = new StringBuilder();
 
-                code.Append("using System;\nusing System.IO;\n\n");
+                code.AppendLine("using System;\nusing System.IO;\n");
 
-                code.Append("class " + node.Children[1].Symbol + "\n{\n");
+                code.AppendLine("class " + node.Children[1].Value + "\n{");
 
                 code.AppendLine("}");
 
