@@ -63,6 +63,8 @@ namespace PALCompiler
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(statement));
 
+                code.AppendLine("Console.WriteLine(\"Program terminated...\");");
+                code.AppendLine("Console.ReadKey();");
                 code.AppendLine("}");
                 code.AppendLine("}");
 
@@ -82,7 +84,7 @@ namespace PALCompiler
 
             private static string generateIO(SyntaxNode node)
             {
-                Console.WriteLine("Node symbol - " + node.Symbol);
+                //Console.WriteLine("Node symbol - " + node.Symbol);
                 StringBuilder code = new StringBuilder();
 
                 if (node.Children[0].Symbol == "INPUT") {
@@ -93,6 +95,12 @@ namespace PALCompiler
                         code.AppendLine($"if ({identifier.Value}.GetType() is int)");
                         code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                         code.AppendLine($"else {identifier.Value} = float.Parse(Console.ReadLine());");
+                    }
+                }
+                else {
+                    List<SyntaxNode> outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
+                    foreach (var output in outputs) {
+                        code.AppendLine($"Console.WriteLine({generateExpression(output)});");
                     }
                 }
                 
