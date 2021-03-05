@@ -25,16 +25,29 @@ namespace PALCompiler
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
-                PALCSGenerator generator = new PALCSGenerator();
-                string cs_code = generator.generate(parser.SyntaxTree);
-                File.WriteAllText("output.cs", cs_code);
+                generateCSArtifact(args[0], parser);
             }
+
+            //CSharpCodeProvider code_provider = new CSharpCodeProvider();
+            //CompilerParameters compiler_params = new CompilerParameters();
+            //compiler_params.GenerateExecutable = true;
+            //compiler_params.OutputAssembly = args[0].Replace("txt", "exe");
+            //CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
+            //foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
+        }
+
+        private static void generateCSArtifact(string executable, PALParser parser)
+        {
+            PALCSGenerator generator = new PALCSGenerator();
+            string cs_code = generator.generate(parser.SyntaxTree);
+            File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
             CSharpCodeProvider code_provider = new CSharpCodeProvider();
             CompilerParameters compiler_params = new CompilerParameters();
             compiler_params.GenerateExecutable = true;
-            compiler_params.OutputAssembly = args[0].Replace("txt", "exe");
-            CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
+            compiler_params.OutputAssembly = executable.Replace("txt", "exe");
+            //CompilerResults cs_results = code_provider.CompileAssemblyFromFile(compiler_params, "output.cs");
+            CompilerResults cs_results = code_provider.CompileAssemblyFromSource(compiler_params, cs_code);
             foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
         }
 
