@@ -12,7 +12,7 @@ namespace PALCompiler
         private static Dictionary<Recogniser, string> nonterminals =
             new Dictionary<Recogniser, string>
             {
-                { Recognisers.recogniseAssignment, "<IdentList>" },
+                { Recognisers.recogniseAssignment, "<Assignment>" },
                 { Recognisers.recogniseBooleanExpr, "<BooleanExpr>" },
                 { Recognisers.recogniseConditional, "<Conditional>" },
                 { Recognisers.recogniseExpression, "<Expression>" },
