@@ -75,12 +75,30 @@ namespace PALCompiler
                     case "<Assignment>": return generateAssignment(node.Children[0]);
                     case "<Loop>": return generateLoop(node);
                     case "<Conditional>": return generateConditional(node);
-                    case "<I-o>": return generateIO(node);
+                    case "<I-o>": return generateIO(node.Children[0]);
                     default: throw new Exception("Malformed syntax tree");
                 }
             }
 
-            private static string generateIO(SyntaxNode node) => throw new NotImplementedException();
+            private static string generateIO(SyntaxNode node)
+            {
+                Console.WriteLine("Node symbol - " + node.Symbol);
+                StringBuilder code = new StringBuilder();
+
+                if (node.Children[0].Symbol == "INPUT") {
+                    //code.AppendLine($"Console.Write({});")
+                    foreach (var identifier in node.Children[1].Children.FindAll(x => x.Symbol == "Identifier")) {
+                        code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
+                        //code.AppendLine($"Console.ReadLine(")
+                        code.AppendLine($"if ({identifier.Value}.GetType() is int)");
+                        code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
+                        code.AppendLine($"else {identifier.Value} = float.Parse(Console.ReadLine());");
+                    }
+                }
+                
+                //Console.r
+                return code.ToString();
+            }
             private static string generateConditional(SyntaxNode node) => throw new NotImplementedException();
             private static string generateLoop(SyntaxNode node) => throw new NotImplementedException();
             private static string generateAssignment(SyntaxNode node)
@@ -115,7 +133,23 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateFactor(SyntaxNode element) => throw new NotImplementedException();
+            private static string generateFactor(SyntaxNode node)
+            {
+                StringBuilder code = new StringBuilder();
+
+                foreach (var element in node.Children) {
+                    if (element.Symbol == "<Expression>") code.Append(generateExpression(element));
+                    else if (element.Symbol == "<Value>") code.Append(element.Children[0].Value);
+                    else code.Append(element.Symbol);
+                }
+
+                return code.ToString();
+            }
+
+            //private static string generateValue(SyntaxNode element)
+            //{
+            //    if (element.Symbol == "")
+            //}
 
             private static string generateVariableDeclarations(SyntaxNode node)
             {
