@@ -15,6 +15,7 @@ namespace PALCompiler
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
+        internal string Symbol { get { return symbol; } }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
