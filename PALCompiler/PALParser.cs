@@ -60,7 +60,8 @@ namespace PALCompiler
 
         private void consume(ref SyntaxNode parent, string symbol, string value)
         {
-            if (have(symbol)) parent.addChild(new SyntaxNode(symbol + "(" + value + ")"));
+            //if (have(symbol)) parent.addChild(new SyntaxNode(symbol + "(" + value + ")"));
+            if (have(symbol)) parent.addChild(new SyntaxNode(symbol, value));
             mustBe(symbol);
         }
 

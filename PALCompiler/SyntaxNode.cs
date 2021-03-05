@@ -7,15 +7,25 @@ namespace PALCompiler
     {
         private List<SyntaxNode> children;
         private string symbol;
+        private string value;
 
         internal SyntaxNode(string symbol)
         {
             this.symbol = symbol;
+            this.value = symbol;
+            children = new List<SyntaxNode>();
+        }
+
+        internal SyntaxNode(string symbol, string value)
+        {
+            this.symbol = symbol;
+            this.value = value;
             children = new List<SyntaxNode>();
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
         internal string Symbol { get { return symbol; } }
+        internal string Value { get { return value; } }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
@@ -31,7 +41,8 @@ namespace PALCompiler
                 Console.Write("\u251C\u2500");
                 indent += "\u2502 ";
             }
-            Console.WriteLine(symbol);
+            //Console.WriteLine(symbol);
+            Console.WriteLine((symbol == value) ? symbol : $"{symbol}({value})");
 
             for (int iii = 0; iii < children.Count; ++iii)
                 children[iii].printGraphic(indent, iii == children.Count - 1);
