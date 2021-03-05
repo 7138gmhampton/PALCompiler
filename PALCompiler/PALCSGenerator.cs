@@ -48,10 +48,59 @@ namespace PALCompiler
 
                 code.AppendLine("using System;\nusing System.IO;\n");
 
-                code.AppendLine("class " + node.Children[1].Value + "\n{");
+                code.AppendLine($"class {node.Children[1].Value}\n{{");
+
+                var variable_declaration = node.Children.Find(x => x.Symbol == "<VarDecls>");
+                //if (variable_declaration)
+                //if (variable_declaration != null) generateVariableDeclarations(variable_declaration);
+                if (variable_declaration != null)
+                    code.AppendLine(generateVariableDeclarations(variable_declaration));
 
                 code.AppendLine("}");
 
+                return code.ToString();
+            }
+
+            private static string generateVariableDeclarations(SyntaxNode node)
+            {
+                //Console.WriteLine("VarDecls Generator called");
+                StringBuilder code = new StringBuilder();
+                int list_counter = 0;
+                List<(string, string)> identifiers = new List<(string, string)>();
+                float dummy = 0;
+
+                List<SyntaxNode> identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
+                //Console.WriteLine("IdentLists found - " + identifier_lists.Count);
+                List<SyntaxNode> type_declarators = node.Children.FindAll(x => x.Symbol == "<Type>");
+                //Console.WriteLine("Types found - " + type_declarators.Count);
+
+                //for (int iii = 0; iii < identifier_lists.Count; ++iii) {
+                //    string type_declarator = (type_declarators[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
+                //    foreach (SyntaxNode identifier_list in identifier_lists) {
+                //        //Console.WriteLine("Identifiers found - " + identifier_list.Children.FindAll(x => x.Symbol == "Identifier").Count);
+                //        foreach (SyntaxNode identifier in identifier_list.Children.FindAll(x => x.Symbol == "Identifier")) {
+                //            //Console.("Identifiers found - " + )
+                //            //Console.WriteLine("Appending - " + identifier.Value);
+                //            code.AppendLine($"{type_declarator} {identifier.Value} = 0;");
+                //        }
+                //    }
+                //}
+
+                for (int iii = 0; iii < identifier_lists.Count; ++iii) {
+                    string type_declarator = type_declarators[iii].Children[0].Symbol;
+                    //Console.WriteLine("Type declarator selected - " + type_declarator);
+                    //foreach (SyntaxNode identifier_list in identifier_lists) {
+                    //    Console.WriteLine("IdentList:");
+                    //    foreach (SyntaxNode identifier in identifier_list.Children) {
+                    //        Console.WriteLine("Identifier - " + identifier.Value);
+                    //    }
+                    //}
+                    foreach (SyntaxNode identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier"))
+                        //Console.WriteLine("Id - " + identifier.Value);
+                        code.AppendLine($"{type_declarator} {identifier.Value} = 0;");
+                }
+
+                //Console.WriteLine("Declarations gathered\n" + code.ToString());
                 return code.ToString();
             }
         }
