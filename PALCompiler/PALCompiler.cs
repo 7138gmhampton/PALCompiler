@@ -26,6 +26,8 @@ namespace PALCompiler
                 string cs_code = generator.generate(parser.SyntaxTree);
                 File.WriteAllText("output.cs", cs_code);
             }
+
+            // TODO - CSharp Compiler
         }
 
         private static string inputSourceFile()
