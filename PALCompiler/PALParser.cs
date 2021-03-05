@@ -8,8 +8,9 @@ namespace PALCompiler
         private delegate void Recogniser(PALParser parser, ref SyntaxNode parent);
 
         private SyntaxNode syntax_tree;
+        //private ISymbolTable symbols;
 
-        private static Dictionary<Recogniser, string> nonterminals =
+        private static readonly Dictionary<Recogniser, string> nonterminals =
             new Dictionary<Recogniser, string>
             {
                 { Recognisers.recogniseAssignment, "<Assignment>" },
@@ -30,6 +31,7 @@ namespace PALCompiler
         internal PALParser(IScanner scanner) : base(scanner)
         {
             syntax_tree = new SyntaxNode("<Program>");
+            //this.symbols = symbols;
         }
 
         protected override void recStarter()
