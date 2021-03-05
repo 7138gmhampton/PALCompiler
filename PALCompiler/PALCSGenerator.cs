@@ -58,11 +58,32 @@ namespace PALCompiler
 
                 code.AppendLine("static void Main()\n{");
 
+                List<SyntaxNode> statements = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                //Console.WriteLine("No. of statements - " + statements.Count);
+                foreach (var statement in statements)
+                    code.AppendLine(generateStatement(statement));
+
                 code.AppendLine("}");
                 code.AppendLine("}");
 
                 return code.ToString();
             }
+
+            private static string generateStatement(SyntaxNode node)
+            {
+                switch (node.Children[0].Symbol) {
+                    case "<Assignment>": return generateAssignment(node);
+                    case "<Loop>": return generateLoop(node);
+                    case "<Conditional>": return generateConditional(node);
+                    case "<I-o>": return generateIO(node);
+                    default: throw new Exception("Malformed syntax tree");
+                }
+            }
+
+            private static string generateIO(SyntaxNode node) => throw new NotImplementedException();
+            private static string generateConditional(SyntaxNode node) => throw new NotImplementedException();
+            private static string generateLoop(SyntaxNode node) => throw new NotImplementedException();
+            private static string generateAssignment(SyntaxNode node) => throw new NotImplementedException();
 
             private static string generateVariableDeclarations(SyntaxNode node)
             {
