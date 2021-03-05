@@ -56,6 +56,9 @@ namespace PALCompiler
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(variable_declaration));
 
+                code.AppendLine("static void Main()\n{");
+
+                code.AppendLine("}");
                 code.AppendLine("}");
 
                 return code.ToString();
@@ -87,7 +90,7 @@ namespace PALCompiler
                 //}
 
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
-                    string type_declarator = type_declarators[iii].Children[0].Symbol;
+                    string type_declarator = (type_declarators[iii].Children[0].Symbol == "int") ? "int" : "float";
                     //Console.WriteLine("Type declarator selected - " + type_declarator);
                     //foreach (SyntaxNode identifier_list in identifier_lists) {
                     //    Console.WriteLine("IdentList:");
