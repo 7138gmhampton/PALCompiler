@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PALCompiler.cs" />
+    <Compile Include="PALCSGenerator.cs" />
     <Compile Include="PALParser.cs" />
     <Compile Include="PALParser.Recognisers.cs" />
     <Compile Include="PALScanner.cs" />
