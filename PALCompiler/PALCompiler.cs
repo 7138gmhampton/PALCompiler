@@ -30,7 +30,7 @@ namespace PALCompiler
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
                 parser.SyntaxTree.printGraphic("", true);
-                //generateCSArtifact(args[0], parser);
+                generateCSArtifact(args[0], parser);
             }
 
             //CSharpCodeProvider code_provider = new CSharpCodeProvider();
