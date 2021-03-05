@@ -187,7 +187,7 @@ namespace PALCompiler
                     //}
                     foreach (SyntaxNode identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier"))
                         //Console.WriteLine("Id - " + identifier.Value);
-                        code.AppendLine($"{type_declarator} {identifier.Value} = 0;");
+                        code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
                 }
 
                 //Console.WriteLine("Declarations gathered\n" + code.ToString());
