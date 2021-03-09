@@ -32,15 +32,20 @@ namespace PALCompiler
 
         private static void generateCSArtifact(string executable, PALParser parser)
         {
-            PALCSGenerator generator = new PALCSGenerator(parser.SyntaxTree);
+            var generator = new PALCSGenerator(parser.SyntaxTree);
             string cs_code = generator.generate();
             File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
-            CSharpCodeProvider code_provider = new CSharpCodeProvider();
-            CompilerParameters compiler_params = new CompilerParameters();
-            compiler_params.GenerateExecutable = true;
-            compiler_params.OutputAssembly = executable.Replace("txt", "exe");
-            CompilerResults cs_results = code_provider.CompileAssemblyFromSource(compiler_params, cs_code);
+            var code_provider = new CSharpCodeProvider();
+            //var compiler_params = new CompilerParameters();
+            //compiler_params.GenerateExecutable = true;
+            //compiler_params.OutputAssembly = executable.Replace("txt", "exe");
+            var cs_results = code_provider
+                .CompileAssemblyFromSource(new CompilerParameters
+                {
+                    GenerateExecutable = true,
+                    OutputAssembly = executable.Replace("txt", "exe")
+                }, cs_code);
             foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
         }
 
