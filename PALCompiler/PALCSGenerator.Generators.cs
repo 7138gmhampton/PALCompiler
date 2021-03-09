@@ -146,8 +146,10 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == "<Expression>") code.Append(generateExpression(root, element));
-                    else if (element.Symbol == "<Value>") code.Append(generateValue(root, element.Children[0]));
+                    if (element.Symbol == "<Expression>")
+                        code.Append(generateExpression(root, element));
+                    else if (element.Symbol == "<Value>")
+                        code.Append(generateValue(root, element.Children[0]));
                     else code.Append(element.Symbol);
                 }
 
@@ -170,14 +172,15 @@ namespace PALCompiler
                 var identifiers = new List<(string, string)>();
 
                 var identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
-                var type_declarators = node.Children.FindAll(x => x.Symbol == "<Type>");
+                var types = node.Children.FindAll(x => x.Symbol == "<Type>");
 
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
-                    string type_declarator = (type_declarators[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
-                    foreach (var identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier")) {
-                        if (type_declarator == "int")
-                            code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
-                        else code.AppendLine($"static {type_declarator} {identifier.Value} = 0.0f;");
+                    string type = (types[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
+                    foreach (var identifier in identifier_lists[iii]
+                        .Children
+                        .FindAll(x => x.Symbol == "Identifier")) {
+                        if (type == "int") code.AppendLine($"static {type} {identifier.Value} = 0;");
+                        else code.AppendLine($"static {type} {identifier.Value} = 0.0f;");
                     }
                 }
 
