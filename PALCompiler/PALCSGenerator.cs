@@ -77,7 +77,7 @@ namespace PALCompiler
                 switch (node.Children[0].Symbol) {
                     case "<Assignment>": return generateAssignment(root, node.Children[0]);
                     case "<Loop>": return generateLoop(root, node.Children[0]);
-                    case "<Conditional>": return generateConditional(root, node);
+                    case "<Conditional>": return generateConditional(root, node.Children[0]);
                     case "<I-o>": return generateIO(root, node.Children[0]);
                     default: throw new Exception("Malformed syntax tree");
                 }
