@@ -154,7 +154,25 @@ namespace PALCompiler
                 return code.ToString();
             }
             private static string generateConditional(SyntaxNode root, SyntaxNode node) => throw new NotImplementedException();
-            private static string generateLoop(SyntaxNode root, SyntaxNode node) => throw new NotImplementedException();
+            private static string generateLoop(SyntaxNode root, SyntaxNode node)
+            {
+                StringBuilder code = new StringBuilder();
+
+                string stop_condition = generateBooleanExpression(root, node.Children[1]);
+
+                code.AppendLine($"while ({stop_condition}) {{");
+
+                List<SyntaxNode> statements_in_block = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                foreach (SyntaxNode statement in statements_in_block)
+                    code.AppendLine(generateStatement(root, statement));
+
+                code.AppendLine("}");
+
+                return code.ToString();
+            }
+
+            private static string generateBooleanExpression(SyntaxNode root, SyntaxNode syntaxNode) => throw new NotImplementedException();
+
             private static string generateAssignment(SyntaxNode root, SyntaxNode node)
             {
                 string left_hand = node.Children[0].Value;
