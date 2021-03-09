@@ -10,13 +10,13 @@ namespace PALCompiler
 {
     class PALCSGenerator
     {
-        private delegate string Generator(SyntaxNode root, SyntaxNode node);
+        //private delegate string Generator(SyntaxNode root, SyntaxNode node);
 
-        private readonly static Dictionary<string, Generator> symbol_to_generator =
-            new Dictionary<string, Generator>
-            {
-                { "<Program>", Generators.generateRoot }
-            };
+        //private readonly static Dictionary<string, Generator> symbol_to_generator =
+        //    new Dictionary<string, Generator>
+        //    {
+        //        { "<Program>", Generators.generateRoot }
+        //    };
 
         public SyntaxNode syntax_tree;
 
@@ -29,8 +29,8 @@ namespace PALCompiler
         {
             StringBuilder artifact = new StringBuilder();
 
-            SyntaxNode cursor = null;
-            SyntaxNode precursor = null;
+            //SyntaxNode cursor = null;
+            //SyntaxNode precursor = null;
 
             artifact.Append(Generators.generateRoot(syntax_tree, syntax_tree));
 
