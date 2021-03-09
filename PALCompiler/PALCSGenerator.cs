@@ -27,7 +27,7 @@ namespace PALCompiler
 
         internal string generate()
         {
-            StringBuilder artifact = new StringBuilder();
+            var artifact = new StringBuilder();
 
             //SyntaxNode cursor = null;
             //SyntaxNode precursor = null;
@@ -41,7 +41,7 @@ namespace PALCompiler
         {
             internal static string generateRoot(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
 
                 code.AppendLine("using System;\nusing System.IO;\n");
 
@@ -53,7 +53,7 @@ namespace PALCompiler
 
                 code.AppendLine("static void Main()\n{");
 
-                List<SyntaxNode> statements = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements = node.Children.FindAll(x => x.Symbol == "<Statement>");
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(root, statement));
 
@@ -78,29 +78,29 @@ namespace PALCompiler
 
             private static string generateIO(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
 
                 if (node.Children[0].Symbol == "INPUT") {
-                    List<SyntaxNode> identifiers = new List<SyntaxNode>();
-                    foreach (SyntaxNode identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
-                        foreach (SyntaxNode identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
+                    var identifiers = new List<SyntaxNode>();
+                    foreach (var identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
+                        foreach (var identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
                             identifiers.Add(identifier);
 
-                    SyntaxNode variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
+                    var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
 
-                    foreach (SyntaxNode identifier in identifiers) {
+                    foreach (var identifier in identifiers) {
                         code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
                         int list_index = variable_declarations.Children.FindIndex(x => (x.Children.Find(y => y.Value == identifier.Value)) != null);
                         Console.WriteLine("Identifier(" + identifier.Value + ") list index - " + list_index);
-                        List<SyntaxNode> type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
-                        SyntaxNode type_node = type_nodes[list_index];
+                        var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
+                        var type_node = type_nodes[list_index];
                         if (type_node.Children[0].Value == "INTEGER")
                             code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                         else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
                     }
                 }
                 else {
-                    List<SyntaxNode> outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
+                    var outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
                     foreach (var output in outputs) {
                         code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
                     }
@@ -111,15 +111,15 @@ namespace PALCompiler
             private static string generateConditional(SyntaxNode root, SyntaxNode node) => throw new NotImplementedException();
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
                 Console.WriteLine("Generating - " + node.Value);
 
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
                 code.AppendLine($"while ({stop_condition}) {{");
 
-                List<SyntaxNode> statements_in_block = node.Children.FindAll(x => x.Symbol == "<Statement>");
-                foreach (SyntaxNode statement in statements_in_block)
+                var statements_in_block = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                foreach (var statement in statements_in_block)
                     code.AppendLine(generateStatement(root, statement));
 
                 code.AppendLine("}");
@@ -153,7 +153,7 @@ namespace PALCompiler
 
             private static string generateExpression(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Symbol == "<Term>") code.Append(generateTerm(root, element));
@@ -165,7 +165,7 @@ namespace PALCompiler
 
             private static string generateTerm(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Symbol == "<Factor>") code.Append(generateFactor(root, element));
@@ -177,7 +177,7 @@ namespace PALCompiler
 
             private static string generateFactor(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
+                var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Symbol == "<Expression>") code.Append(generateExpression(root, element));
@@ -190,7 +190,7 @@ namespace PALCompiler
 
             private static string generateValue(SyntaxNode root, SyntaxNode node)
             {
-                System.Text.RegularExpressions.Regex dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
+                var dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
                 if (node.Symbol == "Real") {
                     if (dangling_radix.IsMatch(node.Value)) return node.Value + "0f";
                     else return node.Value + "f";
@@ -200,15 +200,15 @@ namespace PALCompiler
 
             private static string generateVariableDeclarations(SyntaxNode root, SyntaxNode node)
             {
-                StringBuilder code = new StringBuilder();
-                List<(string, string)> identifiers = new List<(string, string)>();
+                var code = new StringBuilder();
+                var identifiers = new List<(string, string)>();
 
-                List<SyntaxNode> identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
-                List<SyntaxNode> type_declarators = node.Children.FindAll(x => x.Symbol == "<Type>");
+                var identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
+                var type_declarators = node.Children.FindAll(x => x.Symbol == "<Type>");
 
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
                     string type_declarator = (type_declarators[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
-                    foreach (SyntaxNode identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier")) {
+                    foreach (var identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier")) {
                         code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
                     }
                 }
