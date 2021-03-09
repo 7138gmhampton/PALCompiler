@@ -71,10 +71,11 @@ namespace PALCompiler
                     code.AppendLine(generateInput(root, node));
                 }
                 else {
-                    var outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
-                    foreach (var output in outputs) {
-                        code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
-                    }
+                    //var outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
+                    //foreach (var output in outputs) {
+                    //    code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
+                    //}
+                    code.AppendLine(generateOutput(root, node));
                 }
                 
                 return code.ToString();
@@ -96,6 +97,18 @@ namespace PALCompiler
                     if (type_nodes[list_index].Children[0].Value == "INTEGER")
                         code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                     else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
+                }
+
+                return code.ToString();
+            }
+
+            private static string generateOutput(SyntaxNode root, SyntaxNode io_node)
+            {
+                var code = new StringBuilder();
+
+                var outputs = io_node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
+                foreach (var output in outputs) {
+                    code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
                 }
 
                 return code.ToString();
