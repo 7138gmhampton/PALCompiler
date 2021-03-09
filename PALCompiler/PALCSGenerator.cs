@@ -33,22 +33,34 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 code.AppendLine("using System;\nusing System.IO;\n");
-
                 code.AppendLine($"class {root.Children[1].Value}\n{{");
-
                 var variable_declaration = root.Children.Find(x => x.Symbol == "<VarDecls>");
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(root, variable_declaration));
 
-                code.AppendLine("static void Main()\n{");
+                //code.AppendLine("static void Main()\n{");
+                //var statements = root.Children.FindAll(x => x.Symbol == "<Statement>");
+                //foreach (var statement in statements)
+                //    code.AppendLine(generateStatement(root, statement));
+                //code.AppendLine("Console.WriteLine(\"Program terminated...\");");
+                //code.AppendLine("Console.ReadKey();");
+                //code.AppendLine("}");
+                code.AppendLine(generateImperatives(root));
+                code.AppendLine("}");
 
+                return code.ToString();
+            }
+
+            private static string generateImperatives(SyntaxNode root)
+            {
+                var code = new StringBuilder();
+
+                code.AppendLine("static void Main()\n{");
                 var statements = root.Children.FindAll(x => x.Symbol == "<Statement>");
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(root, statement));
-
                 code.AppendLine("Console.WriteLine(\"Program terminated...\");");
                 code.AppendLine("Console.ReadKey();");
-                code.AppendLine("}");
                 code.AppendLine("}");
 
                 return code.ToString();
