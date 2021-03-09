@@ -30,7 +30,7 @@ namespace PALCompiler
 
         internal PALParser(IScanner scanner) : base(scanner)
         {
-            syntax_tree = new SyntaxNode("<Program>");
+            syntax_tree = new SyntaxNode(null, "<Program>");
             //this.symbols = symbols;
         }
 
@@ -56,20 +56,20 @@ namespace PALCompiler
 
         private void consume(ref SyntaxNode parent, string symbol)
         {
-            if (have(symbol)) parent.addChild(new SyntaxNode(symbol));
+            if (have(symbol)) parent.addChild(new SyntaxNode(parent, symbol));
             mustBe(symbol);
         }
 
         private void consume(ref SyntaxNode parent, string symbol, string value)
         {
             //if (have(symbol)) parent.addChild(new SyntaxNode(symbol + "(" + value + ")"));
-            if (have(symbol)) parent.addChild(new SyntaxNode(symbol, value));
+            if (have(symbol)) parent.addChild(new SyntaxNode(parent, symbol, value));
             mustBe(symbol);
         }
 
         private void consume(ref SyntaxNode parent, Recogniser recogniser)
         {
-            var node = new SyntaxNode(nonterminals[recogniser]);
+            var node = new SyntaxNode(parent, nonterminals[recogniser]);
             recogniser(this, ref node);
             parent.addChild(node);
         }

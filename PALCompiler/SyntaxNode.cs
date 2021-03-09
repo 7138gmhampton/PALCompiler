@@ -6,26 +6,30 @@ namespace PALCompiler
     class SyntaxNode
     {
         private List<SyntaxNode> children;
+        private SyntaxNode parent;
         private string symbol;
         private string value;
 
-        internal SyntaxNode(string symbol)
+        internal SyntaxNode(SyntaxNode parent, string symbol)
         {
             this.symbol = symbol;
             this.value = symbol;
             children = new List<SyntaxNode>();
+            this.parent = parent;
         }
 
-        internal SyntaxNode(string symbol, string value)
+        internal SyntaxNode(SyntaxNode parent, string symbol, string value)
         {
             this.symbol = symbol;
             this.value = value;
             children = new List<SyntaxNode>();
+            this.parent = parent;
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
         internal string Symbol { get { return symbol; } }
         internal string Value { get { return value; } }
+        internal SyntaxNode Parent { get { return parent; } }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
