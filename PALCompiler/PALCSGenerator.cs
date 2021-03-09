@@ -193,11 +193,29 @@ namespace PALCompiler
 
                 foreach (var element in node.Children) {
                     if (element.Symbol == "<Expression>") code.Append(generateExpression(root, element));
-                    else if (element.Symbol == "<Value>") code.Append(element.Children[0].Value);
+                    //else if (element.Symbol == "<Value>") code.Append(element.Children[0].Value);
+                    else if (element.Symbol == "<Value>") code.Append(generateValue(root, element.Children[0]));
                     else code.Append(element.Symbol);
                 }
 
                 return code.ToString();
+            }
+
+            private static string generateValue(SyntaxNode root, SyntaxNode node)
+            {
+                //StringBuilder code = new StringBuilder();
+
+                //if (Regex.Match)
+                System.Text.RegularExpressions.Regex dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
+                //if (dangling_radix.IsMatch(node.Value)) return node.Value + "0";
+                //else return node.Value;
+                if (node.Symbol == "Real") {
+                    if (dangling_radix.IsMatch(node.Value)) return node.Value + "0f";
+                    else return node.Value + "f";
+                }
+                else return node.Value;
+
+                //return code.ToString();
             }
 
             private static string generateVariableDeclarations(SyntaxNode root, SyntaxNode node)
