@@ -81,10 +81,11 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 if (node.Children[0].Symbol == "INPUT") {
-                    var identifiers = new List<SyntaxNode>();
-                    foreach (var identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
-                        foreach (var identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
-                            identifiers.Add(identifier);
+                    //var identifiers = new List<SyntaxNode>();
+                    //foreach (var identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
+                    //    foreach (var identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
+                    //        identifiers.Add(identifier);
+                    var identifiers = node.Children[1].Children.FindAll(x => x.Symbol == "Identifier");
 
                     var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
                     var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
