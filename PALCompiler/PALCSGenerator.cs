@@ -32,28 +32,28 @@ namespace PALCompiler
             //SyntaxNode cursor = null;
             //SyntaxNode precursor = null;
 
-            artifact.Append(Generators.generateRoot(syntax_tree, syntax_tree));
+            artifact.Append(Generators.generateProgram(syntax_tree));
 
             return artifact.ToString();
         }
 
         private static class Generators
         {
-            internal static string generateRoot(SyntaxNode root, SyntaxNode node)
+            internal static string generateProgram(SyntaxNode root)
             {
                 var code = new StringBuilder();
 
                 code.AppendLine("using System;\nusing System.IO;\n");
 
-                code.AppendLine($"class {node.Children[1].Value}\n{{");
+                code.AppendLine($"class {root.Children[1].Value}\n{{");
 
-                var variable_declaration = node.Children.Find(x => x.Symbol == "<VarDecls>");
+                var variable_declaration = root.Children.Find(x => x.Symbol == "<VarDecls>");
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(root, variable_declaration));
 
                 code.AppendLine("static void Main()\n{");
 
-                var statements = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements = root.Children.FindAll(x => x.Symbol == "<Statement>");
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(root, statement));
 
