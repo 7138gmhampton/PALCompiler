@@ -19,26 +19,19 @@ namespace PALCompiler
             };
 
         public SyntaxNode syntax_tree;
-        //private ISymbolTable symbol_table;
 
         internal PALCSGenerator(SyntaxNode syntax_tree)
         {
-            //this.symbol_table = symbol_table;
             this.syntax_tree = syntax_tree;
         }
 
         internal string generate()
         {
-            //syntax_tree.printGraphic("", true);
-
             StringBuilder artifact = new StringBuilder();
 
             SyntaxNode cursor = null;
             SyntaxNode precursor = null;
 
-            //cursor = syntax_tree;
-            //syntax_tree.printGraphic("", true);
-            //artifact.Append(symbol_to_generator[cursor.Symbol].Invoke(syntax_tree, syntax_tree));
             artifact.Append(Generators.generateRoot(syntax_tree, syntax_tree));
 
             return artifact.ToString();
@@ -86,35 +79,8 @@ namespace PALCompiler
             private static string generateIO(SyntaxNode root, SyntaxNode node)
             {
                 StringBuilder code = new StringBuilder();
-                //Type dummy_type = code.GetType();
-                //int dummy = 3;
-                //float badger = 0.1f;
-                //Type type = badger.GetType();
-                //badger = (typeof(type))dummy;
 
                 if (node.Children[0].Symbol == "INPUT") {
-                    //foreach (var identifier in node.Children[1].Children.FindAll(x => x.Symbol == "Identifier")) {
-                    //    code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                    //    //code.AppendLine($"if ({identifier.Value}.GetType() == typeof(int))");
-                    //    //code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
-                    //    //code.AppendLine($"else {identifier.Value} = ({identifier.Value}.FieldInfo.FieldType)float.Parse(Console.ReadLine());");
-                    //    //code.AppendLine($"{identifier.Value} = ")
-                    //    //var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
-                    //    ////int variable_declarations_index = root.Children.FindIndex(x => x.Symbol == "<VarDecls>");
-                    //    //if (variable_declarations != null) {
-                    //    //    //var identifier_index = variable_declarations.Children.FindIndex(x => x.Children.Where(y => y.Value == identifier.Value));
-                    //    //    //var identifier_list = variable_declarations.Children.Find(x => x.Children.FindAll(y => y.Value == identifier.Value))
-                    //    //    int identifier_index = -1;
-                    //    //    // TODO - Implement getParent on SyntaxNode to allow finding index of parent
-                    //    //    Console.WriteLine($"{identifier.Value} @ {identifier_index}");
-                    //    //    var type_node = variable_declarations.Children
-                    //    //        .GetRange(identifier_index, variable_declarations.Children.Count - identifier_index)
-                    //    //        .Find(x => x.Symbol == "<Type>");
-                    //    //    if (type_node.Children[0].Value == "INTEGER")
-                    //    //        code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
-                    //    //    else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
-                    //    //}
-                    //}
                     List<SyntaxNode> identifiers = new List<SyntaxNode>();
                     foreach (SyntaxNode identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
                         foreach (SyntaxNode identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
@@ -124,17 +90,6 @@ namespace PALCompiler
 
                     foreach (SyntaxNode identifier in identifiers) {
                         code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                        //int index = identifier.Parent.Parent.Children.FindIndex(x => x.Children.Contains(identifier));
-                        //Console.WriteLine("Identifier(" + identifier.Value + ") list index - " + index);
-                        //int no_of_siblings_and_self = identifier.Parent.Children.Count;
-                        //SyntaxNode type_node = identifier.Parent.Parent.Children.Skip(index).ToList<SyntaxNode>().Find(y => y.Symbol == "<Type>");
-                        //Console.WriteLine("Type node - " + type_node.Symbol);
-                        //List<SyntaxNode> type_nodes = identifier.Parent.Parent.Children.FindAll(x => x.Symbol == "<Type>");
-                        //SyntaxNode type_node = type_nodes[index];
-                        //Console.WriteLine("Type for " + identifier.Value + " - " + type_node.Children[0].Value);
-                        //if (type_node.Children[0].Symbol == "INTEGER")
-                        //    code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
-                        //else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
                         int list_index = variable_declarations.Children.FindIndex(x => (x.Children.Find(y => y.Value == identifier.Value)) != null);
                         Console.WriteLine("Identifier(" + identifier.Value + ") list index - " + list_index);
                         List<SyntaxNode> type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
@@ -236,27 +191,18 @@ namespace PALCompiler
 
             private static string generateValue(SyntaxNode root, SyntaxNode node)
             {
-                //StringBuilder code = new StringBuilder();
-
-                //if (Regex.Match)
                 System.Text.RegularExpressions.Regex dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
-                //if (dangling_radix.IsMatch(node.Value)) return node.Value + "0";
-                //else return node.Value;
                 if (node.Symbol == "Real") {
                     if (dangling_radix.IsMatch(node.Value)) return node.Value + "0f";
                     else return node.Value + "f";
                 }
                 else return node.Value;
-
-                //return code.ToString();
             }
 
             private static string generateVariableDeclarations(SyntaxNode root, SyntaxNode node)
             {
                 StringBuilder code = new StringBuilder();
-                int list_counter = 0;
                 List<(string, string)> identifiers = new List<(string, string)>();
-                float dummy = 0;
 
                 List<SyntaxNode> identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
                 List<SyntaxNode> type_declarators = node.Children.FindAll(x => x.Symbol == "<Type>");
