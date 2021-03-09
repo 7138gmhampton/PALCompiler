@@ -10,14 +10,6 @@ namespace PALCompiler
 {
     class PALCSGenerator
     {
-        //private delegate string Generator(SyntaxNode root, SyntaxNode node);
-
-        //private readonly static Dictionary<string, Generator> symbol_to_generator =
-        //    new Dictionary<string, Generator>
-        //    {
-        //        { "<Program>", Generators.generateRoot }
-        //    };
-
         public SyntaxNode syntax_tree;
 
         internal PALCSGenerator(SyntaxNode syntax_tree)
@@ -28,9 +20,6 @@ namespace PALCompiler
         internal string generate()
         {
             var artifact = new StringBuilder();
-
-            //SyntaxNode cursor = null;
-            //SyntaxNode precursor = null;
 
             artifact.Append(Generators.generateProgram(syntax_tree));
 
@@ -81,12 +70,7 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 if (node.Children[0].Symbol == "INPUT") {
-                    //var identifiers = new List<SyntaxNode>();
-                    //foreach (var identifier_list in node.Children.FindAll(x => x.Symbol == "<IdentList>"))
-                    //    foreach (var identifier in identifier_list.Children.FindAll(y => y.Symbol == "Identifier"))
-                    //        identifiers.Add(identifier);
                     var identifiers = node.Children[1].Children.FindAll(x => x.Symbol == "Identifier");
-
                     var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
                     var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
 
@@ -113,16 +97,12 @@ namespace PALCompiler
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
                 var code = new StringBuilder();
-                //Console.WriteLine("Generating - " + node.Value);
-
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
                 code.AppendLine($"while ({stop_condition}) {{");
-
                 var statements_in_block = node.Children.FindAll(x => x.Symbol == "<Statement>");
                 foreach (var statement in statements_in_block)
                     code.AppendLine(generateStatement(root, statement));
-
                 code.AppendLine("}");
 
                 return code.ToString();
