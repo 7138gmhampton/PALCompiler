@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
@@ -38,13 +34,6 @@ namespace PALCompiler
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(root, variable_declaration));
 
-                //code.AppendLine("static void Main()\n{");
-                //var statements = root.Children.FindAll(x => x.Symbol == "<Statement>");
-                //foreach (var statement in statements)
-                //    code.AppendLine(generateStatement(root, statement));
-                //code.AppendLine("Console.WriteLine(\"Program terminated...\");");
-                //code.AppendLine("Console.ReadKey();");
-                //code.AppendLine("}");
                 code.AppendLine(generateImperatives(root));
                 code.AppendLine("}");
 
