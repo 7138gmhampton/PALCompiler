@@ -76,7 +76,7 @@ namespace PALCompiler
             {
                 switch (node.Children[0].Symbol) {
                     case "<Assignment>": return generateAssignment(root, node.Children[0]);
-                    case "<Loop>": return generateLoop(root, node);
+                    case "<Loop>": return generateLoop(root, node.Children[0]);
                     case "<Conditional>": return generateConditional(root, node);
                     case "<I-o>": return generateIO(root, node.Children[0]);
                     default: throw new Exception("Malformed syntax tree");
@@ -157,6 +157,7 @@ namespace PALCompiler
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
                 StringBuilder code = new StringBuilder();
+                Console.WriteLine("Generating - " + node.Value);
 
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
@@ -171,7 +172,21 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateBooleanExpression(SyntaxNode root, SyntaxNode syntaxNode) => throw new NotImplementedException();
+            private static string generateBooleanExpression(SyntaxNode root, SyntaxNode boolean_node)
+            {
+                string left_hand = generateExpression(root, boolean_node.Children[0]);
+                string right_hand = generateExpression(root, boolean_node.Children[2]);
+                string inverted_operator = invertOperator(boolean_node.Children[1].Value);
+
+                return $"{left_hand} {inverted_operator} {right_hand}";
+            }
+
+            private static string invertOperator(string boolean_operator)
+            {
+                if (boolean_operator == "<") return ">=";
+                else if (boolean_operator == "=") return "!=";
+                else return "<=";
+            }
 
             private static string generateAssignment(SyntaxNode root, SyntaxNode node)
             {
