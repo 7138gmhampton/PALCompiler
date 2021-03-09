@@ -54,29 +54,8 @@ namespace PALCompiler
             {
                 var code = new StringBuilder();
 
-                if (node.Children[0].Symbol == "INPUT") {
-                    //var identifiers = node.Children[1].Children.FindAll(x => x.Symbol == "Identifier");
-                    //var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
-                    //var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
-
-                    //foreach (var identifier in identifiers) {
-                    //    code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                    //    int list_index = variable_declarations
-                    //        .Children
-                    //        .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
-                    //    if (type_nodes[list_index].Children[0].Value == "INTEGER")
-                    //        code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
-                    //    else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
-                    //}
-                    code.AppendLine(generateInput(root, node));
-                }
-                else {
-                    //var outputs = node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
-                    //foreach (var output in outputs) {
-                    //    code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
-                    //}
-                    code.AppendLine(generateOutput(root, node));
-                }
+                if (node.Children[0].Symbol == "INPUT") code.AppendLine(generateInput(root, node));
+                else code.AppendLine(generateOutput(root, node));
                 
                 return code.ToString();
             }
