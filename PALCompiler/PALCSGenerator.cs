@@ -211,7 +211,6 @@ namespace PALCompiler
                     string type_declarator = (type_declarators[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
                     foreach (SyntaxNode identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier")) {
                         code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
-                        //code.AppendLine($"static Type {identifier.Value}_type = {identifier.Value}.GetType();");
                     }
                 }
 
