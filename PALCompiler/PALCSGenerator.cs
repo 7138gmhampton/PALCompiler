@@ -202,7 +202,9 @@ namespace PALCompiler
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
                     string type_declarator = (type_declarators[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
                     foreach (var identifier in identifier_lists[iii].Children.FindAll(x => x.Symbol == "Identifier")) {
-                        code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
+                        if (type_declarator == "int")
+                            code.AppendLine($"static {type_declarator} {identifier.Value} = 0;");
+                        else code.AppendLine($"static {type_declarator} {identifier.Value} = 0.0f;");
                     }
                 }
 
