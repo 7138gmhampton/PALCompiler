@@ -181,7 +181,6 @@ namespace PALCompiler
 
                 foreach (var element in node.Children) {
                     if (element.Symbol == "<Expression>") code.Append(generateExpression(root, element));
-                    //else if (element.Symbol == "<Value>") code.Append(element.Children[0].Value);
                     else if (element.Symbol == "<Value>") code.Append(generateValue(root, element.Children[0]));
                     else code.Append(element.Symbol);
                 }
