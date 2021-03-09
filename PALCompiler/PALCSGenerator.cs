@@ -87,14 +87,14 @@ namespace PALCompiler
                             identifiers.Add(identifier);
 
                     var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
+                    var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
 
                     foreach (var identifier in identifiers) {
                         code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                        int list_index = variable_declarations.Children.FindIndex(x => (x.Children.Find(y => y.Value == identifier.Value)) != null);
-                        Console.WriteLine("Identifier(" + identifier.Value + ") list index - " + list_index);
-                        var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
-                        var type_node = type_nodes[list_index];
-                        if (type_node.Children[0].Value == "INTEGER")
+                        int list_index = variable_declarations
+                            .Children
+                            .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
+                        if (type_nodes[list_index].Children[0].Value == "INTEGER")
                             code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                         else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
                     }
