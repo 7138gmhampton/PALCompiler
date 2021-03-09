@@ -112,7 +112,7 @@ namespace PALCompiler
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
                 var code = new StringBuilder();
-                Console.WriteLine("Generating - " + node.Value);
+                //Console.WriteLine("Generating - " + node.Value);
 
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
