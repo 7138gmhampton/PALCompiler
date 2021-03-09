@@ -36,11 +36,10 @@ namespace PALCompiler
             string cs_code = generator.generate();
             File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
-            var code_provider = new CSharpCodeProvider();
             //var compiler_params = new CompilerParameters();
             //compiler_params.GenerateExecutable = true;
             //compiler_params.OutputAssembly = executable.Replace("txt", "exe");
-            var cs_results = code_provider
+            var cs_results = new CSharpCodeProvider()
                 .CompileAssemblyFromSource(new CompilerParameters
                 {
                     GenerateExecutable = true,
