@@ -42,6 +42,14 @@ namespace PALCompiler
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
+        internal SyntaxNode OnlyChild {
+            get
+            {
+                if (children.Count != 1)
+                    throw new Exception("Multiple/zero child nodes where one expected");
+                else return children[0];
+            }
+        }
         //internal string Symbol { get { return symbol; } }
         internal string Symbol { get { return token.TokenType; } }
         //internal string Value { get { return value; } }
