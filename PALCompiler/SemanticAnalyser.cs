@@ -73,11 +73,21 @@ namespace PALCompiler
                 for (int iii = 0; iii < ident_lists.Count; ++iii) {
                     SemanticType current_type = type_nodes[iii].Type;
                     foreach (var identifier in ident_lists[iii].Children.FindAll(x => x.Symbol == "Identifier"))
-                        analyseIdentifier(identifier, current_type);
+                        analyseIdentifier(analyser, identifier, current_type);
                 }
+
+                //foreach (var symbol in analyser.symbols)
+                //    Console.WriteLine($"{symbol.Name} - {LanguageType.ToString(symbol.Type)}");
             }
 
-            private static void analyseIdentifier(SyntaxNode identifier, int current_type) => throw new NotImplementedException();
+            private static void analyseIdentifier(
+                SemanticAnalyser analyser, 
+                SyntaxNode identifier, 
+                SemanticType type)
+            {
+                identifier.Type = type;
+                analyser.appendSymbol(new VarSymbol(identifier.Token, type));
+            }
 
             private static void analyseType(SemanticAnalyser analyser, SyntaxNode type)
             {
