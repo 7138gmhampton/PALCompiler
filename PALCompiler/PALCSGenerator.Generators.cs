@@ -16,7 +16,7 @@ namespace PALCompiler
                 code.AppendLine($"class {root.Children[1].Value}\n{{");
                 var variable_declaration = root
                     .Children
-                    .Find(x => x.Symbol == Nonterminals.VARIABLE_DECLARATION);
+                    .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(root, variable_declaration));
 
@@ -31,7 +31,7 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 code.AppendLine("static void Main()\n{");
-                var statements = root.Children.FindAll(x => x.Symbol == Nonterminals.STATEMENT);
+                var statements = root.Children.FindAll(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(root, statement));
                 code.AppendLine("Console.WriteLine(\"Program terminated...\");");
@@ -43,7 +43,7 @@ namespace PALCompiler
 
             private static string generateStatement(SyntaxNode root, SyntaxNode node)
             {
-                switch (node.Children[0].Symbol) {
+                switch (node.Children[0].Syntax) {
                     //case "<Assignment>": return generateAssignment(root, node.Children[0]);
                     //case string _ when _ : return generateAssignment(root, node.Children[0]);
                     case Nonterminals.ASSIGMENT: return generateAssignment(root, node.Children[0]);
@@ -58,7 +58,7 @@ namespace PALCompiler
             {
                 var code = new StringBuilder();
 
-                if (node.Children[0].Symbol == "INPUT") code.AppendLine(generateInput(root, node));
+                if (node.Children[0].Syntax == "INPUT") code.AppendLine(generateInput(root, node));
                 else code.AppendLine(generateOutput(root, node));
                 
                 return code.ToString();
@@ -68,13 +68,13 @@ namespace PALCompiler
             {
                 var code = new StringBuilder();
 
-                var identifiers = io_node.Children[1].Children.FindAll(x => x.Symbol == "Identifier");
+                var identifiers = io_node.Children[1].Children.FindAll(x => x.Syntax == "Identifier");
                 var variable_declarations = root
                     .Children
-                    .Find(x => x.Symbol == Nonterminals.VARIABLE_DECLARATION);
+                    .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
                 var type_nodes = variable_declarations
                     .Children
-                    .FindAll(x => x.Symbol == Nonterminals.TYPE);
+                    .FindAll(x => x.Syntax == Nonterminals.TYPE);
 
                 foreach (var identifier in identifiers) {
                     code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
@@ -93,7 +93,7 @@ namespace PALCompiler
             {
                 var code = new StringBuilder();
 
-                var outputs = io_node.Children.FindAll(x => x.Symbol != "," && x.Symbol != "OUTPUT");
+                var outputs = io_node.Children.FindAll(x => x.Syntax != "," && x.Syntax != "OUTPUT");
                 foreach (var output in outputs) {
                     code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
                 }
@@ -108,7 +108,7 @@ namespace PALCompiler
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
                 code.AppendLine($"while ({stop_condition}) {{");
-                var statements_in_block = node.Children.FindAll(x => x.Symbol == Nonterminals.STATEMENT);
+                var statements_in_block = node.Children.FindAll(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in statements_in_block)
                     code.AppendLine(generateStatement(root, statement));
                 code.AppendLine("}");
@@ -145,9 +145,9 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == Nonterminals.TERM)
+                    if (element.Syntax == Nonterminals.TERM)
                         code.Append(generateTerm(root, element));
-                    else code.Append(element.Symbol);
+                    else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
@@ -158,9 +158,9 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == Nonterminals.FACTOR)
+                    if (element.Syntax == Nonterminals.FACTOR)
                         code.Append(generateFactor(root, element));
-                    else code.Append(element.Symbol);
+                    else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
@@ -171,11 +171,11 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == Nonterminals.EXPRESSION)
+                    if (element.Syntax == Nonterminals.EXPRESSION)
                         code.Append(generateExpression(root, element));
-                    else if (element.Symbol == Nonterminals.VALUE)
+                    else if (element.Syntax == Nonterminals.VALUE)
                         code.Append(generateValue(root, element.Children[0]));
-                    else code.Append(element.Symbol);
+                    else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
@@ -184,7 +184,7 @@ namespace PALCompiler
             private static string generateValue(SyntaxNode root, SyntaxNode node)
             {
                 var dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
-                if (node.Symbol == "Real") {
+                if (node.Syntax == "Real") {
                     if (dangling_radix.IsMatch(node.Value)) return node.Value + "0f";
                     else return node.Value + "f";
                 }
@@ -198,14 +198,14 @@ namespace PALCompiler
 
                 var identifier_lists = node
                     .Children
-                    .FindAll(x => x.Symbol == Nonterminals.IDENTIFIER_LIST);
-                var types = node.Children.FindAll(x => x.Symbol == Nonterminals.TYPE);
+                    .FindAll(x => x.Syntax == Nonterminals.IDENTIFIER_LIST);
+                var types = node.Children.FindAll(x => x.Syntax == Nonterminals.TYPE);
 
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
-                    string type = (types[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
+                    string type = (types[iii].Children[0].Syntax == "INTEGER") ? "int" : "float";
                     foreach (var identifier in identifier_lists[iii]
                         .Children
-                        .FindAll(x => x.Symbol == "Identifier")) {
+                        .FindAll(x => x.Syntax == "Identifier")) {
                         if (type == "int") code.AppendLine($"static {type} {identifier.Value} = 0;");
                         else code.AppendLine($"static {type} {identifier.Value} = 0.0f;");
                     }

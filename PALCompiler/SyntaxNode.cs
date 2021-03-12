@@ -31,10 +31,10 @@ namespace PALCompiler
                 else return children[0];
             }
         }
-        internal string Symbol { get { return token.TokenType; } }
+        internal string Syntax { get { return token.TokenType; } }
         internal string Value { get { return token.TokenValue; } }
         internal SyntaxNode Parent { get { return parent; } }
-        internal SemanticType Type
+        internal SemanticType Semantic
         {
             get
             {
@@ -62,12 +62,12 @@ namespace PALCompiler
                 Console.Write("\u251C\u2500");
                 indent += "\u2502 ";
             }
-            string type_string = (Type == LanguageType.Undefined)
+            string type_string = (Semantic == LanguageType.Undefined)
                 ? ""
-                : $"[{LanguageType.ToString(Type)}]";
-            Console.WriteLine((Symbol == Value) 
-                ? $"{Symbol}{type_string}" 
-                : $"{Symbol}({Value}){type_string}");
+                : $"[{LanguageType.ToString(Semantic)}]";
+            Console.WriteLine((Syntax == Value) 
+                ? $"{Syntax}{type_string}" 
+                : $"{Syntax}({Value}){type_string}");
 
             for (int iii = 0; iii < children.Count; ++iii)
                 children[iii].printGraphic(indent, iii == children.Count - 1);
