@@ -14,7 +14,9 @@ namespace PALCompiler
 
                 code.AppendLine("using System;\nusing System.IO;\n");
                 code.AppendLine($"class {root.Children[1].Value}\n{{");
-                var variable_declaration = root.Children.Find(x => x.Symbol == "<VarDecls>");
+                var variable_declaration = root
+                    .Children
+                    .Find(x => x.Symbol == Nonterminals.VARIABLE_DECLARATION);
                 if (variable_declaration != null)
                     code.AppendLine(generateVariableDeclarations(root, variable_declaration));
 
@@ -29,7 +31,7 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 code.AppendLine("static void Main()\n{");
-                var statements = root.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements = root.Children.FindAll(x => x.Symbol == Nonterminals.STATEMENT);
                 foreach (var statement in statements)
                     code.AppendLine(generateStatement(root, statement));
                 code.AppendLine("Console.WriteLine(\"Program terminated...\");");
@@ -42,10 +44,12 @@ namespace PALCompiler
             private static string generateStatement(SyntaxNode root, SyntaxNode node)
             {
                 switch (node.Children[0].Symbol) {
-                    case "<Assignment>": return generateAssignment(root, node.Children[0]);
-                    case "<Loop>": return generateLoop(root, node.Children[0]);
-                    case "<Conditional>": return generateConditional(root, node.Children[0]);
-                    case "<I-o>": return generateIO(root, node.Children[0]);
+                    //case "<Assignment>": return generateAssignment(root, node.Children[0]);
+                    //case string _ when _ : return generateAssignment(root, node.Children[0]);
+                    case Nonterminals.ASSIGMENT: return generateAssignment(root, node.Children[0]);
+                    case Nonterminals.LOOP: return generateLoop(root, node.Children[0]);
+                    case Nonterminals.CONDITIONAL: return generateConditional(root, node.Children[0]);
+                    case Nonterminals.IO: return generateIO(root, node.Children[0]);
                     default: throw new Exception("Malformed syntax tree");
                 }
             }
@@ -65,8 +69,12 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 var identifiers = io_node.Children[1].Children.FindAll(x => x.Symbol == "Identifier");
-                var variable_declarations = root.Children.Find(x => x.Symbol == "<VarDecls>");
-                var type_nodes = variable_declarations.Children.FindAll(x => x.Symbol == "<Type>");
+                var variable_declarations = root
+                    .Children
+                    .Find(x => x.Symbol == Nonterminals.VARIABLE_DECLARATION);
+                var type_nodes = variable_declarations
+                    .Children
+                    .FindAll(x => x.Symbol == Nonterminals.TYPE);
 
                 foreach (var identifier in identifiers) {
                     code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
@@ -100,7 +108,7 @@ namespace PALCompiler
                 string stop_condition = generateBooleanExpression(root, node.Children[1]);
 
                 code.AppendLine($"while ({stop_condition}) {{");
-                var statements_in_block = node.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements_in_block = node.Children.FindAll(x => x.Symbol == Nonterminals.STATEMENT);
                 foreach (var statement in statements_in_block)
                     code.AppendLine(generateStatement(root, statement));
                 code.AppendLine("}");
@@ -137,7 +145,8 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == "<Term>") code.Append(generateTerm(root, element));
+                    if (element.Symbol == Nonterminals.TERM)
+                        code.Append(generateTerm(root, element));
                     else code.Append(element.Symbol);
                 }
 
@@ -149,7 +158,8 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == "<Factor>") code.Append(generateFactor(root, element));
+                    if (element.Symbol == Nonterminals.FACTOR)
+                        code.Append(generateFactor(root, element));
                     else code.Append(element.Symbol);
                 }
 
@@ -161,9 +171,9 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
-                    if (element.Symbol == "<Expression>")
+                    if (element.Symbol == Nonterminals.EXPRESSION)
                         code.Append(generateExpression(root, element));
-                    else if (element.Symbol == "<Value>")
+                    else if (element.Symbol == Nonterminals.VALUE)
                         code.Append(generateValue(root, element.Children[0]));
                     else code.Append(element.Symbol);
                 }
@@ -186,8 +196,10 @@ namespace PALCompiler
                 var code = new StringBuilder();
                 var identifiers = new List<(string, string)>();
 
-                var identifier_lists = node.Children.FindAll(x => x.Symbol == "<IdentList>");
-                var types = node.Children.FindAll(x => x.Symbol == "<Type>");
+                var identifier_lists = node
+                    .Children
+                    .FindAll(x => x.Symbol == Nonterminals.IDENTIFIER_LIST);
+                var types = node.Children.FindAll(x => x.Symbol == Nonterminals.TYPE);
 
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
                     string type = (types[iii].Children[0].Symbol == "INTEGER") ? "int" : "float";
