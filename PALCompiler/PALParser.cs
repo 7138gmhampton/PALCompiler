@@ -12,19 +12,19 @@ namespace PALCompiler
         private static readonly Dictionary<Recogniser, string> nonterminals =
             new Dictionary<Recogniser, string>
             {
-                { Recognisers.recogniseAssignment, "<Assignment>" },
-                { Recognisers.recogniseBooleanExpr, "<BooleanExpr>" },
-                { Recognisers.recogniseConditional, "<Conditional>" },
-                { Recognisers.recogniseExpression, "<Expression>" },
-                { Recognisers.recogniseFactor, "<Factor>" },
-                { Recognisers.recogniseIdentList, "<IdentList>" },
-                { Recognisers.recogniseIO, "<I-o>" },
-                { Recognisers.recogniseLoop, "<Loop>" },
-                { Recognisers.recogniseStatement, "<Statement>" },
-                { Recognisers.recogniseTerm, "<Term>" },
-                { Recognisers.recogniseType, "<Type>" },
-                { Recognisers.recogniseValue, "<Value>" },
-                { Recognisers.recogniseVarDecls, "<VarDecls>" }
+                { Recognisers.recogniseAssignment, Nonterminals.ASSIGMENT },
+                { Recognisers.recogniseBooleanExpr, Nonterminals.BOOLEAN_EXPRESSION },
+                { Recognisers.recogniseConditional, Nonterminals.CONDITIONAL },
+                { Recognisers.recogniseExpression, Nonterminals.EXPRESSION },
+                { Recognisers.recogniseFactor, Nonterminals.FACTOR },
+                { Recognisers.recogniseIdentList, Nonterminals.IDENTIFIER_LIST },
+                { Recognisers.recogniseIO, Nonterminals.IO },
+                { Recognisers.recogniseLoop, Nonterminals.LOOP },
+                { Recognisers.recogniseStatement, Nonterminals.STATEMENT },
+                { Recognisers.recogniseTerm, Nonterminals.TERM },
+                { Recognisers.recogniseType, Nonterminals.TYPE },
+                { Recognisers.recogniseValue, Nonterminals.VALUE },
+                { Recognisers.recogniseVarDecls, Nonterminals.VARIABLE_DECLARATION }
             };
 
         internal PALParser(IScanner scanner) : base(scanner)
