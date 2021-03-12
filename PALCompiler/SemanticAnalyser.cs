@@ -70,7 +70,18 @@ namespace PALCompiler
             }
 
             private static void analyseLoop(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
-            private static void analyseIO(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
+            private static void analyseIO(SemanticAnalyser analyser, SyntaxNode io)
+            {
+                if (io.Children[1].Symbol == Nonterminals.IDENTIFIER_LIST) {
+                    var identifiers = io.Children[1].Children.FindAll(x => x.Symbol == "Identifer");
+                    foreach (var identifier in identifiers) analyseIdentifierUse(analyser, identifier);
+                }
+                else {
+                    var expressions = io.Children.FindAll(x => x.Symbol == Nonterminals.EXPRESSION);
+                    foreach (var expression in expressions) analyseExpression(analyser, expression);
+                }
+            }
+
             private static void analyseConditional(SemanticAnalyser analyser, SyntaxNode conditional)
             {
                 analyseBooleanExpression(analyser, conditional.Children[1]);
