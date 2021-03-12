@@ -28,6 +28,9 @@ namespace PALCompiler
         internal void analyse()
         {
             Analysers.analyseProgram(this, syntax_tree);
+
+            parser.Errors.AddRange(errors);
+            parser.Errors.Sort();
         }
 
         private void appendSymbol(ISymbol symbol)
