@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PALCompiler
+﻿namespace PALCompiler
 {
     internal static class Nonterminals
     {
