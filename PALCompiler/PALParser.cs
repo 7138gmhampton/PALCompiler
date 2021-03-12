@@ -8,7 +8,6 @@ namespace PALCompiler
         private delegate void Recogniser(PALParser parser, ref SyntaxNode parent);
 
         private SyntaxNode syntax_tree;
-        //private ISymbolTable symbols;
 
         private static readonly Dictionary<Recogniser, string> nonterminals =
             new Dictionary<Recogniser, string>
@@ -30,9 +29,7 @@ namespace PALCompiler
 
         internal PALParser(IScanner scanner) : base(scanner)
         {
-            //syntax_tree = new SyntaxNode(null, "<Program>");
             syntax_tree = new SyntaxNode(null, new Token("<Program>", 0, 0));
-            //this.symbols = symbols;
         }
 
         protected override void recStarter()
@@ -49,30 +46,23 @@ namespace PALCompiler
 
         internal SyntaxNode SyntaxTree { get { return syntax_tree; } }
 
-        private bool haveStatement()
-        {
-            return have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") ||
-                have("OUTPUT");
-        }
+        private bool haveStatement() => 
+            have(Token.IdentifierToken) || have("UNTIL") || have("IF") || have("INPUT") || have("OUTPUT");
 
         private void consume(ref SyntaxNode parent, string symbol)
         {
-            //if (have(symbol)) parent.addChild(new SyntaxNode(parent, symbol));
             if (have(symbol)) parent.addChild(new SyntaxNode(parent, scanner.CurrentToken));
             mustBe(symbol);
         }
 
         private void consume(ref SyntaxNode parent, string symbol, string value)
         {
-            //if (have(symbol)) parent.addChild(new SyntaxNode(symbol + "(" + value + ")"));
-            //if (have(symbol)) parent.addChild(new SyntaxNode(parent, symbol, value));
             if (have(symbol)) parent.addChild(new SyntaxNode(parent, scanner.CurrentToken));
             mustBe(symbol);
         }
 
         private void consume(ref SyntaxNode parent, Recogniser recogniser)
         {
-            //var node = new SyntaxNode(parent, nonterminals[recogniser]);
             var node = new SyntaxNode(parent, new Token(nonterminals[recogniser], -1, -1));
             recogniser(this, ref node);
             parent.addChild(node);
