@@ -40,11 +40,13 @@ namespace PALCompiler
         {
             internal static void analyseProgram(SemanticAnalyser analyser, SyntaxNode program)
             {
-                var variable_declarations = program.Children.Find(x => x.Symbol == "<VarDecls>");
+                var variable_declarations = program
+                    .Children
+                    .Find(x => x.Symbol == Nonterminals.VARIABLE_DECLARATION);
                 if (variable_declarations != null)
                     analyseVariableDeclarations(analyser, variable_declarations);
 
-                var statements = program.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements = program.Children.FindAll(x => x.Symbol == Nonterminals.STATEMENT);
                 foreach (var statement in statements) analyseStatement(analyser, statement);
             }
 
@@ -57,12 +59,12 @@ namespace PALCompiler
             {
                 var type_nodes = variable_declarations_node
                     .Children
-                    .FindAll(x => x.Symbol == "<Type>");
+                    .FindAll(x => x.Symbol == Nonterminals.TYPE);
                 foreach (var type_node in type_nodes) analyseType(analyser, type_node);
 
                 var ident_lists = variable_declarations_node
                     .Children
-                    .FindAll(x => x.Symbol == "<IdentList>");
+                    .FindAll(x => x.Symbol == Nonterminals.IDENTIFIER_LIST);
                 for (int iii = 0; iii < ident_lists.Count; ++iii) {
                     SemanticType current_type = type_nodes[iii].Type;
                     foreach (var identifier in ident_lists[iii].Children.FindAll(x => x.Symbol == "Identifier"))

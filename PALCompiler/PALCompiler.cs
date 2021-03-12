@@ -10,8 +10,6 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
-            // TODO - Create Nonterminal enumeration
-
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
 
             var scanner = new PALScanner();
