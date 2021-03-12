@@ -20,7 +20,7 @@ namespace PALCompiler
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
-                generateCSArtifact(args[0], parser);
+                generateCSArtifact(args[0], parser.SyntaxTree);
             }
         }
 
@@ -49,11 +49,9 @@ namespace PALCompiler
             return parser;
         }
 
-        private static void generateCSArtifact(string executable, PALParser parser)
+        private static void generateCSArtifact(string executable, SyntaxNode syntax_tree)
         {
-            // TODO - Change to just using the syntax tree
-
-            string cs_code = new PALCSGenerator(parser.SyntaxTree).generate();
+            string cs_code = new PALCSGenerator(syntax_tree).generate();
             File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
             var cs_results = new CSharpCodeProvider()
