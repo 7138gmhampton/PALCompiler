@@ -90,7 +90,17 @@ namespace PALCompiler
                 foreach (var statement in statements) analyseStatement(analyser, statement);
             }
 
-            private static void analyseBooleanExpression(SemanticAnalyser analyser, SyntaxNode syntaxNode) => throw new NotImplementedException();
+            private static void analyseBooleanExpression(SemanticAnalyser analyser, SyntaxNode boolean)
+            {
+                SemanticType left_hand_type = analyseExpression(analyser, boolean.Children[0]);
+                SemanticType right_hand_type = analyseExpression(analyser, boolean.Children[2]);
+
+                if (left_hand_type != right_hand_type)
+                    analyser.errors.Add(new TypeConflictError(
+                        boolean.Children[2].Token,
+                        right_hand_type,
+                        left_hand_type));
+            }
 
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
             {
@@ -119,7 +129,7 @@ namespace PALCompiler
                 return expression.Type;
             }
 
-            private static int analyseTerm(SemanticAnalyser analyser, SyntaxNode term)
+            private static SemanticType analyseTerm(SemanticAnalyser analyser, SyntaxNode term)
             {
                 var factors = term.Children.FindAll(x => x.Symbol == Nonterminals.FACTOR);
 
@@ -134,16 +144,23 @@ namespace PALCompiler
                 return term.Type;
             }
 
-            private static int analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
+            private static SemanticType analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
             {
                 var element = factor.Children.Find(x => x.Symbol != "+" && x.Symbol != "-");
 
-                if (element.Symbol == Nonterminals.VALUE) element.Type = element.OnlyChild.Type;
+                if (element.Symbol == Nonterminals.VALUE) analyseValue(analyser, element);
                 else if (element.Symbol == Nonterminals.EXPRESSION)
                     element.Type = analyseExpression(analyser, element);
 
                 factor.Type = element.Type;
                 return factor.Type;
+            }
+
+            private static SemanticType analyseValue(SemanticAnalyser analyser, SyntaxNode element)
+            {
+                if (element.OnlyChild.Symbol == "Identifier")
+                    return analyseIdentifierUse(analyser, element.OnlyChild);
+                else return element.OnlyChild.Type;
             }
 
             private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
