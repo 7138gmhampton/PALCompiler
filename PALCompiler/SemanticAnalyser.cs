@@ -20,6 +20,11 @@ namespace PALCompiler
             this.parser = parser;
         }
 
+        internal void analyse()
+        {
+            Analysers.analyseProgram(this, syntax_tree);
+        }
+
         private void appendSymbol(ISymbol symbol)
         {
             //if (symbols.IsDefined(symbol.Name))
@@ -33,8 +38,20 @@ namespace PALCompiler
         {
             internal static void analyseProgram(SemanticAnalyser analyser, SyntaxNode program_node)
             {
+                var variable_declarations = program_node.Children.Find(x => x.Symbol == "<VarDecls>");
+                if (variable_declarations != null)
+                    analyseVariableDeclarations(analyser, variable_declarations);
 
+                var statements = program_node.Children.FindAll(x => x.Symbol == "<Statement>");
+                foreach (var statement in statements) analyseStatement(analyser, statement);
             }
+
+            private static void analyseStatement(SemanticAnalyser analyser, SyntaxNode statement_node) 
+                => throw new NotImplementedException();
+            private static void analyseVariableDeclarations(
+                SemanticAnalyser analyser, 
+                SyntaxNode variable_declarations_node) 
+                => throw new NotImplementedException();
         }
     }
 }
