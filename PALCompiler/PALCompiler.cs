@@ -21,11 +21,13 @@ namespace PALCompiler
             }
             catch (Exception err) { Console.WriteLine(err.Message);  }
 
-            parser.SyntaxTree.printGraphic("", true);
+            //parser.SyntaxTree.printGraphic("", true);
 
             var symbol_table = new SymbolTable();
             var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
             semantic_analyser.analyse();
+
+            parser.SyntaxTree.printGraphic("", true);
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
