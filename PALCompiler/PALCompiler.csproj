@@ -57,6 +57,7 @@
     <Compile Include="PALParser.Recognisers.cs" />
     <Compile Include="PALScanner.cs" />
     <Compile Include="PALScanner.LexerFSM.cs" />
+    <Compile Include="SemanticAnalyser.Analysers.cs" />
     <Compile Include="SemanticAnalyser.cs" />
     <Compile Include="SemanticError.cs" />
     <Compile Include="SyntaxNode.cs" />
