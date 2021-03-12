@@ -36,7 +36,7 @@ namespace PALCompiler
             //    parser.Errors.Add(new AlreadyDeclaredError(symbol.Source, symbols.Get(symbol.Name)));
             //else symbols.Add
             if (!symbols.Add(symbol))
-                parser.Errors.Add(new AlreadyDeclaredError(symbol.Source, symbols.Get(symbol.Name)));
+                errors.Add(new AlreadyDeclaredError(symbol.Source, symbols.Get(symbol.Name)));
         }
 
         private static class Analysers
