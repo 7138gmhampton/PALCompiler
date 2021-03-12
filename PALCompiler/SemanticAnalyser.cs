@@ -50,8 +50,29 @@ namespace PALCompiler
                 foreach (var statement in statements) analyseStatement(analyser, statement);
             }
 
-            private static void analyseStatement(SemanticAnalyser analyser, SyntaxNode statement) 
-                => throw new NotImplementedException();
+            private static void analyseStatement(SemanticAnalyser analyser, SyntaxNode statement)
+            {
+                switch (statement.OnlyChild.Symbol) {
+                    case Nonterminals.ASSIGMENT:
+                        analyseAssignment(analyser, statement.OnlyChild); break;
+                    case Nonterminals.CONDITIONAL:
+                        analyseConditional(analyser, statement.OnlyChild); break;
+                    case Nonterminals.IO:
+                        analyseIO(analyser, statement.OnlyChild); break;
+                    case Nonterminals.LOOP:
+                        analyseLoop(analyser, statement.OnlyChild); break;
+                    default:
+                        analyser.errors.Add(new SemanticError(
+                            statement.Token,
+                            "Unrecognised semantic construction"));
+                        break;
+                }
+            }
+
+            private static void analyseLoop(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
+            private static void analyseIO(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
+            private static void analyseConditional(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
+            private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
 
             private static void analyseVariableDeclarations(
                 SemanticAnalyser analyser, 
