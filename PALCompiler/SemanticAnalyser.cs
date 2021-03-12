@@ -26,10 +26,6 @@ namespace PALCompiler
 
             parser.Errors.AddRange(errors);
             parser.Errors.Sort();
-
-            Console.WriteLine("-- Symbols --");
-            foreach (var symbol in symbols)
-                Console.WriteLine(symbol.Name + " [" + symbol.Type + "]");
         }
 
         private void appendSymbol(ISymbol symbol)
