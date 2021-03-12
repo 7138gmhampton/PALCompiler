@@ -38,20 +38,22 @@ namespace PALCompiler
 
         private static class Analysers
         {
-            internal static void analyseProgram(SemanticAnalyser analyser, SyntaxNode program_node)
+            internal static void analyseProgram(SemanticAnalyser analyser, SyntaxNode program)
             {
-                var variable_declarations = program_node.Children.Find(x => x.Symbol == "<VarDecls>");
+                var variable_declarations = program.Children.Find(x => x.Symbol == "<VarDecls>");
                 if (variable_declarations != null)
                     analyseVariableDeclarations(analyser, variable_declarations);
 
-                var statements = program_node.Children.FindAll(x => x.Symbol == "<Statement>");
+                var statements = program.Children.FindAll(x => x.Symbol == "<Statement>");
                 foreach (var statement in statements) analyseStatement(analyser, statement);
             }
 
-            private static void analyseStatement(SemanticAnalyser analyser, SyntaxNode statement_node) 
+            private static void analyseStatement(SemanticAnalyser analyser, SyntaxNode statement) 
                 => throw new NotImplementedException();
 
-            private static void analyseVariableDeclarations(SemanticAnalyser analyser, SyntaxNode variable_declarations_node)
+            private static void analyseVariableDeclarations(
+                SemanticAnalyser analyser, 
+                SyntaxNode variable_declarations_node)
             {
                 var type_nodes = variable_declarations_node
                     .Children
