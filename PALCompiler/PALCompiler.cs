@@ -13,7 +13,7 @@ namespace PALCompiler
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
 
             var scanner = new PALScanner();
-            var symbol_table = new SymbolTable();
+            //var symbol_table = new SymbolTable();
             var parser = new PALParser(scanner);
             try {
                 if (parser.Parse(new StreamReader(source_file)))
@@ -21,6 +21,13 @@ namespace PALCompiler
                 else Console.WriteLine("Parsing: FAIL");
             }
             catch (Exception err) { Console.WriteLine(err.Message);  }
+
+            var symbol_table = new SymbolTable();
+            var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
+            try {
+                semantic_analyser.analyse();
+            }
+            catch (Exception err) { Console.WriteLine(err.Message); }
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
@@ -32,6 +39,8 @@ namespace PALCompiler
 
         private static void generateCSArtifact(string executable, PALParser parser)
         {
+            // TODO - Change to just using the syntax tree
+
             string cs_code = new PALCSGenerator(parser.SyntaxTree).generate();
             File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
 
