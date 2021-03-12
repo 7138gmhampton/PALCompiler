@@ -75,9 +75,9 @@ namespace PALCompiler
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
             {
                 SemanticType left_hand_type = analyseIdentifierUse(analyser, assignment.Children[0]);
-                Console.WriteLine("Left hand - " + LanguageType.ToString(left_hand_type));
+                //Console.WriteLine("Left hand - " + LanguageType.ToString(left_hand_type));
                 SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
-                Console.WriteLine("Right hand - " + LanguageType.ToString(right_hand_type));
+                //Console.WriteLine("Right hand - " + LanguageType.ToString(right_hand_type));
 
                 if (left_hand_type != right_hand_type)
                     analyser.errors.Add(new TypeConflictError(
@@ -116,7 +116,18 @@ namespace PALCompiler
                 return primary_type;
             }
 
-            private static int analyseFactor(SemanticAnalyser analyser, SyntaxNode term) => throw new NotImplementedException();
+            private static int analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
+            {
+                var element = factor.Children.Find(x => x.Symbol != "+" && x.Symbol != "-");
+
+                //SemanticType semantic_type = LanguageType.Undefined;
+                if (element.Symbol == Nonterminals.VALUE) element.Type = element.OnlyChild.Type;
+                else if (element.Symbol == Nonterminals.EXPRESSION)
+                    element.Type = analyseExpression(analyser, element);
+
+                //return semantic_type;
+                return element.Type;
+            }
 
             private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
             {
