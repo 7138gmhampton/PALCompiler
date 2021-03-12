@@ -26,9 +26,6 @@ namespace PALCompiler
 
         internal SyntaxNode(SyntaxNode parent, string symbol, string value) : this(parent, symbol)
         {
-            //this.symbol = symbol;
-            //children = new List<SyntaxNode>();
-            //this.parent = parent;
             this.value = value;
         }
 
@@ -50,20 +47,13 @@ namespace PALCompiler
                 else return children[0];
             }
         }
-        //internal string Symbol { get { return symbol; } }
         internal string Symbol { get { return token.TokenType; } }
-        //internal string Value { get { return value; } }
         internal string Value { get { return token.TokenValue; } }
         internal SyntaxNode Parent { get { return parent; } }
         internal SemanticType Type
         {
             get
             {
-                //return semantic_type;
-                //if (semantic_type != LanguageType.Undefined) return semantic_type;
-                //else if (determineTypeFromToken() != LanguageType.Undefined)
-                //    return determineTypeFromToken();
-                //else return LanguageType.Undefined;
                 if (semantic_type == LanguageType.Undefined)
                     semantic_type = determineTypeFromToken();
                 return semantic_type;
@@ -74,7 +64,7 @@ namespace PALCompiler
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
-        //internal SemanticType determineTypeFrom
+        // TODO - Create wrapper for tree printer
 
         internal void printGraphic(string indent, bool last)
         {

@@ -32,9 +32,6 @@ namespace PALCompiler
 
         private void appendSymbol(ISymbol symbol)
         {
-            //if (symbols.IsDefined(symbol.Name))
-            //    parser.Errors.Add(new AlreadyDeclaredError(symbol.Source, symbols.Get(symbol.Name)));
-            //else symbols.Add
             if (!symbols.Add(symbol))
                 errors.Add(new AlreadyDeclaredError(symbol.Source, symbols.Get(symbol.Name)));
         }
@@ -59,25 +56,16 @@ namespace PALCompiler
                 var type_nodes = variable_declarations_node
                     .Children
                     .FindAll(x => x.Symbol == "<Type>");
-                //Console.WriteLine("Types found - " + type_nodes.Count);
                 foreach (var type_node in type_nodes) analyseType(analyser, type_node);
-                //foreach (var type_node in type_nodes) Console.WriteLine(type_node.Type);
 
                 var ident_lists = variable_declarations_node
                     .Children
                     .FindAll(x => x.Symbol == "<IdentList>");
-                //foreach (var identifier_list in ident_lists) {
-                //    SemanticType current_type = type_nodes
-                //}
-                //Console.WriteLine("Identifier lists found - " + ident_lists.Count);
                 for (int iii = 0; iii < ident_lists.Count; ++iii) {
                     SemanticType current_type = type_nodes[iii].Type;
                     foreach (var identifier in ident_lists[iii].Children.FindAll(x => x.Symbol == "Identifier"))
                         analyseIdentifier(analyser, identifier, current_type);
                 }
-
-                //foreach (var symbol in analyser.symbols)
-                //    Console.WriteLine($"{symbol.Name} - {LanguageType.ToString(symbol.Type)}");
             }
 
             private static void analyseIdentifier(
