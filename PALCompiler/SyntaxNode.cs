@@ -60,10 +60,13 @@ namespace PALCompiler
             get
             {
                 //return semantic_type;
-                if (semantic_type != LanguageType.Undefined) return semantic_type;
-                else if (determineTypeFromToken() != LanguageType.Undefined)
-                    return determineTypeFromToken();
-                else return LanguageType.Undefined;
+                //if (semantic_type != LanguageType.Undefined) return semantic_type;
+                //else if (determineTypeFromToken() != LanguageType.Undefined)
+                //    return determineTypeFromToken();
+                //else return LanguageType.Undefined;
+                if (semantic_type == LanguageType.Undefined)
+                    semantic_type = determineTypeFromToken();
+                return semantic_type;
             }
             set { semantic_type = value; }
         }
