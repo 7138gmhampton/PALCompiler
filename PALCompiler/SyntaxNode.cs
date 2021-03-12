@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
@@ -9,27 +10,34 @@ namespace PALCompiler
         private SyntaxNode parent;
         private string symbol;
         private string value;
+        private int semantic_type; 
 
         internal SyntaxNode(SyntaxNode parent, string symbol)
         {
             this.symbol = symbol;
-            this.value = symbol;
-            children = new List<SyntaxNode>();
             this.parent = parent;
+            children = new List<SyntaxNode>();
+            value = symbol;
+            semantic_type = LanguageType.Undefined;
         }
 
-        internal SyntaxNode(SyntaxNode parent, string symbol, string value)
+        internal SyntaxNode(SyntaxNode parent, string symbol, string value) : this(parent, symbol)
         {
-            this.symbol = symbol;
+            //this.symbol = symbol;
+            //children = new List<SyntaxNode>();
+            //this.parent = parent;
             this.value = value;
-            children = new List<SyntaxNode>();
-            this.parent = parent;
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
         internal string Symbol { get { return symbol; } }
         internal string Value { get { return value; } }
         internal SyntaxNode Parent { get { return parent; } }
+        internal int Type
+        {
+            get { return semantic_type; }
+            set { semantic_type = value; }
+        }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
