@@ -48,9 +48,9 @@ namespace PALCompiler
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
-        // TODO - Create wrapper for tree printer
+        internal void displayTree() => printGraphic("", true);
 
-        internal void printGraphic(string indent, bool last)
+        private void printGraphic(string indent, bool last)
         {
             Console.Write(indent);
 

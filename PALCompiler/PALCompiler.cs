@@ -14,8 +14,8 @@ namespace PALCompiler
 
             var parser = performLexicalAnalysis(source_file);
             performSemanticAnalysis(parser);
-
-            parser.SyntaxTree.printGraphic("", true);
+            //parser.SyntaxTree.printGraphic("", true);
+            parser.SyntaxTree.displayTree();
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
