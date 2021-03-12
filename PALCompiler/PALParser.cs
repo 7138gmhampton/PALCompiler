@@ -63,7 +63,10 @@ namespace PALCompiler
 
         private void consume(ref SyntaxNode parent, Recogniser recogniser)
         {
-            var node = new SyntaxNode(parent, new Token(nonterminals[recogniser], -1, -1));
+            var node = new SyntaxNode(parent, new Token(
+                nonterminals[recogniser], 
+                scanner.CurrentToken.Line, 
+                scanner.CurrentToken.Column));
             recogniser(this, ref node);
             parent.addChild(node);
         }
