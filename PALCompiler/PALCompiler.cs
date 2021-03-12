@@ -28,7 +28,11 @@ namespace PALCompiler
         {
             var symbol_table = new SymbolTable();
             var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
-            semantic_analyser.analyse();
+            //semantic_analyser.analyse();
+            try {
+                semantic_analyser.analyse();
+            }
+            catch (Exception err) { Console.WriteLine(err.Message); }
         }
 
         private static PALParser performLexicalAnalysis(string source_file)
