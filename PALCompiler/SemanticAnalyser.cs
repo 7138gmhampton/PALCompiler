@@ -72,7 +72,20 @@ namespace PALCompiler
             private static void analyseLoop(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
             private static void analyseIO(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
             private static void analyseConditional(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
-            private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode onlyChild) => throw new NotImplementedException();
+            private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
+            {
+                SemanticType left_hand_type = analyseIdentifierUse(analyser, assignment.Children[0]);
+                SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
+
+                if (left_hand_type != right_hand_type)
+                    analyser.errors.Add(new TypeConflictError(
+                        assignment.Children[2].Token,
+                        right_hand_type,
+                        left_hand_type));
+            }
+
+            private static int analyseExpression(SemanticAnalyser analyser, SyntaxNode syntaxNode) => throw new NotImplementedException();
+            private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode syntaxNode) => throw new NotImplementedException();
 
             private static void analyseVariableDeclarations(
                 SemanticAnalyser analyser, 
