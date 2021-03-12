@@ -14,7 +14,6 @@ namespace PALCompiler
 
             var parser = performLexicalAnalysis(source_file);
             performSemanticAnalysis(parser);
-            //parser.SyntaxTree.printGraphic("", true);
             parser.SyntaxTree.displayTree();
 
             if (parser.Errors.Count > 0)
@@ -28,7 +27,6 @@ namespace PALCompiler
         {
             var symbol_table = new SymbolTable();
             var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
-            //semantic_analyser.analyse();
             try {
                 semantic_analyser.analyse();
             }
