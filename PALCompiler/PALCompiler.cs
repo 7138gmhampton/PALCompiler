@@ -11,15 +11,7 @@ namespace PALCompiler
         static void Main(string[] args)
         {
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
-
-            var scanner = new PALScanner();
-            var parser = new PALParser(scanner);
-            try {
-                if (parser.Parse(new StreamReader(source_file)))
-                    Console.WriteLine("Parsing: SUCCESS");
-                else Console.WriteLine("Parsing: FAIL");
-            }
-            catch (Exception err) { Console.WriteLine(err.Message);  }
+            var parser = performLexicalAnalysis(source_file);
 
             //parser.SyntaxTree.printGraphic("", true);
 
@@ -34,6 +26,20 @@ namespace PALCompiler
             else {
                 generateCSArtifact(args[0], parser);
             }
+        }
+
+        private static PALParser performLexicalAnalysis(string source_file)
+        {
+            var scanner = new PALScanner();
+            var parser = new PALParser(scanner);
+            try {
+                if (parser.Parse(new StreamReader(source_file)))
+                    Console.WriteLine("Parsing: SUCCESS");
+                else Console.WriteLine("Parsing: FAIL");
+            }
+            catch (Exception err) { Console.WriteLine(err.Message); }
+
+            return parser;
         }
 
         private static void generateCSArtifact(string executable, PALParser parser)
