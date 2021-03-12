@@ -62,7 +62,12 @@ namespace PALCompiler
                 Console.Write("\u251C\u2500");
                 indent += "\u2502 ";
             }
-            Console.WriteLine((Symbol == Value) ? Symbol : $"{Symbol}({Value})");
+            string type_string = (Type == LanguageType.Undefined)
+                ? ""
+                : $"[{LanguageType.ToString(Type)}]";
+            Console.WriteLine((Symbol == Value) 
+                ? $"{Symbol}{type_string}" 
+                : $"{Symbol}({Value}){type_string}");
 
             for (int iii = 0; iii < children.Count; ++iii)
                 children[iii].printGraphic(indent, iii == children.Count - 1);
