@@ -10,24 +10,24 @@ namespace PALCompiler
     {
         private List<SyntaxNode> children;
         private SyntaxNode parent;
-        private string symbol;
-        private string value;
+        //private string symbol;
+        //private string value;
         private SemanticType semantic_type;
         private IToken token;
 
-        internal SyntaxNode(SyntaxNode parent, string symbol)
-        {
-            this.symbol = symbol;
-            this.parent = parent;
-            children = new List<SyntaxNode>();
-            value = symbol;
-            semantic_type = LanguageType.Undefined;
-        }
+        //internal SyntaxNode(SyntaxNode parent, string symbol)
+        //{
+        //    this.symbol = symbol;
+        //    this.parent = parent;
+        //    children = new List<SyntaxNode>();
+        //    value = symbol;
+        //    semantic_type = LanguageType.Undefined;
+        //}
 
-        internal SyntaxNode(SyntaxNode parent, string symbol, string value) : this(parent, symbol)
-        {
-            this.value = value;
-        }
+        //internal SyntaxNode(SyntaxNode parent, string symbol, string value) : this(parent, symbol)
+        //{
+        //    this.value = value;
+        //}
 
         internal SyntaxNode(SyntaxNode parent, IToken token)
         {
