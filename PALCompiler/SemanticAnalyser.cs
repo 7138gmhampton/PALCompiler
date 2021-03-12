@@ -75,6 +75,7 @@ namespace PALCompiler
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
             {
                 SemanticType left_hand_type = analyseIdentifierUse(analyser, assignment.Children[0]);
+                Console.WriteLine(LanguageType.ToString(left_hand_type));
                 SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
 
                 if (left_hand_type != right_hand_type)
@@ -85,7 +86,15 @@ namespace PALCompiler
             }
 
             private static int analyseExpression(SemanticAnalyser analyser, SyntaxNode syntaxNode) => throw new NotImplementedException();
-            private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode syntaxNode) => throw new NotImplementedException();
+            private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
+            {
+                var symbol = analyser.symbols.Get(identifier.Value);
+
+                if (symbol == null) analyser.errors.Add(new NotDeclaredError(identifier.Token));
+                else identifier.Type = symbol.Type;
+
+                return identifier.Type;
+            }
 
             private static void analyseVariableDeclarations(
                 SemanticAnalyser analyser, 
