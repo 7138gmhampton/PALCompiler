@@ -11,13 +11,9 @@ namespace PALCompiler
         static void Main(string[] args)
         {
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
+
             var parser = performLexicalAnalysis(source_file);
-
-            //parser.SyntaxTree.printGraphic("", true);
-
-            var symbol_table = new SymbolTable();
-            var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
-            semantic_analyser.analyse();
+            performSemanticAnalysis(parser);
 
             parser.SyntaxTree.printGraphic("", true);
 
@@ -26,6 +22,13 @@ namespace PALCompiler
             else {
                 generateCSArtifact(args[0], parser);
             }
+        }
+
+        private static void performSemanticAnalysis(PALParser parser)
+        {
+            var symbol_table = new SymbolTable();
+            var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
+            semantic_analyser.analyse();
         }
 
         private static PALParser performLexicalAnalysis(string source_file)
