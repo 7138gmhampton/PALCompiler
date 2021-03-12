@@ -10,6 +10,8 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
+            // TODO - Create Nonterminal enumeration
+
             string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
 
             var scanner = new PALScanner();
@@ -22,17 +24,20 @@ namespace PALCompiler
             }
             catch (Exception err) { Console.WriteLine(err.Message);  }
 
+            parser.SyntaxTree.printGraphic("", true);
+
             var symbol_table = new SymbolTable();
             var semantic_analyser = new SemanticAnalyser(parser, parser.SyntaxTree, symbol_table);
-            try {
-                semantic_analyser.analyse();
-            }
-            catch (Exception err) { Console.WriteLine(err.Message); }
+            //try {
+            //    semantic_analyser.analyse();
+            //}
+            //catch (Exception err) { Console.WriteLine(err.Message); }
+            semantic_analyser.analyse();
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
-                parser.SyntaxTree.printGraphic("", true);
+                //parser.SyntaxTree.printGraphic("", true);
                 generateCSArtifact(args[0], parser);
             }
         }
