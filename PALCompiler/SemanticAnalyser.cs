@@ -101,7 +101,22 @@ namespace PALCompiler
                 return primary_type;
             }
 
-            private static int analyseTerm(SemanticAnalyser analyser, SyntaxNode term) => throw new NotImplementedException();
+            private static int analyseTerm(SemanticAnalyser analyser, SyntaxNode term)
+            {
+                var factors = term.Children.FindAll(x => x.Symbol == Nonterminals.FACTOR);
+
+                SemanticType primary_type = -1;
+                foreach (var factor in factors) {
+                    SemanticType current_type = analyseFactor(analyser, factor);
+                    if (primary_type < 0) primary_type = current_type;
+                    else if (current_type != primary_type)
+                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, primary_type));
+                }
+
+                return primary_type;
+            }
+
+            private static int analyseFactor(SemanticAnalyser analyser, SyntaxNode term) => throw new NotImplementedException();
 
             private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
             {
