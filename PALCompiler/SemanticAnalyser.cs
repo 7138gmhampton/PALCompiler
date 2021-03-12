@@ -155,7 +155,8 @@ namespace PALCompiler
             {
                 var element = factor.Children.Find(x => x.Symbol != "+" && x.Symbol != "-");
 
-                if (element.Symbol == Nonterminals.VALUE) analyseValue(analyser, element);
+                if (element.Symbol == Nonterminals.VALUE)
+                    element.Type = analyseValue(analyser, element);
                 else if (element.Symbol == Nonterminals.EXPRESSION)
                     element.Type = analyseExpression(analyser, element);
 
