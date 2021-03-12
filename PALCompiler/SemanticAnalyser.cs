@@ -75,9 +75,7 @@ namespace PALCompiler
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
             {
                 SemanticType left_hand_type = analyseIdentifierUse(analyser, assignment.Children[0]);
-                //Console.WriteLine("Left hand - " + LanguageType.ToString(left_hand_type));
                 SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
-                //Console.WriteLine("Right hand - " + LanguageType.ToString(right_hand_type));
 
                 if (left_hand_type != right_hand_type)
                     analyser.errors.Add(new TypeConflictError(
@@ -90,43 +88,42 @@ namespace PALCompiler
             {
                 var terms = expression.Children.FindAll(x => x.Symbol == Nonterminals.TERM);
 
-                SemanticType primary_type = -1;
+                expression.Type = -1;
                 foreach (var term in terms) {
                     SemanticType current_type = analyseTerm(analyser, term);
-                    if (primary_type < 0) primary_type = current_type;
-                    else if (current_type != primary_type)
-                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, primary_type));
+                    if (expression.Type < 0) expression.Type = current_type;
+                    else if (current_type != expression.Type)
+                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, expression.Type));
                 }
 
-                return primary_type;
+                return expression.Type;
             }
 
             private static int analyseTerm(SemanticAnalyser analyser, SyntaxNode term)
             {
                 var factors = term.Children.FindAll(x => x.Symbol == Nonterminals.FACTOR);
 
-                SemanticType primary_type = -1;
+                term.Type = -1;
                 foreach (var factor in factors) {
                     SemanticType current_type = analyseFactor(analyser, factor);
-                    if (primary_type < 0) primary_type = current_type;
-                    else if (current_type != primary_type)
-                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, primary_type));
+                    if (term.Type < 0) term.Type = current_type;
+                    else if (current_type != term.Type)
+                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, term.Type));
                 }
 
-                return primary_type;
+                return term.Type;
             }
 
             private static int analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
             {
                 var element = factor.Children.Find(x => x.Symbol != "+" && x.Symbol != "-");
 
-                //SemanticType semantic_type = LanguageType.Undefined;
                 if (element.Symbol == Nonterminals.VALUE) element.Type = element.OnlyChild.Type;
                 else if (element.Symbol == Nonterminals.EXPRESSION)
                     element.Type = analyseExpression(analyser, element);
 
-                //return semantic_type;
-                return element.Type;
+                factor.Type = element.Type;
+                return factor.Type;
             }
 
             private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
