@@ -4,6 +4,10 @@ namespace PALCompiler
 {
     using SemanticType = System.Int32;
 
+    /// <summary>
+    /// This subclass contains the full set of semantic analysers for each of 
+    /// the Pretty Auful Language's rules
+    /// </summary>
     partial class SemanticAnalyser
     {
         private static class Analysers
@@ -123,7 +127,10 @@ namespace PALCompiler
 
             private static SemanticType analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
             {
-                var element = factor.Children.Find(x => x.Syntax != "+" && x.Syntax != "-");
+                //var element = factor.Children.Find(x => x.Syntax != "+" && x.Syntax != "-");
+                var element = factor
+                    .Children
+                    .Find(x => x.Syntax == Nonterminals.VALUE || x.Syntax == Nonterminals.EXPRESSION);
 
                 if (element.Syntax == Nonterminals.VALUE)
                     element.Semantic = analyseValue(analyser, element);
@@ -147,7 +154,7 @@ namespace PALCompiler
 
                 if (symbol == null) analyser.errors.Add(new NotDeclaredError(identifier.Token));
                 else identifier.Semantic = symbol.Type;
-
+                
                 return identifier.Semantic;
             }
 

@@ -31,6 +31,8 @@ namespace PALCompiler
                 semantic_analyser.analyse();
             }
             catch (Exception err) { Console.WriteLine(err.Message); }
+
+            Console.WriteLine("-- Symbols --");
         }
 
         private static PALParser performLexicalAnalysis(string source_file)
