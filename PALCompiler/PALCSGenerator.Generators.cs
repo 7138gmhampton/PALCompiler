@@ -44,8 +44,6 @@ namespace PALCompiler
             private static string generateStatement(SyntaxNode root, SyntaxNode node)
             {
                 switch (node.Children[0].Syntax) {
-                    //case "<Assignment>": return generateAssignment(root, node.Children[0]);
-                    //case string _ when _ : return generateAssignment(root, node.Children[0]);
                     case Nonterminals.ASSIGMENT: return generateAssignment(root, node.Children[0]);
                     case Nonterminals.LOOP: return generateLoop(root, node.Children[0]);
                     case Nonterminals.CONDITIONAL: return generateConditional(root, node.Children[0]);

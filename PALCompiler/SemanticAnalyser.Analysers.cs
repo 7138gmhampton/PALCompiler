@@ -127,7 +127,6 @@ namespace PALCompiler
 
             private static SemanticType analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
             {
-                //var element = factor.Children.Find(x => x.Syntax != "+" && x.Syntax != "-");
                 var element = factor
                     .Children
                     .Find(x => x.Syntax == Nonterminals.VALUE || x.Syntax == Nonterminals.EXPRESSION);
