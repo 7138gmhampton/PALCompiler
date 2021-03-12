@@ -57,11 +57,21 @@ namespace PALCompiler
         internal SyntaxNode Parent { get { return parent; } }
         internal SemanticType Type
         {
-            get { return semantic_type; }
+            get
+            {
+                //return semantic_type;
+                if (semantic_type != LanguageType.Undefined) return semantic_type;
+                else if (determineTypeFromToken() != LanguageType.Undefined)
+                    return determineTypeFromToken();
+                else return LanguageType.Undefined;
+            }
             set { semantic_type = value; }
         }
+        internal IToken Token { get { return token; } }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
+
+        //internal SemanticType determineTypeFrom
 
         internal void printGraphic(string indent, bool last)
         {
@@ -79,6 +89,15 @@ namespace PALCompiler
 
             for (int iii = 0; iii < children.Count; ++iii)
                 children[iii].printGraphic(indent, iii == children.Count - 1);
+        }
+
+        private SemanticType determineTypeFromToken()
+        {
+            if (token.TokenType == "INTEGER" || token.TokenType == "Integer")
+                return LanguageType.Integer;
+            else if (token.TokenType == "REAL" || token.TokenType == "Real")
+                return LanguageType.Real;
+            else return LanguageType.Undefined;
         }
     }
 }
