@@ -4,13 +4,16 @@ using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
+    using SemanticType = System.Int32;
+
     class SyntaxNode
     {
         private List<SyntaxNode> children;
         private SyntaxNode parent;
         private string symbol;
         private string value;
-        private int semantic_type; 
+        private SemanticType semantic_type;
+        private IToken token;
 
         internal SyntaxNode(SyntaxNode parent, string symbol)
         {
@@ -29,11 +32,22 @@ namespace PALCompiler
             this.value = value;
         }
 
+        internal SyntaxNode(SyntaxNode parent, IToken token)
+        {
+            this.parent = parent;
+            this.token = token;
+
+            children = new List<SyntaxNode>();
+            semantic_type = LanguageType.Undefined;
+        }
+
         internal List<SyntaxNode> Children { get { return children; } }
-        internal string Symbol { get { return symbol; } }
-        internal string Value { get { return value; } }
+        //internal string Symbol { get { return symbol; } }
+        internal string Symbol { get { return token.TokenType; } }
+        //internal string Value { get { return value; } }
+        internal string Value { get { return token.TokenValue; } }
         internal SyntaxNode Parent { get { return parent; } }
-        internal int Type
+        internal SemanticType Type
         {
             get { return semantic_type; }
             set { semantic_type = value; }
@@ -53,7 +67,7 @@ namespace PALCompiler
                 Console.Write("\u251C\u2500");
                 indent += "\u2502 ";
             }
-            Console.WriteLine((symbol == value) ? symbol : $"{symbol}({value})");
+            Console.WriteLine((Symbol == Value) ? Symbol : $"{Symbol}({Value})");
 
             for (int iii = 0; iii < children.Count; ++iii)
                 children[iii].printGraphic(indent, iii == children.Count - 1);
