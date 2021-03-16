@@ -69,18 +69,18 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 var identifiers = io_node.Children[1].Children.FindAll(x => x.Syntax == "Identifier");
-                var variable_declarations = root
-                    .Children
-                    .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
-                var type_nodes = variable_declarations
-                    .Children
-                    .FindAll(x => x.Syntax == Nonterminals.TYPE);
+                //var variable_declarations = root
+                //    .Children
+                //    .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
+                //var type_nodes = variable_declarations
+                //    .Children
+                //    .FindAll(x => x.Syntax == Nonterminals.TYPE);
 
                 foreach (var identifier in identifiers) {
                     code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                    int list_index = variable_declarations
-                        .Children
-                        .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
+                    //int list_index = variable_declarations
+                    //    .Children
+                    //    .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
                     //if (type_nodes[list_index].Children[0].Value == "INTEGER")
                     //    code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                     //else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
