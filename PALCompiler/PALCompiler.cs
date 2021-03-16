@@ -24,6 +24,7 @@ namespace PALCompiler
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
                 generateCSArtifact(source_file, parser.SyntaxTree);
+                Console.WriteLine("-- BUILD SUCCESSFUL --");
             }
         }
 
