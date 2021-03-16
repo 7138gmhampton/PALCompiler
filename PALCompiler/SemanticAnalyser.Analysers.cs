@@ -54,7 +54,7 @@ namespace PALCompiler
             private static void analyseIO(SemanticAnalyser analyser, SyntaxNode io)
             {
                 if (io.Children[1].Syntax == Nonterminals.IDENTIFIER_LIST) {
-                    var identifiers = io.Children[1].Children.FindAll(x => x.Syntax == "Identifer");
+                    var identifiers = io.Children[1].Children.FindAll(x => x.Syntax == "Identifier");
                     foreach (var identifier in identifiers) analyseIdentifierUse(analyser, identifier);
                 }
                 else {
