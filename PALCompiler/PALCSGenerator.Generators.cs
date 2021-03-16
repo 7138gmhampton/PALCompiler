@@ -108,19 +108,7 @@ namespace PALCompiler
                     .Where(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in if_statements)
                     code.AppendLine(generateStatement(statement));
-                if (else_index >= 0) {
-                    //code.AppendLine("}");
-                    //code.AppendLine("else {");
-
-                    //var else_statements = conditional
-                    //    .Children
-                    //    .Skip(else_index)
-                    //    .Where(x => x.Syntax == Nonterminals.STATEMENT);
-                    //foreach (var statement in else_statements)
-                    //    code.AppendLine(generateStatement(statement));
-                    //generateElseBlock(conditional, else_index);
-                    code.AppendLine(generateElseBlock(conditional, else_index));
-                }
+                if (else_index >= 0) code.AppendLine(generateElseBlock(conditional, else_index));
                 code.AppendLine("}");
 
                 return code.ToString();
