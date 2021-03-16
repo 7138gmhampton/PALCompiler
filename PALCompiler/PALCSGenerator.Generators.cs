@@ -69,21 +69,8 @@ namespace PALCompiler
                 var code = new StringBuilder();
 
                 var identifiers = io_node.Children[1].Children.FindAll(x => x.Syntax == "Identifier");
-                //var variable_declarations = root
-                //    .Children
-                //    .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
-                //var type_nodes = variable_declarations
-                //    .Children
-                //    .FindAll(x => x.Syntax == Nonterminals.TYPE);
-
                 foreach (var identifier in identifiers) {
                     code.AppendLine($"Console.Write(\"{identifier.Value}: \");");
-                    //int list_index = variable_declarations
-                    //    .Children
-                    //    .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
-                    //if (type_nodes[list_index].Children[0].Value == "INTEGER")
-                    //    code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
-                    //else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
                     if (identifier.Semantic == LanguageType.Integer)
                         code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                     else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
@@ -127,7 +114,6 @@ namespace PALCompiler
                         .Where(x => x.Syntax == Nonterminals.STATEMENT);
                     foreach (var statement in else_statements)
                         code.AppendLine(generateStatement(statement));
-                    //code.AppendLine("}");
                 }
                 code.AppendLine("}");
 
@@ -151,7 +137,6 @@ namespace PALCompiler
             {
                 string left_hand = generateExpression(boolean_node.Children[0]);
                 string right_hand = generateExpression(boolean_node.Children[2]);
-                //string inverted_operator = invertOperator(boolean_node.Children[1].Value);
                 string logical_operator = convertOperator(boolean_node.Children[1].Value, invert);
 
                 return $"{left_hand} {logical_operator} {right_hand}";

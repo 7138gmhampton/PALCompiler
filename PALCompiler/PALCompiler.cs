@@ -11,7 +11,6 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
-            //string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
             var arguments = new List<string>(args);
             bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
             string source_file = arguments.Find(x => x.EndsWith(".txt"));
@@ -43,9 +42,6 @@ namespace PALCompiler
             var scanner = new PALScanner();
             var parser = new PALParser(scanner);
             try {
-                //if (parser.Parse(new StreamReader(source_file)))
-                //    Console.WriteLine("Parsing: SUCCESS");
-                //else Console.WriteLine("Parsing: FAIL");
                 parser.Parse(new StreamReader(source_file));
             }
             catch (Exception err) { Console.WriteLine(err.Message); }

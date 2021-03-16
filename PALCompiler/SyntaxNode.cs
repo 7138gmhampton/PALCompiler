@@ -10,7 +10,6 @@ namespace PALCompiler
     {
         private List<SyntaxNode> children;
         private readonly SyntaxNode parent;
-        private readonly SyntaxNode root;
         private SemanticType semantic_type;
         private IToken token;
 
@@ -21,7 +20,6 @@ namespace PALCompiler
 
             children = new List<SyntaxNode>();
             semantic_type = LanguageType.Undefined;
-            if (parent == null) root = this;
             else root = parent.root;
         }
 
