@@ -8,6 +8,10 @@ namespace PALCompiler
 {
     partial class PALCSGenerator
     {
+        /// <summary>
+        /// This class contains a full set of generator methods for outputting
+        /// a C# artifact
+        /// </summary>
         private static class Generators
         {
             internal static string generateProgram(SyntaxNode root)
@@ -119,6 +123,7 @@ namespace PALCompiler
 
                 return code.ToString();
             }
+
             private static string generateLoop(SyntaxNode node)
             {
                 var code = new StringBuilder();
