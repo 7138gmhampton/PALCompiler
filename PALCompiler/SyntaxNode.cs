@@ -20,7 +20,6 @@ namespace PALCompiler
 
             children = new List<SyntaxNode>();
             semantic_type = LanguageType.Undefined;
-            else root = parent.root;
         }
 
         internal List<SyntaxNode> Children { get { return children; } }
