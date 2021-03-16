@@ -42,9 +42,10 @@ namespace PALCompiler
             var scanner = new PALScanner();
             var parser = new PALParser(scanner);
             try {
-                if (parser.Parse(new StreamReader(source_file)))
-                    Console.WriteLine("Parsing: SUCCESS");
-                else Console.WriteLine("Parsing: FAIL");
+                //if (parser.Parse(new StreamReader(source_file)))
+                //    Console.WriteLine("Parsing: SUCCESS");
+                //else Console.WriteLine("Parsing: FAIL");
+                parser.Parse(new StreamReader(source_file));
             }
             catch (Exception err) { Console.WriteLine(err.Message); }
 
