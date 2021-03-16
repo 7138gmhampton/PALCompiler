@@ -105,7 +105,8 @@ namespace PALCompiler
                 var code = new StringBuilder();
                 int else_index = conditional.Children.FindIndex(x => x.Syntax == "ELSE");
 
-                code.AppendLine($"if ({generateBooleanExpression(root, conditional.Children[1])}) {{");
+                code.AppendLine(
+                    $"if ({generateBooleanExpression(root, conditional.Children[1], false)}) {{");
                 var if_statements = conditional
                     .Children
                     .Take(else_index)
@@ -131,7 +132,7 @@ namespace PALCompiler
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
                 var code = new StringBuilder();
-                string stop_condition = generateBooleanExpression(root, node.Children[1]);
+                string stop_condition = generateBooleanExpression(root, node.Children[1], true);
 
                 code.AppendLine($"while ({stop_condition}) {{");
                 var statements_in_block = node.Children.FindAll(x => x.Syntax == Nonterminals.STATEMENT);
@@ -142,13 +143,17 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateBooleanExpression(SyntaxNode root, SyntaxNode boolean_node)
+            private static string generateBooleanExpression(
+                SyntaxNode root, 
+                SyntaxNode boolean_node,
+                bool invert)
             {
                 string left_hand = generateExpression(root, boolean_node.Children[0]);
                 string right_hand = generateExpression(root, boolean_node.Children[2]);
                 string inverted_operator = invertOperator(boolean_node.Children[1].Value);
+                string logical_operator = convertOperator(boolean_node.Children[1].Value, invert);
 
-                return $"{left_hand} {inverted_operator} {right_hand}";
+                return $"{left_hand} {logical_operator} {right_hand}";
             }
 
             private static string invertOperator(string boolean_operator)
@@ -156,6 +161,17 @@ namespace PALCompiler
                 if (boolean_operator == "<") return ">=";
                 else if (boolean_operator == "=") return "!=";
                 else return "<=";
+            }
+
+            private static string convertOperator(string logical_operator, bool invert)
+            {
+                string converted_operator;
+
+                if (logical_operator == "<") converted_operator = (invert) ? ">=" : "<";
+                else if (logical_operator == "=") converted_operator = invert ? "!=" : "==";
+                else converted_operator = invert ? "<=" : ">";
+
+                return converted_operator;
             }
 
             private static string generateAssignment(SyntaxNode root, SyntaxNode node)
