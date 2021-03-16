@@ -3,6 +3,7 @@ using System.IO;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using AllanMilne.Ardkit;
+using System.Collections.Generic;
 
 namespace PALCompiler
 {
@@ -10,16 +11,19 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
-            string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
+            //string source_file = (args.Length == 1) ? args[0] : inputSourceFile();
+            var arguments = new List<string>(args);
+            bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
+            string source_file = arguments.Find(x => x.EndsWith(".txt"));
 
             var parser = performLexicalAnalysis(source_file);
             performSemanticAnalysis(parser);
-            parser.SyntaxTree.displayTree();
+            if (display_tree) parser.SyntaxTree.displayTree();
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
             else {
-                generateCSArtifact(args[0], parser.SyntaxTree);
+                generateCSArtifact(source_file, parser.SyntaxTree);
             }
         }
 
