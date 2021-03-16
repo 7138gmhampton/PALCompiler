@@ -9,7 +9,7 @@ namespace PALCompiler
     class SyntaxNode
     {
         private List<SyntaxNode> children;
-        private SyntaxNode parent;
+        private readonly SyntaxNode parent;
         private SemanticType semantic_type;
         private IToken token;
 
