@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace PALCompiler
 {
@@ -99,7 +100,34 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateConditional(SyntaxNode root, SyntaxNode node) => throw new NotImplementedException();
+            private static string generateConditional(SyntaxNode root, SyntaxNode conditional)
+            {
+                var code = new StringBuilder();
+                int else_index = conditional.Children.FindIndex(x => x.Syntax == "ELSE");
+
+                code.AppendLine($"if ({generateBooleanExpression(root, conditional.Children[1])}) {{");
+                var if_statements = conditional
+                    .Children
+                    .Take(else_index)
+                    .Where(x => x.Syntax == Nonterminals.STATEMENT);
+                foreach (var statement in if_statements)
+                    code.AppendLine(generateStatement(root, statement));
+                if (else_index >= 0) {
+                    code.AppendLine("}");
+                    code.AppendLine("else {");
+
+                    var else_statements = conditional
+                        .Children
+                        .Skip(else_index)
+                        .Where(x => x.Syntax == Nonterminals.STATEMENT);
+                    foreach (var statement in else_statements)
+                        code.AppendLine(generateStatement(root, statement));
+                    //code.AppendLine("}");
+                }
+                code.AppendLine("}");
+
+                return code.ToString();
+            }
             private static string generateLoop(SyntaxNode root, SyntaxNode node)
             {
                 var code = new StringBuilder();
