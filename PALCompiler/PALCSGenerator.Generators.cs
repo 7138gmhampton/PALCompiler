@@ -20,7 +20,7 @@ namespace PALCompiler
                     .Children
                     .Find(x => x.Syntax == Nonterminals.VARIABLE_DECLARATION);
                 if (variable_declaration != null)
-                    code.AppendLine(generateVariableDeclarations(root, variable_declaration));
+                    code.AppendLine(generateVariableDeclarations(variable_declaration));
 
                 code.AppendLine(generateImperatives(root));
                 code.AppendLine("}");
@@ -35,7 +35,7 @@ namespace PALCompiler
                 code.AppendLine("static void Main()\n{");
                 var statements = root.Children.FindAll(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in statements)
-                    code.AppendLine(generateStatement(root, statement));
+                    code.AppendLine(generateStatement(statement));
                 code.AppendLine("Console.WriteLine(\"Program terminated...\");");
                 code.AppendLine("Console.ReadKey();");
                 code.AppendLine("}");
@@ -43,28 +43,28 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateStatement(SyntaxNode root, SyntaxNode node)
+            private static string generateStatement(SyntaxNode node)
             {
                 switch (node.Children[0].Syntax) {
-                    case Nonterminals.ASSIGMENT: return generateAssignment(root, node.Children[0]);
-                    case Nonterminals.LOOP: return generateLoop(root, node.Children[0]);
-                    case Nonterminals.CONDITIONAL: return generateConditional(root, node.Children[0]);
-                    case Nonterminals.IO: return generateIO(root, node.Children[0]);
+                    case Nonterminals.ASSIGMENT: return generateAssignment(node.Children[0]);
+                    case Nonterminals.LOOP: return generateLoop(node.Children[0]);
+                    case Nonterminals.CONDITIONAL: return generateConditional(node.Children[0]);
+                    case Nonterminals.IO: return generateIO(node.Children[0]);
                     default: throw new Exception("Malformed syntax tree");
                 }
             }
 
-            private static string generateIO(SyntaxNode root, SyntaxNode node)
+            private static string generateIO(SyntaxNode node)
             {
                 var code = new StringBuilder();
 
-                if (node.Children[0].Syntax == "INPUT") code.AppendLine(generateInput(root, node));
-                else code.AppendLine(generateOutput(root, node));
+                if (node.Children[0].Syntax == "INPUT") code.AppendLine(generateInput(node));
+                else code.AppendLine(generateOutput(node));
                 
                 return code.ToString();
             }
 
-            private static string generateInput(SyntaxNode root,  SyntaxNode io_node)
+            private static string generateInput(SyntaxNode io_node)
             {
                 var code = new StringBuilder();
 
@@ -92,31 +92,31 @@ namespace PALCompiler
                 return code.ToString();
             }
 
-            private static string generateOutput(SyntaxNode root, SyntaxNode io_node)
+            private static string generateOutput(SyntaxNode io_node)
             {
                 var code = new StringBuilder();
 
                 var outputs = io_node.Children.FindAll(x => x.Syntax != "," && x.Syntax != "OUTPUT");
                 foreach (var output in outputs) {
-                    code.AppendLine($"Console.WriteLine({generateExpression(root, output)});");
+                    code.AppendLine($"Console.WriteLine({generateExpression(output)});");
                 }
 
                 return code.ToString();
             }
 
-            private static string generateConditional(SyntaxNode root, SyntaxNode conditional)
+            private static string generateConditional(SyntaxNode conditional)
             {
                 var code = new StringBuilder();
                 int else_index = conditional.Children.FindIndex(x => x.Syntax == "ELSE");
 
                 code.AppendLine(
-                    $"if ({generateBooleanExpression(root, conditional.Children[1], false)}) {{");
+                    $"if ({generateBooleanExpression(conditional.Children[1], false)}) {{");
                 var if_statements = conditional
                     .Children
                     .Take(else_index)
                     .Where(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in if_statements)
-                    code.AppendLine(generateStatement(root, statement));
+                    code.AppendLine(generateStatement(statement));
                 if (else_index >= 0) {
                     code.AppendLine("}");
                     code.AppendLine("else {");
@@ -126,35 +126,32 @@ namespace PALCompiler
                         .Skip(else_index)
                         .Where(x => x.Syntax == Nonterminals.STATEMENT);
                     foreach (var statement in else_statements)
-                        code.AppendLine(generateStatement(root, statement));
+                        code.AppendLine(generateStatement(statement));
                     //code.AppendLine("}");
                 }
                 code.AppendLine("}");
 
                 return code.ToString();
             }
-            private static string generateLoop(SyntaxNode root, SyntaxNode node)
+            private static string generateLoop(SyntaxNode node)
             {
                 var code = new StringBuilder();
-                string stop_condition = generateBooleanExpression(root, node.Children[1], true);
+                string stop_condition = generateBooleanExpression(node.Children[1], true);
 
                 code.AppendLine($"while ({stop_condition}) {{");
                 var statements_in_block = node.Children.FindAll(x => x.Syntax == Nonterminals.STATEMENT);
                 foreach (var statement in statements_in_block)
-                    code.AppendLine(generateStatement(root, statement));
+                    code.AppendLine(generateStatement(statement));
                 code.AppendLine("}");
 
                 return code.ToString();
             }
 
-            private static string generateBooleanExpression(
-                SyntaxNode root, 
-                SyntaxNode boolean_node,
-                bool invert)
+            private static string generateBooleanExpression(SyntaxNode boolean_node, bool invert)
             {
-                string left_hand = generateExpression(root, boolean_node.Children[0]);
-                string right_hand = generateExpression(root, boolean_node.Children[2]);
-                string inverted_operator = invertOperator(boolean_node.Children[1].Value);
+                string left_hand = generateExpression(boolean_node.Children[0]);
+                string right_hand = generateExpression(boolean_node.Children[2]);
+                //string inverted_operator = invertOperator(boolean_node.Children[1].Value);
                 string logical_operator = convertOperator(boolean_node.Children[1].Value, invert);
 
                 return $"{left_hand} {logical_operator} {right_hand}";
@@ -178,56 +175,56 @@ namespace PALCompiler
                 return converted_operator;
             }
 
-            private static string generateAssignment(SyntaxNode root, SyntaxNode node)
+            private static string generateAssignment(SyntaxNode node)
             {
                 string left_hand = node.Children[0].Value;
-                string right_hand = generateExpression(root, node.Children[2]);
+                string right_hand = generateExpression(node.Children[2]);
 
                 return $"{left_hand} = {right_hand};";
             }
 
-            private static string generateExpression(SyntaxNode root, SyntaxNode node)
+            private static string generateExpression(SyntaxNode node)
             {
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Syntax == Nonterminals.TERM)
-                        code.Append(generateTerm(root, element));
+                        code.Append(generateTerm(element));
                     else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
             }
 
-            private static string generateTerm(SyntaxNode root, SyntaxNode node)
+            private static string generateTerm(SyntaxNode node)
             {
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Syntax == Nonterminals.FACTOR)
-                        code.Append(generateFactor(root, element));
+                        code.Append(generateFactor(element));
                     else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
             }
 
-            private static string generateFactor(SyntaxNode root, SyntaxNode node)
+            private static string generateFactor(SyntaxNode node)
             {
                 var code = new StringBuilder();
 
                 foreach (var element in node.Children) {
                     if (element.Syntax == Nonterminals.EXPRESSION)
-                        code.Append(generateExpression(root, element));
+                        code.Append(generateExpression(element));
                     else if (element.Syntax == Nonterminals.VALUE)
-                        code.Append(generateValue(root, element.Children[0]));
+                        code.Append(generateValue(element.Children[0]));
                     else code.Append(element.Syntax);
                 }
 
                 return code.ToString();
             }
 
-            private static string generateValue(SyntaxNode root, SyntaxNode node)
+            private static string generateValue(SyntaxNode node)
             {
                 var dangling_radix = new System.Text.RegularExpressions.Regex(@"\.$");
                 if (node.Syntax == "Real") {
@@ -237,7 +234,7 @@ namespace PALCompiler
                 else return node.Value;
             }
 
-            private static string generateVariableDeclarations(SyntaxNode root, SyntaxNode node)
+            private static string generateVariableDeclarations(SyntaxNode node)
             {
                 var code = new StringBuilder();
                 var identifiers = new List<(string, string)>();
