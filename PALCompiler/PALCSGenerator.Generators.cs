@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using AllanMilne.Ardkit;
 
 namespace PALCompiler
 {
@@ -80,7 +81,10 @@ namespace PALCompiler
                     int list_index = variable_declarations
                         .Children
                         .FindIndex(x => x.Children.Find(y => y.Value == identifier.Value) != null);
-                    if (type_nodes[list_index].Children[0].Value == "INTEGER")
+                    //if (type_nodes[list_index].Children[0].Value == "INTEGER")
+                    //    code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
+                    //else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
+                    if (identifier.Semantic == LanguageType.Integer)
                         code.AppendLine($"{identifier.Value} = int.Parse(Console.ReadLine());");
                     else code.AppendLine($"{identifier.Value} = float.Parse(Console.ReadLine());");
                 }
