@@ -12,13 +12,6 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
-            //var arguments = new List<string>(args);
-            //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
-            //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
-            //string source_file = arguments.Find(x => x.EndsWith(".txt"));
-            //string source_file = "";
-            //if (arguments.Count == 1) source_file = arguments[0];
-            //else throw new ArgumentException("Invalid arguments passed to program");
             bool display_tree = false;
             bool generate_output = false;
             string source_file = "";
@@ -27,7 +20,6 @@ namespace PALCompiler
             }
             catch (ArgumentException err) {
                 Console.WriteLine(err.Message);
-                //return 160;
                 Environment.Exit(160);
             }
 
@@ -45,8 +37,6 @@ namespace PALCompiler
 
         private static (bool, bool, string) parseArguments(List<string> arguments)
         {
-            //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
-            //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
             bool display_tree = parseOption(arguments, "-t", "--tree");
             bool generate_output = parseOption(arguments, "-o", "--output");
 
@@ -94,7 +84,6 @@ namespace PALCompiler
         private static void generateCSArtifact(string source_file, SyntaxNode syntax_tree)
         {
             string cs_code = new PALCSGenerator(syntax_tree).generate();
-            //string file_name = new StringBuilder().Append(executable.Split('.').)
             int extension_index = source_file.LastIndexOf(".txt");
             string file_name = (extension_index > 0)
                 ? source_file.Substring(0, extension_index)
