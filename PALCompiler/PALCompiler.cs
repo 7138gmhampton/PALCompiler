@@ -36,7 +36,7 @@ namespace PALCompiler
 
             if (parser.Errors.Count > 0)
                 foreach (var error in parser.Errors) Console.WriteLine(error.ToString());
-            else {
+            else if (generate_output) {
                 generateCSArtifact(source_file, parser.SyntaxTree);
                 Console.WriteLine("-- BUILD SUCCESSFUL --");
             }
@@ -57,7 +57,7 @@ namespace PALCompiler
                 "-t, --tree\t\tDisplay syntax tree" + Environment.NewLine + 
                 "-o, --output\t\tBuild executable");
 
-            return (display_tree, false, source_file);
+            return (display_tree, generate_output, source_file);
         }
 
         private static bool parseOption(List<string> arguments, string abbreviated, string full)
