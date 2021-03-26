@@ -107,6 +107,8 @@ namespace PALCompiler
                         analyser.errors.Add(new TypeConflictError(term.Token, current_type, expression.Semantic));
                 }
 
+                // BUG - Nonterminal in Type Conflict error message
+
                 return expression.Semantic;
             }
 
