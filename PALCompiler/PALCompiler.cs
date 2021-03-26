@@ -12,12 +12,23 @@ namespace PALCompiler
         static void Main(string[] args)
         {
             var arguments = new List<string>(args);
-            bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
-            if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
+            //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
+            //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
             //string source_file = arguments.Find(x => x.EndsWith(".txt"));
+            //string source_file = "";
+            //if (arguments.Count == 1) source_file = arguments[0];
+            //else throw new ArgumentException("Invalid arguments passed to program");
+            bool display_tree = false;
+            bool generate_output = false;
             string source_file = "";
-            if (arguments.Count == 1) source_file = arguments[0];
-            else throw new ArgumentException("Invalid arguments passed to program");
+            try {
+                (display_tree, generate_output, source_file) = parseArguments(new List<string>(args));
+            }
+            catch (ArgumentException err) {
+                Console.WriteLine(err.Message);
+                //return 160;
+                Environment.Exit(160);
+            }
 
             var parser = performLexicalAnalysis(source_file);
             performSemanticAnalysis(parser);
@@ -29,6 +40,18 @@ namespace PALCompiler
                 generateCSArtifact(source_file, parser.SyntaxTree);
                 Console.WriteLine("-- BUILD SUCCESSFUL --");
             }
+        }
+
+        private static (bool, bool, string) parseArguments(List<string> arguments)
+        {
+            bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
+            if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
+            string source_file = "";
+            if (arguments.Count == 1) source_file = arguments[0];
+            else throw new ArgumentException(
+                "Invalid arguments passed to program\nCorrect usage: PALCompiler.exe <source> [OPTIONS]");
+
+            return (display_tree, false, source_file);
         }
 
         private static void performSemanticAnalysis(PALParser parser)
