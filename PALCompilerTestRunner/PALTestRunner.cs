@@ -36,14 +36,16 @@ namespace PALCompilerTestRunner
 
             Process compilation = new Process();
             compilation.StartInfo.FileName = compiler;
-            compilation.StartInfo.Arguments = test_case;
+            compilation.StartInfo.Arguments = "\"" + test_case + "\"";
             compilation.StartInfo.UseShellExecute = false;
             compilation.StartInfo.RedirectStandardOutput = true;
             compilation.Start();
 
+            Console.WriteLine(test_case);
             string output = compilation.StandardOutput.ReadToEnd();
+            Console.WriteLine(output);
             if (to_succeed && output.Length == 0) return true;
-            else if (output.Length > 1) return true;
+            else if (!to_succeed && output.Length > 1) return true;
             else return false;
         }
     }
