@@ -47,11 +47,15 @@ namespace PALCompiler
             //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
             //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
             bool display_tree = parseOption(arguments, "-t", "--tree");
+            bool generate_output = parseOption(arguments, "-o", "--output");
 
             string source_file = "";
             if (arguments.Count == 1) source_file = arguments[0];
             else throw new ArgumentException(
-                "Invalid arguments passed to program\nCorrect usage: PALCompiler.exe <source> [OPTIONS]");
+                "Invalid arguments passed to program" + Environment.NewLine +
+                "Correct usage: PALCompiler.exe <source> [OPTIONS]" + Environment.NewLine +
+                "-t, --tree\t\tDisplay syntax tree" + Environment.NewLine + 
+                "-o, --output\t\tBuild executable");
 
             return (display_tree, false, source_file);
         }
