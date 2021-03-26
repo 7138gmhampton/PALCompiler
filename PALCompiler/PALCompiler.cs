@@ -13,6 +13,7 @@ namespace PALCompiler
         {
             var arguments = new List<string>(args);
             bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
+            if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
             string source_file = arguments.Find(x => x.EndsWith(".txt"));
 
             var parser = performLexicalAnalysis(source_file);
