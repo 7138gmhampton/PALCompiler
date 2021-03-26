@@ -14,7 +14,10 @@ namespace PALCompiler
             var arguments = new List<string>(args);
             bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
             if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
-            string source_file = arguments.Find(x => x.EndsWith(".txt"));
+            //string source_file = arguments.Find(x => x.EndsWith(".txt"));
+            string source_file = "";
+            if (arguments.Count == 1) source_file = arguments[0];
+            else throw new ArgumentException("Invalid arguments passed to program");
 
             var parser = performLexicalAnalysis(source_file);
             performSemanticAnalysis(parser);
