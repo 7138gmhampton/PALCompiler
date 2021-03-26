@@ -4,6 +4,7 @@ using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using AllanMilne.Ardkit;
 using System.Collections.Generic;
+using System.Text;
 
 namespace PALCompiler
 {
@@ -90,16 +91,21 @@ namespace PALCompiler
             return parser;
         }
 
-        private static void generateCSArtifact(string executable, SyntaxNode syntax_tree)
+        private static void generateCSArtifact(string source_file, SyntaxNode syntax_tree)
         {
             string cs_code = new PALCSGenerator(syntax_tree).generate();
-            File.WriteAllText(executable.Replace("txt", "cs"), cs_code);
+            //string file_name = new StringBuilder().Append(executable.Split('.').)
+            int extension_index = source_file.LastIndexOf(".txt");
+            string file_name = (extension_index > 0)
+                ? source_file.Substring(0, extension_index)
+                : source_file;
+            File.WriteAllText(file_name + ".cs", cs_code);
 
             var cs_results = new CSharpCodeProvider()
                 .CompileAssemblyFromSource(new CompilerParameters
                 {
                     GenerateExecutable = true,
-                    OutputAssembly = executable.Replace("txt", "exe")
+                    OutputAssembly = file_name + ".exe"
                 }, cs_code);
             foreach (var error in cs_results.Errors) Console.WriteLine(error.ToString());
         }
