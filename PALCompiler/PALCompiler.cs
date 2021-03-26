@@ -11,7 +11,7 @@ namespace PALCompiler
     {
         static void Main(string[] args)
         {
-            var arguments = new List<string>(args);
+            //var arguments = new List<string>(args);
             //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
             //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
             //string source_file = arguments.Find(x => x.EndsWith(".txt"));
@@ -44,14 +44,24 @@ namespace PALCompiler
 
         private static (bool, bool, string) parseArguments(List<string> arguments)
         {
-            bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
-            if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
+            //bool display_tree = arguments.Contains("-t") || arguments.Contains("--tree");
+            //if (display_tree) arguments.RemoveAll(x => x == "-t" || x == "--tree");
+            bool display_tree = parseOption(arguments, "-t", "--tree");
+
             string source_file = "";
             if (arguments.Count == 1) source_file = arguments[0];
             else throw new ArgumentException(
                 "Invalid arguments passed to program\nCorrect usage: PALCompiler.exe <source> [OPTIONS]");
 
             return (display_tree, false, source_file);
+        }
+
+        private static bool parseOption(List<string> arguments, string abbreviated, string full)
+        {
+            bool option = arguments.Contains(abbreviated) || arguments.Contains(full);
+            arguments.RemoveAll(x => x == abbreviated || x == full);
+
+            return option;
         }
 
         private static void performSemanticAnalysis(PALParser parser)
