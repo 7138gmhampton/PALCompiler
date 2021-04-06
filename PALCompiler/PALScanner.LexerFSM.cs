@@ -93,9 +93,7 @@ namespace PALCompiler
             {
                 IToken token = null;
 
-                // BUG - Treating underscore as invalid char
-
-                if (!char.IsLetter(current_char) && !char.IsDigit(current_char)) {
+                if (!char.IsLetter(current_char) && !char.IsDigit(current_char) && !(current_char == '_')) {
                     string word = candidate.ToString();
                     token = keywords.Contains(word)
                         ? new Token(word, candidate.Line, candidate.Column)
