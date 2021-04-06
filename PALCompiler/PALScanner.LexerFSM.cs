@@ -93,7 +93,7 @@ namespace PALCompiler
             {
                 IToken token = null;
 
-                if (!char.IsLetter(current_char) && !char.IsDigit(current_char) && !(current_char == '_')) {
+                if (isContinuationChar(current_char)) {
                     string word = candidate.ToString();
                     token = keywords.Contains(word)
                         ? new Token(word, candidate.Line, candidate.Column)
@@ -161,6 +161,9 @@ namespace PALCompiler
                     candidate.Line, 
                     candidate.Column),
                 (int)State.DUMMY);
+
+            private static bool isContinuationChar(char current) 
+                => !char.IsLetter(current) && !char.IsDigit(current) && !(current == '_');
         }
     }
 }
