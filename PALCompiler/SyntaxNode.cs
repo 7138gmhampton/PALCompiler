@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using AllanMilne.Ardkit;
 
 namespace PALCompiler
@@ -45,6 +46,7 @@ namespace PALCompiler
             set { semantic_type = value; }
         }
         internal IToken Token { get { return token; } }
+        internal string Reconstruction { get { return reconstruct(); } }
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
@@ -80,6 +82,16 @@ namespace PALCompiler
             else if (token.TokenType == "REAL" || token.TokenType == "Real")
                 return LanguageType.Real;
             else return LanguageType.Undefined;
+        }
+
+        private string reconstruct()
+        {
+            var reconstruction = new StringBuilder();
+
+            if (!token.TokenValue.StartsWith("<")) reconstruction.Append(" " + token.TokenValue);
+            else foreach (var child in children) reconstruction.Append(" " + child.reconstruct());
+
+            return reconstruction.ToString().Trim();
         }
     }
 }
