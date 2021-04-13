@@ -142,10 +142,9 @@ namespace PALCompiler
                     .Children
                     .Find(x => x.Syntax == Nonterminals.VALUE || x.Syntax == Nonterminals.EXPRESSION);
 
-                if (element.Syntax == Nonterminals.VALUE)
-                    element.Semantic = analyseValue(analyser, element);
-                else if (element.Syntax == Nonterminals.EXPRESSION)
-                    element.Semantic = analyseArithmetic(analyser, element);
+                element.Semantic = (element.Syntax == Nonterminals.VALUE) 
+                    ? analyseValue(analyser, element) 
+                    : analyseArithmetic(analyser, element);
 
                 factor.Semantic = element.Semantic;
                 return factor.Semantic;
