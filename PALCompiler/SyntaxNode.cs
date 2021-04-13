@@ -23,7 +23,7 @@ namespace PALCompiler
             semantic_type = LanguageType.Undefined;
         }
 
-        internal List<SyntaxNode> Children { get { return children; } }
+        internal List<SyntaxNode> Children => children;
         internal SyntaxNode OnlyChild {
             get
             {
@@ -32,9 +32,9 @@ namespace PALCompiler
                 else return children[0];
             }
         }
-        internal string Syntax { get { return token.TokenType; } }
-        internal string Value { get { return token.TokenValue; } }
-        internal SyntaxNode Parent { get { return parent; } }
+        internal string Syntax => token.TokenType;
+        internal string Value => token.TokenValue;
+        internal SyntaxNode Parent => parent;
         internal SemanticType Semantic
         {
             get
@@ -45,8 +45,8 @@ namespace PALCompiler
             }
             set { semantic_type = value; }
         }
-        internal IToken Token { get { return token; } }
-        internal string Reconstruction { get { return reconstruct(); } }
+        internal IToken Token => token;
+        internal string Reconstruction => reconstruct();
 
         internal void addChild(SyntaxNode child) => children.Add(child);
 
