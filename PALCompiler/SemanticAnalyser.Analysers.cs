@@ -155,7 +155,7 @@ namespace PALCompiler
                 ? analyseIdentifierUse(analyser, element.OnlyChild) 
                 : element.OnlyChild.Semantic;
 
-            private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
+            private static SemanticType analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
             {
                 var symbol = analyser.symbols.Get(identifier.Value);
 
