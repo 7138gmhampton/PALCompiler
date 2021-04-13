@@ -39,10 +39,28 @@ namespace PALCompilerTestRunner
 
             string output = compilation.StandardOutput.ReadToEnd();
             if (to_succeed && output.Length == 0) return true;
-            else if (!to_succeed && output.Length > 1) return true;
+            else if (!to_succeed && output.Length > 1) return isErrorCorrect(test_case, output);
             else return false;
         }
 
         // TODO - Specific fail check
+
+        private static bool isErrorCorrect(string test_case, string output)
+        {
+            switch (test_case) {
+                case string syntax_error when new Regex(@"_ThenSyntaxError$").IsMatch(test_case):
+                    return new Regex(@"found where").IsMatch(output);
+                case string type_error when new Regex(@"_ThenTypeError$").IsMatch(test_case):
+                    return new Regex(@"Type conflict").IsMatch(output);
+                case string not_declared when new Regex(@"_ThenNotDeclaredError$").IsMatch(test_case):
+                    return new Regex(@"not declared").IsMatch(output);
+                case string already_declared when new Regex(@"_ThenAlreadyDeclaredError$").IsMatch(test_case):
+                    return new Regex(@"already declared").IsMatch(output);
+                case string lexical_error when new Regex(@"_ThenLexicalError$").IsMatch(test_case):
+                    return new Regex(@"Lexical error").IsMatch(output);
+                default:
+                    return false;
+            }
+        }
     }
 }
