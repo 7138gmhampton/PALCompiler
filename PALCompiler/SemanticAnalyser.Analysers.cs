@@ -178,9 +178,10 @@ namespace PALCompiler
                     .Children
                     .FindAll(x => x.Syntax == Nonterminals.IDENTIFIER_LIST);
                 for (int iii = 0; iii < identifier_lists.Count; ++iii) {
-                    foreach (var identifier in identifier_lists[iii]
+                    var identifiers = identifier_lists[iii]
                         .Children
-                        .FindAll(x => x.Syntax == "Identifier"))
+                        .FindAll(x => x.Syntax == "Identifier");
+                    foreach (var identifier in identifiers)
                         analyseIdentifier(analyser, identifier, type_nodes[iii].Semantic);
                 }
             }
