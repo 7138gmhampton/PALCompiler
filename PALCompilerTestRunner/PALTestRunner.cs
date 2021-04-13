@@ -42,5 +42,7 @@ namespace PALCompilerTestRunner
             else if (!to_succeed && output.Length > 1) return true;
             else return false;
         }
+
+        // TODO - Specific fail check
     }
 }
