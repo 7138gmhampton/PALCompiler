@@ -103,11 +103,11 @@ namespace PALCompiler
                 foreach (var term in terms) {
                     SemanticType current_type = analyseTerm(analyser, term);
                     if (expression.Semantic < 0) expression.Semantic = current_type;
-                    else if (current_type != expression.Semantic)
-                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, expression.Semantic));
+                    else if (current_type != expression.Semantic) {
+                        Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
+                        analyser.errors.Add(new TypeConflictError(dummy, current_type, expression.Semantic));
+                    }
                 }
-
-                // BUG - Nonterminal in Type Conflict error message
 
                 return expression.Semantic;
             }
@@ -120,8 +120,10 @@ namespace PALCompiler
                 foreach (var factor in factors) {
                     SemanticType current_type = analyseFactor(analyser, factor);
                     if (term.Semantic < 0) term.Semantic = current_type;
-                    else if (current_type != term.Semantic)
-                        analyser.errors.Add(new TypeConflictError(term.Token, current_type, term.Semantic));
+                    else if (current_type != term.Semantic) {
+                        Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
+                        analyser.errors.Add(new TypeConflictError(dummy, current_type, term.Semantic));
+                    }
                 }
 
                 return term.Semantic;
