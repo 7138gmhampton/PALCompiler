@@ -86,10 +86,7 @@ namespace PALCompiler
                 SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
 
                 if (left_hand_type != right_hand_type)
-                    analyser.errors.Add(new TypeConflictError(
-                        assignment.Children[2].Token,
-                        right_hand_type,
-                        left_hand_type));
+                    applyTypeError(analyser, assignment.Children[2], left_hand_type);
             }
 
             private static int analyseExpression(SemanticAnalyser analyser, SyntaxNode expression)
@@ -101,7 +98,7 @@ namespace PALCompiler
                     SemanticType current_type = analyseTerm(analyser, term);
                     if (expression.Semantic < 0) expression.Semantic = current_type;
                     else if (current_type != expression.Semantic) 
-                        applyTypeError(analyser, term, current_type);
+                        applyTypeError(analyser, term, expression.Semantic);
                 }
 
                 return expression.Semantic;
@@ -116,7 +113,7 @@ namespace PALCompiler
                     SemanticType current_type = analyseFactor(analyser, factor);
                     if (term.Semantic < 0) term.Semantic = current_type;
                     else if (current_type != term.Semantic) 
-                        applyTypeError(analyser, term, current_type);
+                        applyTypeError(analyser, term, term.Semantic);
                 }
 
                 return term.Semantic;
@@ -195,7 +192,7 @@ namespace PALCompiler
             private static void applyTypeError(SemanticAnalyser analyser, SyntaxNode mismatch, SemanticType expected)
             {
                 var dummy = new Token(mismatch.Reconstruction, mismatch.Reconstruction, mismatch.Token.Line, mismatch.Token.Column);
-                analyser.errors.Add(new TypeConflictError(dummy, expected, mismatch.Semantic));
+                analyser.errors.Add(new TypeConflictError(dummy, mismatch.Semantic, expected));
             }
         }
     }
