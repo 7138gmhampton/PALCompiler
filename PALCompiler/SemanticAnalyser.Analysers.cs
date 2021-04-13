@@ -77,10 +77,11 @@ namespace PALCompiler
                 SemanticType right_hand_type = analyseExpression(analyser, boolean.Children[2]);
 
                 if (left_hand_type != right_hand_type)
-                    analyser.errors.Add(new TypeConflictError(
-                        boolean.Children[2].Token,
-                        right_hand_type,
-                        left_hand_type));
+                    //analyser.errors.Add(new TypeConflictError(
+                    //    boolean.Children[2].Token,
+                    //    right_hand_type,
+                    //    left_hand_type));
+                    applyTypeError(analyser, boolean.Children[2], left_hand_type);
             }
 
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
@@ -197,6 +198,12 @@ namespace PALCompiler
                     analyser.errors.Add(new SemanticError(
                         type.OnlyChild.Token,
                         "Type cannot be determined from declarator"));
+            }
+
+            private static void applyTypeError(SemanticAnalyser analyser, SyntaxNode mismatch, SemanticType expected)
+            {
+                var dummy = new Token(mismatch.Reconstruction, mismatch.Reconstruction, mismatch.Token.Line, mismatch.Token.Column);
+                analyser.errors.Add(new TypeConflictError(dummy, expected, mismatch.Semantic));
             }
         }
     }
