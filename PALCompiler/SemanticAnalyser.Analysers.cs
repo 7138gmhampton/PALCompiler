@@ -105,8 +105,9 @@ namespace PALCompiler
                     SemanticType current_type = analyseTerm(analyser, term);
                     if (expression.Semantic < 0) expression.Semantic = current_type;
                     else if (current_type != expression.Semantic) {
-                        Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
-                        analyser.errors.Add(new TypeConflictError(dummy, current_type, expression.Semantic));
+                        //Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
+                        //analyser.errors.Add(new TypeConflictError(dummy, current_type, expression.Semantic));
+                        applyTypeError(analyser, term, current_type);
                     }
                 }
 
@@ -122,8 +123,9 @@ namespace PALCompiler
                     SemanticType current_type = analyseFactor(analyser, factor);
                     if (term.Semantic < 0) term.Semantic = current_type;
                     else if (current_type != term.Semantic) {
-                        Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
-                        analyser.errors.Add(new TypeConflictError(dummy, current_type, term.Semantic));
+                        //Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
+                        //analyser.errors.Add(new TypeConflictError(dummy, current_type, term.Semantic));
+                        applyTypeError(analyser, term, current_type);
                     }
                 }
 
