@@ -77,10 +77,6 @@ namespace PALCompiler
                 SemanticType right_hand_type = analyseExpression(analyser, boolean.Children[2]);
 
                 if (left_hand_type != right_hand_type)
-                    //analyser.errors.Add(new TypeConflictError(
-                    //    boolean.Children[2].Token,
-                    //    right_hand_type,
-                    //    left_hand_type));
                     applyTypeError(analyser, boolean.Children[2], left_hand_type);
             }
 
@@ -104,11 +100,8 @@ namespace PALCompiler
                 foreach (var term in terms) {
                     SemanticType current_type = analyseTerm(analyser, term);
                     if (expression.Semantic < 0) expression.Semantic = current_type;
-                    else if (current_type != expression.Semantic) {
-                        //Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
-                        //analyser.errors.Add(new TypeConflictError(dummy, current_type, expression.Semantic));
+                    else if (current_type != expression.Semantic) 
                         applyTypeError(analyser, term, current_type);
-                    }
                 }
 
                 return expression.Semantic;
@@ -122,11 +115,8 @@ namespace PALCompiler
                 foreach (var factor in factors) {
                     SemanticType current_type = analyseFactor(analyser, factor);
                     if (term.Semantic < 0) term.Semantic = current_type;
-                    else if (current_type != term.Semantic) {
-                        //Token dummy = new Token(term.Reconstruction, term.Reconstruction, term.Token.Line, term.Token.Column);
-                        //analyser.errors.Add(new TypeConflictError(dummy, current_type, term.Semantic));
+                    else if (current_type != term.Semantic) 
                         applyTypeError(analyser, term, current_type);
-                    }
                 }
 
                 return term.Semantic;
