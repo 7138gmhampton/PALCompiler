@@ -59,7 +59,7 @@ namespace PALCompiler
                 }
                 else {
                     var expressions = io.Children.FindAll(x => x.Syntax == Nonterminals.EXPRESSION);
-                    foreach (var expression in expressions) analyseExpression(analyser, expression);
+                    foreach (var expression in expressions) analyseArithmetic(analyser, expression);
                 }
             }
 
@@ -73,8 +73,8 @@ namespace PALCompiler
 
             private static void analyseBooleanExpression(SemanticAnalyser analyser, SyntaxNode boolean)
             {
-                SemanticType left_hand_type = analyseExpression(analyser, boolean.Children[0]);
-                SemanticType right_hand_type = analyseExpression(analyser, boolean.Children[2]);
+                SemanticType left_hand_type = analyseArithmetic(analyser, boolean.Children[0]);
+                SemanticType right_hand_type = analyseArithmetic(analyser, boolean.Children[2]);
 
                 if (left_hand_type != right_hand_type)
                     applyTypeError(analyser, boolean.Children[2], left_hand_type);
@@ -83,7 +83,7 @@ namespace PALCompiler
             private static void analyseAssignment(SemanticAnalyser analyser, SyntaxNode assignment)
             {
                 SemanticType left_hand_type = analyseIdentifierUse(analyser, assignment.Children[0]);
-                SemanticType right_hand_type = analyseExpression(analyser, assignment.Children[2]);
+                SemanticType right_hand_type = analyseArithmetic(analyser, assignment.Children[2]);
 
                 if (left_hand_type != right_hand_type)
                     applyTypeError(analyser, assignment.Children[2], left_hand_type);
@@ -95,7 +95,7 @@ namespace PALCompiler
 
                 expression.Semantic = -1;
                 foreach (var term in terms) {
-                    SemanticType current_type = analyseTerm(analyser, term);
+                    SemanticType current_type = analyseArithmetic(analyser, term);
                     if (expression.Semantic < 0) expression.Semantic = current_type;
                     else if (current_type != expression.Semantic) 
                         applyTypeError(analyser, term, expression.Semantic);
@@ -119,6 +119,23 @@ namespace PALCompiler
                 return term.Semantic;
             }
 
+            private static SemanticType analyseArithmetic(SemanticAnalyser analyser, SyntaxNode component)
+            {
+                var elements = component.Children.FindAll(x => x.Syntax == Nonterminals.TERM || x.Syntax == Nonterminals.FACTOR);
+
+                component.Semantic = -1;
+                foreach (var element in elements) {
+                    SemanticType current_type = (component.Syntax == Nonterminals.EXPRESSION) 
+                        ? analyseArithmetic(analyser, element) 
+                        : analyseFactor(analyser, element);
+                    if (component.Semantic < 0) component.Semantic = current_type;
+                    else if (current_type != component.Semantic)
+                        applyTypeError(analyser, element, component.Semantic);
+                }
+
+                return component.Semantic;
+            }
+
             private static SemanticType analyseFactor(SemanticAnalyser analyser, SyntaxNode factor)
             {
                 var element = factor
@@ -128,7 +145,7 @@ namespace PALCompiler
                 if (element.Syntax == Nonterminals.VALUE)
                     element.Semantic = analyseValue(analyser, element);
                 else if (element.Syntax == Nonterminals.EXPRESSION)
-                    element.Semantic = analyseExpression(analyser, element);
+                    element.Semantic = analyseArithmetic(analyser, element);
 
                 factor.Semantic = element.Semantic;
                 return factor.Semantic;
