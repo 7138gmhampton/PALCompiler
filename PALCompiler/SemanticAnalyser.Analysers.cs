@@ -150,12 +150,10 @@ namespace PALCompiler
                 return factor.Semantic;
             }
 
-            private static SemanticType analyseValue(SemanticAnalyser analyser, SyntaxNode element)
-            {
-                if (element.OnlyChild.Syntax == "Identifier")
-                    return analyseIdentifierUse(analyser, element.OnlyChild);
-                else return element.OnlyChild.Semantic;
-            }
+            private static SemanticType analyseValue(SemanticAnalyser analyser, SyntaxNode element) 
+                => (element.OnlyChild.Syntax == "Identifier") 
+                ? analyseIdentifierUse(analyser, element.OnlyChild) 
+                : element.OnlyChild.Semantic;
 
             private static int analyseIdentifierUse(SemanticAnalyser analyser, SyntaxNode identifier)
             {
