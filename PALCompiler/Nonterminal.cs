@@ -2,7 +2,6 @@
 {
     internal static class Nonterminals
     {
-        //public static readonly string ASSIGMENT = "<Assignment>";
         public const string ASSIGMENT = "<Assignment>";
         public const string BOOLEAN_EXPRESSION = "<BooleanExpr>";
         public const string CONDITIONAL = "<Conditional>";
